@@ -83,6 +83,9 @@ public:
 	}
 
 	Fish() {
+
+		font_timer = CreateFontToHandle(NULL, 100, 9, DX_FONTTYPE_EDGE);
+
 		// 画像格納
 		back = LoadGraph("image/ocean.png");
 		image_uki = LoadGraph("image/uki.png");
@@ -150,15 +153,17 @@ public:
 
 				if (fish_swim[i].frame >= fish_frame[fish_swim[i].fish_type]) {
 					fish_swim.erase(fish_swim.begin() + i);
-					--i;
+					//--i;
 				}
+				if (i >= fish_swim.size()) break;
 				if (down_key[KEY_INPUT_SPACE]) {
 					fish_get.emplace_back(fish_swim[i]);
 					fish_get.back().status = fish_scene_up_fly;
 					fish_get.back().add_r = dist_r(engine);
 					fish_swim.erase(fish_swim.begin() + i);
-					--i;
+					//--i;
 				}
+
 			}
 		}
 
@@ -180,7 +185,7 @@ public:
 
 		//DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
 		
-		
+		DrawFormatStringToHandle(900, 150, GetColor(255, 255, 255), font_timer, "%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 
 		// 泳ぐ魚の制御
 		for (std::size_t i{}; i < fish_swim.size(); ++i) {
@@ -210,11 +215,11 @@ public:
 			}
 		}
 		clsDx();
-		printfDx("%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+		//printfDx("%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 
 		if (timer <= 0) {
 			scene_id = 2; // マップ
-			timer = 60 * 30;
+			timer = 60 * 3;
 			fished_count = (std::uint_fast32_t)fish_get.size();
 			++go_fish_count;
 		}
@@ -224,7 +229,7 @@ private:
 
 	std::uint_fast8_t uki_frame{};
 
-	int timer{ 60 * 30 };
+	int timer{ 60 * 3 };
 
 	int uki_x{ 482 };
 	int uki_y{ 872 };
@@ -237,6 +242,8 @@ private:
 
 	int back{ -1 };
 	int wave{ -1 };
+
+	int font_timer{ -1 };
 
 	int image_uki{ -1 };
 	int image_ocean_sky{ -1 };
