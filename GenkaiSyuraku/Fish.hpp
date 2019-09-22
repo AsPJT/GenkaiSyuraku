@@ -117,7 +117,7 @@ public:
 
 	}
 
-	void call(bool down_key[]) {
+	void call(bool down_key[], std::uint_fast8_t& scene_id) {
 		--timer;
 
 		std::mt19937 engine(seed_gen());
@@ -180,7 +180,7 @@ public:
 
 		DxLib::DrawGraph(0, 0, image_uki, TRUE);
 
-		DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
+		//DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
 		
 		
 
@@ -214,6 +214,10 @@ public:
 		clsDx();
 		printfDx("%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 
+		if (timer <= 0) {
+			scene_id = 2; // マップ
+			timer = 60 * 30;
+		}
 	}
 
 private:
