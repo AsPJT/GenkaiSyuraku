@@ -59,7 +59,7 @@ public:
 
 		// 釣り画面
 		case scene_fish:
-			fish.call(down_key, scene_id);
+			fish.call(down_key, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 閉じる画面
@@ -104,6 +104,9 @@ private:
 
 private:
 	Map map;
+
+	std::uint_fast32_t fished_count{};
+	std::uint_fast32_t go_fish_count{};
 
 	// 画面遷移のタイプ
 	std::uint_fast8_t scene_id{ scene_map };
