@@ -59,7 +59,7 @@ public:
 
 		// 釣り画面
 		case scene_fish:
-			fish.call(down_key);
+			fish.call(down_key, scene_id);
 			break;
 
 		// 閉じる画面
