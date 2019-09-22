@@ -149,17 +149,16 @@ public:
 				is_hit = true;
 				printfDx("%d", fish_dis);
 				std::uniform_real_distribution<double> dist_r(0.01, 0.2);
-				std::size_t random_index{};
 
 				if (fish_swim[i].frame >= fish_frame[fish_swim[i].fish_type]) {
-					fish_swim.erase(fish_swim.begin() + random_index);
+					fish_swim.erase(fish_swim.begin() + i);
 					--i;
 				}
 				if (down_key[KEY_INPUT_SPACE]) {
-					fish_get.emplace_back(fish_swim[random_index]);
+					fish_get.emplace_back(fish_swim[i]);
 					fish_get.back().status = fish_scene_up_fly;
 					fish_get.back().add_r = dist_r(engine);
-					fish_swim.erase(fish_swim.begin() + random_index);
+					fish_swim.erase(fish_swim.begin() + i);
 					--i;
 				}
 			}
@@ -193,18 +192,6 @@ public:
 		std::uniform_int_distribution<std::size_t> dist(1, 100);
 		//if (dist(engine) > 98 && fish_swim.size() < 10) this->addFish();
 		if (dist(engine) > 98) this->addFish();
-
-		
-		//if (fish_swim.size() > 0 && dist(engine) > 98) {
-		//	std::uniform_real_distribution<double> dist_r(0.01, 0.2);
-		//	std::size_t random_index{};
-		//	fish_get.emplace_back(fish_swim[random_index]);
-		//	fish_get.back().status = fish_scene_up_fly;
-		//	fish_get.back().add_r = dist_r(engine);
-		//	fish_swim.erase(fish_swim.begin() + random_index);
-		//}
-
-		
 
 		if (down_key[KEY_INPUT_SPACE]) {
 			//printfDx("a");

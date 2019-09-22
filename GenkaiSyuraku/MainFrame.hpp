@@ -106,7 +106,7 @@ private:
 	Map map;
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_map };
+	std::uint_fast8_t scene_id{ scene_fish };
 
 
 };
