@@ -54,7 +54,7 @@ public:
 
 		// マップ画面
 		case scene_map:
-			map.control(key_frame, scene_id);
+			map.control(key_frame, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 釣り画面

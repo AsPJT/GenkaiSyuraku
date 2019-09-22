@@ -40,12 +40,14 @@ public:
 		map_image[2] = LoadGraph("image/3.png", TRUE);
 		icon_image = LoadGraph("image/icon.png", TRUE);
 		hatake_image = LoadGraph("image/hatake3.png", TRUE);
+		bgm = LoadSoundMem("music/genkaivillage.wav");
+
 
 		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//画像を分割してimage配列に保存
 		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//画像を分割してimage配列に保存
 	}
 
-	void control(std::int_fast32_t key[256], std::uint_fast8_t& scene_id) {
+	void control(std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count) {
 		//プレイヤー移動
 		if (player.x % player.size == 0 && player.y % player.size == 0) {       //座標が32で割り切れたら入力可能
 
@@ -149,13 +151,13 @@ public:
 		}
 		
 		//プレイヤーの歩行アニメーション
-		if(player.x % 32 == 0 && player.x % 32 == 0) player.img = player.image[player.img_num];
-		else if(player.walking_ani == 1) player.img = player.image[player.img_num + 1], player.walking_ani = 0;
-		else player.img = player.image[player.img_num - 1], player.walking_ani = 1;
+		//if(player.x % 32 == 0 && player.x % 32 == 0) player.img = player.image[player.img_num];
+		//else if(player.walking_ani == 1) player.img = player.image[player.img_num + 1], player.walking_ani = 0;
+		//else player.img = player.image[player.img_num - 1], player.walking_ani = 1;
 
-		//if(player.x % player.size*2 >= 32 || player.y % player.size*2 >= 32 ) player.img = player.image[player.img_num + 1];
-		//else if (player.x % player.size >= 1 || player.y % player.size >= 1) player.img = player.image[player.img_num - 1];
-		//else player.img = player.image[player.img_num];
+		if(player.x % player.size*2 >= 32 || player.y % player.size*2 >= 32 ) player.img = player.image[player.img_num + 1];
+		else if (player.x % player.size >= 1 || player.y % player.size >= 1) player.img = player.image[player.img_num - 1];
+		else player.img = player.image[player.img_num];
 
 		//背景と人物の描画
 		DrawGraph(background_x, 0, map_image[map_level], TRUE);  //背景を描画
@@ -177,6 +179,7 @@ public:
 			if (player.enter == 1) {
 				//printfDx("TALK\n");
 				if (talk == 0) {
+					StopSoundMem(bgm);
 					scene_id = 3;
 					talk = 1;
 				}
@@ -192,12 +195,22 @@ public:
 		player.bx = player.x;
 		player.by = player.y;
 
+		if (go_fish_count != go_fish_before) talk = 0, map_level++;;
+		go_fish_before = go_fish_count;
+
+		if (bgm_flag == 0) {
+			PlaySoundMem(bgm, DX_PLAYTYPE_BACK);//バックグラウンド再生
+			bgm_flag = 1;
+		}
+
 	}
 
 private:
 	Mob mob[5];
 	Player player;
 	int i;
+	int bgm, bgm_flag = 0;
+	std::uint_fast32_t go_fish_before = 0;
 	int talk = 0;
 	int map_level = 0;
 	int map_image[3];
