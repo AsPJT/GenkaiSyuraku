@@ -2,6 +2,8 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
+#include "Map.hpp"
+#include "Fish.hpp"
 
 // 画面遷移
 enum :std::uint_fast8_t {
@@ -29,21 +31,7 @@ public:
 
 	// 初期化処理
 	bool init() {
-
-
-
-		// 画面の解像度を指定する
-		DxLib::SetGraphMode(1920, 1080, 32);
-
-		// ウインドウのタイトルを変更する
-		DxLib::SetMainWindowText("GenkaiSyuraku");
-
-		// ライブラリの初期化
-		if (DxLib::DxLib_Init() == -1) return false;
-		
-		// 描画先グラフィック領域の指定
-		DxLib::SetDrawScreen(DX_SCREEN_BACK);
-
+		map.init();
 		return true;
 	}
 
@@ -77,10 +65,6 @@ public:
 		// 閉じる画面
 		case scene_close:
 			return false;
-		}
-		for (std::size_t i{}; i < 256; ++i) {
-			if(down_key[i]) printfDx("down:true\n");
-			if (up_key[i]) printfDx("up:true\n");
 		}
 		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1);
 	}
