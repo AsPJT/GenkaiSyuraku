@@ -109,7 +109,7 @@ private:
 	std::uint_fast32_t go_fish_count{};
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_map };
+	std::uint_fast8_t scene_id{ scene_fish };
 
 
 };
