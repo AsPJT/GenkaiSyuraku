@@ -117,15 +117,13 @@ public:
 
 	}
 
-	void call(bool down_key[], std::uint_fast8_t& scene_id) {
+	void call(bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
 		--timer;
-
 		std::mt19937 engine(seed_gen());
 
 		// 背景を描画
 		DxLib::DrawGraph(0, 0, image_ocean_sky, FALSE);
 		DxLib::DrawGraph(0, 0, image_ocean_cloud, TRUE);
-		
 
 		// 釣った魚を描画
 		for (std::size_t i{}; i < fish_get.size(); ++i) {
@@ -217,6 +215,8 @@ public:
 		if (timer <= 0) {
 			scene_id = 2; // マップ
 			timer = 60 * 30;
+			fished_count = (std::uint_fast32_t)fish_get.size();
+			++go_fish_count;
 		}
 	}
 
