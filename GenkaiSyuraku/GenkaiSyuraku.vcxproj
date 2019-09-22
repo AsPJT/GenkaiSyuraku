@@ -138,6 +138,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Fish.hpp" />
     <ClInclude Include="MainFrame.hpp" />
     <ClInclude Include="Map.hpp" />
   </ItemGroup>

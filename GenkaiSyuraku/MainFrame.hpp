@@ -2,7 +2,6 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
-#include "Map.hpp"
 
 // 画面遷移
 enum :std::uint_fast8_t {
@@ -31,11 +30,7 @@ public:
 	// 初期化処理
 	bool init() {
 
-		// ログ出力を行わない
-		DxLib::SetOutApplicationLogValidFlag(FALSE);
 
-		// ウインドウモードにする
-		DxLib::ChangeWindowMode(TRUE);
 
 		// 画面の解像度を指定する
 		DxLib::SetGraphMode(1920, 1080, 32);
@@ -49,8 +44,6 @@ public:
 		// 描画先グラフィック領域の指定
 		DxLib::SetDrawScreen(DX_SCREEN_BACK);
 
-		map.init();
-	
 		return true;
 	}
 
@@ -78,7 +71,7 @@ public:
 
 		// 釣り画面
 		case scene_fish:
-
+			fish.call(down_key);
 			break;
 
 		// 閉じる画面
@@ -86,9 +79,8 @@ public:
 			return false;
 		}
 		for (std::size_t i{}; i < 256; ++i) {
-			//if(down_key[i]) printfDx("down:true\n");
-			//if (up_key[i]) printfDx("up:true\n");
-			//if (key_frame[i]) printfDx("%d", key_frame[i]);
+			if(down_key[i]) printfDx("down:true\n");
+			if (up_key[i]) printfDx("up:true\n");
 		}
 		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1);
 	}
@@ -123,6 +115,8 @@ public:
 	void end() {
 		DxLib::DxLib_End();
 	}
+private:
+	Fish fish{};
 
 private:
 	Map map;
