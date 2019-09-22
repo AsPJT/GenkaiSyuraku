@@ -141,6 +141,7 @@
     <ClInclude Include="Fish.hpp" />
     <ClInclude Include="MainFrame.hpp" />
     <ClInclude Include="Map.hpp" />
+    <ClInclude Include="Title.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

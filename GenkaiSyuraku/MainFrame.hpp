@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
+#include "Title.hpp"
 #include "Map.hpp"
 #include "Fish.hpp"
 
@@ -31,6 +32,7 @@ public:
 
 	// 初期化処理
 	bool init() {
+		title.init();
 		map.init();
 		return true;
 	}
@@ -49,12 +51,12 @@ public:
 
 		// タイトル画面
 		case scene_title:
-
+			title.start(down_key, scene_id);
 			break;
 
 		// マップ画面
 		case scene_map:
-			map.control(key_frame, scene_id);
+			map.control(up_key, key_frame, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 釣り画面
@@ -104,12 +106,13 @@ private:
 
 private:
 	Map map;
+	Title title;
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_map };
+	std::uint_fast8_t scene_id{ scene_title };
 
 
 };
