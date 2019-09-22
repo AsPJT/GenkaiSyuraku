@@ -67,7 +67,7 @@ public:
 			else if (key[KEY_INPUT_RIGHT] > 0) //右ボタンが押されたら
 				player.muki = 6;                       //下向きフラグを
 			else if (key[KEY_INPUT_RETURN] > 0) //エンターキーが押されたら
-				player.enter = 1;                       //会話フラグを
+				player.enter = 1, player.walking_flag = 0;             //会話フラグを
 			else                                //何のボタンも押されてなかったら
 				player.walking_flag = 0;              //歩かないフラグを立てる
 		}
@@ -128,9 +128,12 @@ public:
 			}
 		}
 		
+		if (player.x <= 1980 / 2 - player.size || player.x >= 1980 + 1980 / 2 - player.size)
+			//background_x = -player.x+;
+
 		//移動範囲
 		if (player.x < 0) player.x = player.bx, player.px = player.bpx;
-		else if (player.x > player.size*100 && player.px > player.size * 38) player.x = player.bx, player.px = player.bpx;
+		else if (player.x > player.size*98 && player.px > player.size * 36) player.x = player.bx, player.px = player.bpx;
 		if (player.y < 0) player.y = player.by, player.py = player.bpy;
 		else if (player.y > player.size*26) player.y = player.by, player.py = player.bpy;
 		
@@ -168,7 +171,10 @@ public:
 			//近づいた状態で話しかける
 			if (player.enter == 1) {
 				//printfDx("TALK\n");
-				scene_id = 3;
+				if (talk == 0) {
+					scene_id = 3;
+					talk = 1;
+				}
 			}
 		}
 		//DrawGraph(200, 850, hatake_image, TRUE);  //はたけを描画
@@ -187,6 +193,7 @@ private:
 	Mob mob[5];
 	Player player;
 	int i;
+	int talk = 0;
 	int map_level = 0;
 	int map_image[3];
 	int icon_image;
