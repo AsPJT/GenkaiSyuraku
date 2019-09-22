@@ -27,6 +27,7 @@ public:
 	int img_num = 1;
 	int muki = 3;
 	int walking_flag = 0;
+	int walking_ani = 1;
 	int enter;
 	int speed = 4;
 };
@@ -148,9 +149,13 @@ public:
 		}
 		
 		//ƒvƒŒƒCƒ„[‚Ì•àsƒAƒjƒ[ƒVƒ‡ƒ“
-		if(player.x % player.size*2 >= 32 || player.y % player.size*2 >= 32 ) player.img = player.image[player.img_num + 1];
-		else if (player.x % player.size >= 1 || player.y % player.size >= 1) player.img = player.image[player.img_num - 1];
-		else player.img = player.image[player.img_num];
+		if(player.x % 32 == 0 && player.x % 32 == 0) player.img = player.image[player.img_num];
+		else if(player.walking_ani == 1) player.img = player.image[player.img_num + 1], player.walking_ani = 0;
+		else player.img = player.image[player.img_num - 1], player.walking_ani = 1;
+
+		//if(player.x % player.size*2 >= 32 || player.y % player.size*2 >= 32 ) player.img = player.image[player.img_num + 1];
+		//else if (player.x % player.size >= 1 || player.y % player.size >= 1) player.img = player.image[player.img_num - 1];
+		//else player.img = player.image[player.img_num];
 
 		//”wŒi‚Æl•¨‚Ì•`‰æ
 		DrawGraph(background_x, 0, map_image[map_level], TRUE);  //”wŒi‚ğ•`‰æ
