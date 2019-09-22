@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
+#include "Map.hpp"
 
 // 画面遷移
 enum :std::uint_fast8_t {
@@ -48,6 +49,8 @@ public:
 		// 描画先グラフィック領域の指定
 		DxLib::SetDrawScreen(DX_SCREEN_BACK);
 
+		map.init();
+	
 		return true;
 	}
 
@@ -70,7 +73,7 @@ public:
 
 		// マップ画面
 		case scene_map:
-
+			map.control(key_frame, scene_id);
 			break;
 
 		// 釣り画面
@@ -83,8 +86,9 @@ public:
 			return false;
 		}
 		for (std::size_t i{}; i < 256; ++i) {
-			if(down_key[i]) printfDx("down:true\n");
-			if (up_key[i]) printfDx("up:true\n");
+			//if(down_key[i]) printfDx("down:true\n");
+			//if (up_key[i]) printfDx("up:true\n");
+			//if (key_frame[i]) printfDx("%d", key_frame[i]);
 		}
 		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1);
 	}
@@ -121,8 +125,7 @@ public:
 	}
 
 private:
-
-
+	Map map;
 
 	// 画面遷移のタイプ
 	std::uint_fast8_t scene_id{ scene_map };

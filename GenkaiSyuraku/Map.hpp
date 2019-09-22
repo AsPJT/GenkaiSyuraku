@@ -1,12 +1,205 @@
-ï»¿#pragma once
+#pragma once
+
+class Mob {
+public:
+	int image[4];
+	int size = 32;
+	int sizeX = 128;
+	int sizeY = 256;
+	int x = size * 93, y = size * 12;  //3008-32 384
+	int img;
+	int img_num = 1;
+	int muki = 3;
+
+};
+
+class Player {
+public:
+	int image[24];
+	int size = 32;
+	int sizeX = 128;
+	int sizeY = 256;
+	int x = size * 10, y = size * 20;
+	int px = size * 10, py = size * 20;
+	int bx, by;
+	int bpx, bpy;
+	int img;
+	int img_num = 1;
+	int muki = 3;
+	int walking_flag = 0;
+	int enter;
+	int speed = 4;
+};
 
 class Map {
 public:
+	void init() {
+		map_image[0] = LoadGraph("image/1.png", TRUE);
+		map_image[1] = LoadGraph("image/2.png", TRUE);
+		map_image[2] = LoadGraph("image/3.png", TRUE);
+		icon_image = LoadGraph("image/icon.png", TRUE);
+		hatake_image = LoadGraph("image/hatake3.png", TRUE);
 
+		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//‰æ‘œ‚ğ•ªŠ„‚µ‚Äimage”z—ñ‚É•Û‘¶
+		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//‰æ‘œ‚ğ•ªŠ„‚µ‚Äimage”z—ñ‚É•Û‘¶
+	}
+
+	void control(std::int_fast32_t key[256], std::uint_fast8_t& scene_id) {
+		//ƒvƒŒƒCƒ„[ˆÚ“®
+		if (player.x % player.size == 0 && player.y % player.size == 0) {       //À•W‚ª32‚ÅŠ„‚èØ‚ê‚½‚ç“ü—Í‰Â”\
+
+			player.walking_flag = 1;                  //•à‚­ƒtƒ‰ƒO‚ğ—§‚Ä‚éB
+			player.enter = 0;
+			if (key[KEY_INPUT_UP] > 0 && key[KEY_INPUT_LEFT] > 0)
+				player.muki = 1;
+			else if (key[KEY_INPUT_LEFT] > 0 && key[KEY_INPUT_DOWN] > 0)
+				player.muki = 3;
+			else if (key[KEY_INPUT_DOWN] > 0 && key[KEY_INPUT_RIGHT] > 0)
+				player.muki = 5;
+			else if (key[KEY_INPUT_RIGHT] > 0 && key[KEY_INPUT_UP] > 0)
+				player.muki = 7;
+			else if (key[KEY_INPUT_UP] > 0)    //ãƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+				player.muki = 0;                       //ãŒü‚«ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+			else if (key[KEY_INPUT_LEFT] > 0)  //¶ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+				player.muki = 2;                       //¶Œü‚«ƒtƒ‰ƒO‚ğ
+			else if (key[KEY_INPUT_DOWN] > 0)  //‰ºƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+				player.muki = 4;                       //‰EŒü‚«ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+			else if (key[KEY_INPUT_RIGHT] > 0) //‰Eƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+				player.muki = 6;                       //‰ºŒü‚«ƒtƒ‰ƒO‚ğ
+			else if (key[KEY_INPUT_RETURN] > 0) //ƒGƒ“ƒ^[ƒL[‚ª‰Ÿ‚³‚ê‚½‚ç
+				player.enter = 1;                       //‰ï˜bƒtƒ‰ƒO‚ğ
+			else                                //‰½‚Ìƒ{ƒ^ƒ“‚à‰Ÿ‚³‚ê‚Ä‚È‚©‚Á‚½‚ç
+				player.walking_flag = 0;              //•à‚©‚È‚¢ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+		}
+
+		if (player.walking_flag == 1) {       //•à‚­ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç
+			if (player.muki == 0)             //ãŒü‚«‚È‚çyÀ•W‚ğŒ¸‚ç‚·
+				player.y-= player.speed, player.img_num = 19;
+			else if (player.muki == 1)
+				player.x-= player.speed, player.y-= player.speed, player.img_num = 16;
+			else if (player.muki == 2)        //¶Œü‚«‚È‚çxÀ•W‚ğŒ¸‚ç‚·
+				player.x-= player.speed, player.img_num = 7;
+			else if (player.muki == 3)
+				player.x-= player.speed, player.y+= player.speed, player.img_num = 4;
+			else if (player.muki == 4)        //‰ºŒü‚«‚È‚çyÀ•W‚ğ‘‚â‚·
+				player.y+= player.speed, player.img_num = 1;
+			else if (player.muki == 5)
+				player.x+= player.speed, player.y+= player.speed, player.img_num = 10;
+			else if (player.muki == 6)        //‰EŒü‚«‚È‚çxÀ•W‚ğ‘‚â‚·
+				player.x+= player.speed, player.img_num = 13;
+			else if (player.muki == 7)
+				player.x+= player.speed, player.y-= player.speed, player.img_num = 22;
+		
+			if (player.x <= 1980 / 2 - player.size || player.x >= 1980 + 1980 / 2 - player.size) {   //ƒvƒŒƒCƒ„[‚Ì‚İ“®‚©‚·
+				if (player.muki == 0)
+					player.py-= player.speed;
+				else if (player.muki == 1)
+					player.px-= player.speed, player.py-= player.speed;
+				else if (player.muki == 2)
+					player.px-= player.speed;
+				else if (player.muki == 3)
+					player.px-= player.speed, player.py+= player.speed;
+				else if (player.muki == 4)
+					player.py+= player.speed;
+				else if (player.muki == 5)
+					player.px+= player.speed, player.py+= player.speed;
+				else if (player.muki == 6)
+					player.px+= player.speed;
+				else if (player.muki == 7)
+					player.px+= player.speed, player.py-= player.speed;
+			}
+			else {  //”wŒi‚ğ’Ç]‚³‚¹‚é
+				if (player.muki == 0)
+					player.py-= player.speed;
+				else if (player.muki == 1)
+					background_x+= player.speed, player.py-= player.speed;
+				else if (player.muki == 2)
+					background_x+= player.speed;
+				else if (player.muki == 3)
+					background_x+= player.speed, player.py+= player.speed;
+				else if (player.muki == 4)
+					player.py+= player.speed;
+				else if (player.muki == 5)
+					background_x-= player.speed, player.py+= player.speed;
+				else if (player.muki == 6)
+					background_x-= player.speed;
+				else if (player.muki == 7)
+					background_x-= player.speed, player.py-= player.speed;
+			}
+		}
+		
+		//ˆÚ“®”ÍˆÍ
+		if (player.x < 0) player.x = player.bx, player.px = player.bpx;
+		else if (player.x > player.size*100 && player.px > player.size * 38) player.x = player.bx, player.px = player.bpx;
+		if (player.y < 0) player.y = player.by, player.py = player.bpy;
+		else if (player.y > player.size*26) player.y = player.by, player.py = player.bpy;
+		
+		//Mob‚Æ‚Ì“–‚½‚è”»’è
+		for (i = 0; i < 1; i++) {
+			if (player.x + player.sizeX / 2 > mob[i].x &&
+				player.x < mob[i].x + mob[i].sizeX / 2 &&
+				player.y + player.sizeY / 4 > mob[i].y &&
+				player.y < mob[i].y + mob[i].sizeY / 4) {
+				player.px = player.bpx, player.x = player.bx, player.py = player.bpy, player.y = player.by;
+			}
+		}
+		
+		//ƒvƒŒƒCƒ„[‚Ì•àsƒAƒjƒ[ƒVƒ‡ƒ“
+		if(player.x % player.size*2 >= 32 || player.y % player.size*2 >= 32 ) player.img = player.image[player.img_num + 1];
+		else if (player.x % player.size >= 1 || player.y % player.size >= 1) player.img = player.image[player.img_num - 1];
+		else player.img = player.image[player.img_num];
+
+		//”wŒi‚Æl•¨‚Ì•`‰æ
+		DrawGraph(background_x, 0, map_image[map_level], TRUE);  //”wŒi‚ğ•`‰æ
+		for(i=0;i<1;i++)
+			if (mob[i].y <= player.y) 
+				if(mob[i].x > player.x-1980 && mob[i].x < player.x+1980) DrawGraph(mob[0].x + background_x, mob[0].y, mob[0].image[0], TRUE);                     //ji‚ğ•`‰æ
+		DrawGraph(player.px, player.py, player.img, TRUE);                                                      //ƒvƒŒƒCƒ„[‚ğ•`‰æ
+		for (i = 0; i < 1; i++) 
+			if (mob[i].y > player.y)
+				if (mob[i].x > player.x-1980 && mob[i].x < player.x + 1980)  DrawGraph(mob[0].x + background_x, mob[0].y, mob[0].image[0], TRUE);  //ji‚ğ•`‰æ
+
+		//Mob‚É‹ß‚Ã‚­‚ÆƒAƒCƒRƒ“‚ğo‚·
+		if (player.x + player.sizeX > mob[i].x &&
+			player.x < mob[i].x + mob[i].sizeX &&
+			player.y + player.sizeY > mob[i].y &&
+			player.y < mob[i].y + mob[i].sizeY) {
+			DrawGraph(mob[0].x + background_x-64, mob[0].y-200, icon_image, TRUE);  //ƒAƒCƒRƒ“‚ğ•`‰æ
+			//‹ß‚Ã‚¢‚½ó‘Ô‚Å˜b‚µ‚©‚¯‚é
+			if (player.enter == 1) {
+				//printfDx("TALK\n");
+				scene_id = 3;
+			}
+		}
+		//DrawGraph(200, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
+		//DrawGraph(328, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
+		//DrawGraph(456, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
+		
+		//printfDx("%d %d \n", player.x, player.y);
+		player.bpx = player.px;
+		player.bpy = player.py;
+		player.bx = player.x;
+		player.by = player.y;
+
+	}
 
 private:
+	Mob mob[5];
+	Player player;
+	int i;
+	int map_level = 0;
+	int map_image[3];
+	int icon_image;
+	int hatake_image;
+	int background_x = 0;
+	int chip_size = 32;
+	int map_width = 120;//3840
+	int map_hight = 20;//640
+	
+	//std::unique_ptr<int[][map_width]> map(new int[map_hight][map_width]);
 
-
-
-
+	//map[map_hight][map_width] = {
+	//	{0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0},
+	//	{}
+	//};
 };
