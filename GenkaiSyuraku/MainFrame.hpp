@@ -131,7 +131,7 @@ private:
 	std::uint_fast32_t go_material_count{};
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_fish };
+	std::uint_fast8_t scene_id{ scene_map };
 
 
 };
