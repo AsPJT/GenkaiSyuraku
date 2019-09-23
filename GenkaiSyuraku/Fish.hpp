@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <random>
 #include <string>
+#include "Item.hpp"
 
 // 釣りの状態
 enum :std::uint_fast8_t {
@@ -147,7 +148,7 @@ public:
 
 	}
 
-	void call(bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
+	void call(std::array<int, item_num>& item_count, bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
 		std::mt19937 engine(seed_gen());
 
 		++cloud_move_time;
