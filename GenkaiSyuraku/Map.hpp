@@ -73,6 +73,8 @@ public:
 		menu_image = LoadGraph("image/menu.png", TRUE);
 		selector_image = LoadGraph("image/selector.png", TRUE);
 		textwindow_image = LoadGraph("image/textwindow.png", TRUE);
+		window_image = LoadGraph("image/window.png", TRUE);
+		find_image = LoadGraph("image/find_fish.png", TRUE);
 
 		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//画像を分割してimage配列に保存
 		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//画像を分割してimage配列に保存
@@ -81,6 +83,7 @@ public:
 		bgm = LoadSoundMem("music/genkaivillage.wav");
 
 		//Font
+		FontHandle_mini = CreateFontToHandle(NULL, 20, 2, DX_FONTTYPE_EDGE);
 		FontHandle = CreateFontToHandle(NULL, 50, 2, DX_FONTTYPE_EDGE);
 		FontHandle_big = CreateFontToHandle(NULL, 70, 2, DX_FONTTYPE_EDGE);
 
@@ -130,10 +133,43 @@ public:
 				player.walking_flag = 0;              //歩かないフラグを立てる
 		}		
 
-		//printfDx("%d \n", talk);
-
+		if (talk == 12) {
+			if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
+				talk = 0;
+				returnflag = 1;
+			}
+		}
+		else if (talk == 11) {
+			if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select4--, selector4_y -= 50;
+			else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select4++, selector4_y += 50;
+			if (select4 > 3) select4 = 0, selector4_y -= 200;
+			if (select4 < 0) select4 = 3, selector4_y += 200;
+			//決定
+			if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
+				talk = 12; 
+				returnflag = 1;
+				if (select4 == 0) 
+					if (item_count[item_tomato_seed] > 0) {
+						hatake[hatake_select].img = tomato_image[0];
+						hatake[hatake_select].level = 0;
+						item_count[item_tomato_seed]--;
+				}
+				if (select4 == 1) 
+					if (item_count[item_cabbage_seed] > 0) {
+						hatake[hatake_select].img = kyabetsu_image[0];
+						hatake[hatake_select].level = 0;
+						item_count[item_cabbage_seed]--;
+					}
+				if (select4 == 2)
+					if (item_count[item_corn_seed] > 0) {
+						hatake[hatake_select].img = morokoshi_image[0];
+						hatake[hatake_select].level = 0;
+						item_count[item_corn_seed]--;
+					}
+			}
+		}
 		//会話終了，メニュー閉じる
-		if (talk >= 1 && (up_key[KEY_INPUT_RETURN]  && returnflag == 0)) {
+		else if ((talk >= 1 && (up_key[KEY_INPUT_RETURN]  && returnflag == 0)) && talk != 10 && talk != 2) {
 			returnflag = 1;
 			talk = 0;
 		}
@@ -143,18 +179,20 @@ public:
 		}
 		//よろず屋
 		else if (talk == 2) {
-
+			if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
+				menu = 3;
+			}
 		}
 		//メニュー画面
 		else if (menu == 2) {
 			if (key[KEY_INPUT_LEFT]  || key[KEY_INPUT_A] ) menu = 1;
 
-			if (up_key[KEY_INPUT_UP]  || up_key[KEY_INPUT_W] ) select--, selector2_y -= 70;
-			else if (up_key[KEY_INPUT_DOWN]  || up_key[KEY_INPUT_S] ) select++, selector2_y += 70;
-			if (select2 > 3) select2 = 0, selector_y -= 70;
-			if (select2 < 0) select2 = 3, selector_y += 70;
+			if (up_key[KEY_INPUT_UP]  || up_key[KEY_INPUT_W] ) select2--, selector2_y -= 70;
+			else if (up_key[KEY_INPUT_DOWN]  || up_key[KEY_INPUT_S] ) select2++, selector2_y += 70;
+			if (select2 > 3) select2 = 0, selector2_y -= 70;
+			if (select2 < 0) select2 = 3, selector2_y += 70;
 			//決定
-			if ((key[KEY_INPUT_RIGHT]  || key[KEY_INPUT_D] ) && select == 0) menu = 2;
+			if ((key[KEY_INPUT_RIGHT]  || key[KEY_INPUT_D] ) && select2 == 0) menu = 2;
 			if (up_key[KEY_INPUT_RETURN]  && returnflag == 0) {
 				returnflag = 1;
 				if (select2 == 0) menu = 2;
@@ -163,7 +201,6 @@ public:
 			}
 		}
 		else if ((up_key[KEY_INPUT_E]  || menu == 1) && eflag == 0 && talk == 0) {
-			selector2_y = -180;
 			eflag = 1;
 			menu = 1;
 			if (up_key[KEY_INPUT_UP]  || up_key[KEY_INPUT_W] ) select--, selector_y -= 175;
@@ -211,22 +248,30 @@ public:
 				}
 			}
 			//hatake
-			for (i = 0; i < 10; i++) {
-				if (player.x + player.sizeX * 2 > hatake[i].x &&
-					player.x < hatake[i].x + hatake[i].size * 2 &&
-					player.y + player.sizeY / 2 > hatake[i].y - 128 &&
-					player.y < hatake[i].y + hatake[i].size / 2 - 128) {
-					//近づいた状態で話しかける
-					if ((up_key[KEY_INPUT_RETURN]  && returnflag == 0) || talk >= 1) {
-						returnflag = 1;
-						if (talk == 0) {
-							talk = 10;
-						
-							break;
+			if (up_key[KEY_INPUT_RETURN] && returnflag == 0 && talk == 10) {
+				talk = 11;
+
+			}
+			else {
+				for (j = 0; j < 10; j++) {
+					if (player.x + player.sizeX - 32 > hatake[j].x &&
+						player.x < hatake[j].x + hatake[j].size - 32 &&
+						player.y + player.sizeY / 2 > hatake[j].y - 128 &&
+						player.y < hatake[j].y + hatake[j].size / 2 - 128) {
+						hatake_find = j;
+						//近づいた状態で話しかける
+						if ((up_key[KEY_INPUT_RETURN]  && returnflag == 0) || talk >= 1) {
+							returnflag = 1;
+							if (talk == 0) {
+								talk = 10;
+								hatake_select = j;
+								break;
+							}
 						}
 					}
 				}
 			}
+			
 		}
 
 		//移動処理
@@ -357,6 +402,18 @@ public:
 		go_fish_before = go_fish_count;
 
 		Draw(yorozuya_level, sakanaya_level, farm_level, item_count);
+
+		printfDx("%d \n", talk);
+		if (talk == 0 && menu == 0) {
+			selector_y = 320;
+			selector2_y = 0;
+			selector3_y = 0;
+			selector4_y = 600;
+			select = 0;
+			select2 = 0;
+			select3 = 0;
+			select4 = 0;
+		}
 	}
 
 	void Draw(int yorozuya_level, int sakanaya_level, int farm_level, std::array<int, item_num>& item_count) {
@@ -391,10 +448,10 @@ public:
 				if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width)  DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);  //hatake
 
 		//メニューの描画
-		if (menu >= 1) {
+		if (menu == 1 || menu == 2) {
 			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(0, selector_y, selector_image, TRUE);
-			DrawFormatStringToHandle(1600, 170, GetColor(0, 0, 0), FontHandle_big, "%d", player.money);
+			DrawGraph(125, selector_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 145, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
 			DrawFormatStringToHandle(600, 180, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+1]);
 			DrawFormatStringToHandle(600, 250, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+2]);
@@ -404,6 +461,16 @@ public:
 				DrawGraph(380, selector2_y, selector_image, TRUE);
 
 			}
+		}
+		else if(menu == 3) {
+			DrawGraph(0, 0, menu_image, TRUE);
+			DrawGraph(125, selector_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 145, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+
+			DrawFormatStringToHandle(600, 180, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2 + 1]);
+			DrawFormatStringToHandle(600, 250, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2 + 2]);
+			DrawFormatStringToHandle(600, 320, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2 + 3]);
+			DrawFormatStringToHandle(600, 390, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2 + 4]);
 		}
 
 		//テキストボックス
@@ -422,6 +489,24 @@ public:
 				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "植える種を選んでください");
 				DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
 			}
+			else if (talk == 11) {
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "植える種を選んでください");
+				DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+				DrawGraph(0, 0, window_image, TRUE);
+				DrawRotaGraph(1440, selector4_y, 0.5, 0, selector_image, TRUE, FALSE);
+				DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, "トマトの種 ×%d", item_count[item_tomato_seed]);
+				DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, "キャベツの種 ×%d", item_count[item_cabbage_seed]);
+				DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, "とうもろこしの種 ×%d", item_count[item_corn_seed]);
+				DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, "やめる");
+			}
+			else if (talk == 12) {
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "育つまでミニゲームで遊ぼう");
+				DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+			}
+		}
+
+		if (hatake_find != 10) {
+			DrawRotaGraph(hatake[hatake_find].x + background_x + 64, hatake[hatake_find].y + 96, 0.3, 0, find_image, TRUE, FALSE);
 		}
 	
 	}
@@ -437,10 +522,14 @@ private:
 	int hatake_num = 10;
 	int select = 0;
 	int select2 = 0;
+	int select3 = 0;
+	int select4 = 0;
 	int FontHandle;
+	int FontHandle_mini;
 	int FontHandle_big;
 	int sakana_total = 0;
 	int item_select = 0;
+	int hatake_select = 0;
 
 	//flag
 	int bgm, bgm_flag = 0;
@@ -448,6 +537,7 @@ private:
 	int menu = 0;
 	int eflag = 0;
 	int returnflag = 0;
+	int hatake_find = 10;
 
 	//image
 	int map_image;
@@ -464,12 +554,16 @@ private:
 	int menu_image;
     int selector_image;
 	int textwindow_image;
+	int window_image;
+	int find_image;
+	int menu2_image;
 
 	//座標
 	int background_x = 0;
-	int selector_y = 0;
+	int selector_y = 320;
 	int selector2_y = 0;
 	int selector3_y = 0;
+	int selector4_y = 600;
 	int tsuri_area = 2800;
 
 
