@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class Mob {
 public:
@@ -19,8 +19,8 @@ public:
 	int size = 32;
 	int sizeX = 128;
 	int sizeY = 256;
-	int x = size * 25, y = size * 20; //x‚ğ3940ˆÈ“à‚Ì32‚Ì”{”‚Åw’è
-	int px = size * 25, py = size * 20; //x‚ª832~2752‚Ì‚Æ‚«‚Í832ŒÅ’è
+	int x = size * 25, y = size * 15; //xã‚’3940ä»¥å†…ã®32ã®å€æ•°ã§æŒ‡å®š
+	int px = size * 25, py = size * 15; //xãŒ832~2752ã®ã¨ãã¯832å›ºå®š
 	int bx, by;
 	int bpx, bpy;
 	int img;
@@ -33,11 +33,14 @@ public:
 	int money = 1000;
 };
 
-class Item {
+class Hatake {
 public:
-	char name[32];
-	char effect[64];
-	int num = 0;
+	int size = 128;
+	int x, y;
+	int img;
+	int seeds;
+	int level;
+
 };
 
 class Map {
@@ -50,45 +53,63 @@ public:
 		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
 		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
 		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
+		farm_image[0] = LoadGraph("image/farm1.png", TRUE);
+		farm_image[1] = LoadGraph("image/farm2.png", TRUE);
+		farm_image[2] = LoadGraph("image/farm3.png", TRUE);
+		farm_image[3] = LoadGraph("image/farm4.png", TRUE);
+		tomato_image[0] = LoadGraph("image/tomato1.png", TRUE);
+		tomato_image[1] = LoadGraph("image/tomato2.png", TRUE);
+		tomato_image[2] = LoadGraph("image/tomato3.png", TRUE);
+		kyabetsu_image[0] = LoadGraph("image/kyabetsu1.png", TRUE);
+		kyabetsu_image[1] = LoadGraph("image/kyabetsu2.png", TRUE);
+		kyabetsu_image[2] = LoadGraph("image/kyabetsu3.png", TRUE);
+		morokoshi_image[0] = LoadGraph("image/morokoshi1.png", TRUE);
+		morokoshi_image[1] = LoadGraph("image/morokoshi2.png", TRUE);
+		morokoshi_image[2] = LoadGraph("image/morokoshi3.png", TRUE);
+		hatake_image = LoadGraph("image/hatake.png", TRUE);
 		icon_image = LoadGraph("image/ex_icon.png", TRUE);
 		fish_icon_image = LoadGraph("image/fish_icon.png", TRUE);
 		area_icon_image = LoadGraph("image/area_icon.png", TRUE);
 		menu_image = LoadGraph("image/menu.png", TRUE);
 		selector_image = LoadGraph("image/selector.png", TRUE);
 		textwindow_image = LoadGraph("image/textwindow.png", TRUE);
-		hatake_image = LoadGraph("image/hatake3.png", TRUE);
-		bgm = LoadSoundMem("music/genkaivillage.wav");
 
-		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//‰æ‘œ‚ğ•ªŠ„‚µ‚Äimage”z—ñ‚É•Û‘¶
-		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//‰æ‘œ‚ğ•ªŠ„‚µ‚Äimage”z—ñ‚É•Û‘¶
-		LoadDivGraph("image/ba.png", 4, 1, 4, mob[1].sizeX, mob[1].sizeY, mob[1].image);//‰æ‘œ‚ğ•ªŠ„‚µ‚Äimage”z—ñ‚É•Û‘¶
+		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//ç”»åƒã‚’åˆ†å‰²ã—ã¦imageé…åˆ—ã«ä¿å­˜
+		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//ç”»åƒã‚’åˆ†å‰²ã—ã¦imageé…åˆ—ã«ä¿å­˜
+		LoadDivGraph("image/ba.png", 4, 1, 4, mob[1].sizeX, mob[1].sizeY, mob[1].image);//ç”»åƒã‚’åˆ†å‰²ã—ã¦imageé…åˆ—ã«ä¿å­˜
+		
+		bgm = LoadSoundMem("music/genkaivillage.wav");
 
 		//Font
 		FontHandle = CreateFontToHandle(NULL, 50, 2, DX_FONTTYPE_EDGE);
 		FontHandle_big = CreateFontToHandle(NULL, 70, 2, DX_FONTTYPE_EDGE);
 
-		//‚¨‚¶‚¢‚Ì‰ŠúˆÊ’u
+		//ãŠã˜ã„ã®åˆæœŸä½ç½®
 		mob[0].x = mob[0].size * 43;
-		mob[0].y = mob[0].size * 12;
+		mob[0].y = mob[0].size * 13;
 		mob[0].img = mob[0].image[0];
 
-		//‚¨‚Î‚ ‚Ì‰ŠúˆÊ’u
-		mob[1].x = mob[1].size * 20;
-		mob[1].y = mob[1].size * 12;
+		//ãŠã°ã‚ã®åˆæœŸä½ç½®
+		mob[1].x = mob[1].size * 18;
+		mob[1].y = mob[1].size * 13;
 		mob[1].img = mob[1].image[0];
 
-		//item
-		item[0].num = 0;
-		//item[0].name = "ƒgƒ}ƒg‚Ìí";
-
+		//ç•‘ã®ä½ç½®
+		for (j = 0; j < 2; j++) {
+			for (i = 0; i < 5; i++) {
+				hatake[i + j * 5].x = 640 + chip_size * i;
+				hatake[i + j * 5].y = 800 + chip_size * j;
+				hatake[i + j * 5].img = hatake_image;
+			}
+		}
 	}
 
-	void control(bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, int& yorozuya_level, int& sakanaya_level) {
-		//ƒL[“ü—Í
+	void call(bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, int& yorozuya_level, int& sakanaya_level, int& farm_level) {
+		//ã‚­ãƒ¼å…¥åŠ›
 		eflag = 0;
 		returnflag = 0;
-		if (player.x % player.size == 0 && player.y % player.size == 0) {       //À•W‚ª32‚ÅŠ„‚èØ‚ê‚½‚ç“ü—Í‰Â”\
-			player.walking_flag = 1;                  //•à‚­ƒtƒ‰ƒO‚ğ—§‚Ä‚éB
+		if (player.x % player.size == 0 && player.y % player.size == 0 && talk == 0 && menu == 0) {       //åº§æ¨™ãŒ32ã§å‰²ã‚Šåˆ‡ã‚ŒãŸã‚‰å…¥åŠ›å¯èƒ½
+			player.walking_flag = 1;                  //æ­©ããƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹ã€‚
 			if ((key[KEY_INPUT_UP] > 0 && key[KEY_INPUT_LEFT] > 0) || (key[KEY_INPUT_W] > 0 && key[KEY_INPUT_A] > 0))
 				player.muki = 1;
 			else if (key[KEY_INPUT_LEFT] > 0 && key[KEY_INPUT_DOWN] > 0 || (key[KEY_INPUT_A] > 0 && key[KEY_INPUT_S] > 0))
@@ -97,102 +118,124 @@ public:
 				player.muki = 5;
 			else if (key[KEY_INPUT_RIGHT] > 0 && key[KEY_INPUT_UP] > 0 || (key[KEY_INPUT_D] > 0 && key[KEY_INPUT_W] > 0))
 				player.muki = 7;
-			else if (key[KEY_INPUT_UP] > 0 || key[KEY_INPUT_W] > 0)    //ãƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
-				player.muki = 0;                       //ãŒü‚«ƒtƒ‰ƒO‚ğ—§‚Ä‚é
-			else if (key[KEY_INPUT_LEFT] > 0 || key[KEY_INPUT_A] > 0)  //¶ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
-				player.muki = 2;                       //¶Œü‚«ƒtƒ‰ƒO‚ğ
-			else if (key[KEY_INPUT_DOWN] > 0 || key[KEY_INPUT_S] > 0)  //‰ºƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
-				player.muki = 4;                       //‰EŒü‚«ƒtƒ‰ƒO‚ğ—§‚Ä‚é
-			else if (key[KEY_INPUT_RIGHT] > 0 || key[KEY_INPUT_D] > 0) //‰Eƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
-				player.muki = 6;                       //‰ºŒü‚«ƒtƒ‰ƒO‚ğ
-			else                                      //‰½‚Ìƒ{ƒ^ƒ“‚à‰Ÿ‚³‚ê‚Ä‚È‚©‚Á‚½‚ç
-				player.walking_flag = 0;              //•à‚©‚È‚¢ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+			else if (key[KEY_INPUT_UP] > 0 || key[KEY_INPUT_W] > 0)    //ä¸Šãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+				player.muki = 0;                       //ä¸Šå‘ããƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+			else if (key[KEY_INPUT_LEFT] > 0 || key[KEY_INPUT_A] > 0)  //å·¦ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+				player.muki = 2;                       //å·¦å‘ããƒ•ãƒ©ã‚°ã‚’
+			else if (key[KEY_INPUT_DOWN] > 0 || key[KEY_INPUT_S] > 0)  //ä¸‹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+				player.muki = 4;                       //å³å‘ããƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+			else if (key[KEY_INPUT_RIGHT] > 0 || key[KEY_INPUT_D] > 0) //å³ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+				player.muki = 6;                       //ä¸‹å‘ããƒ•ãƒ©ã‚°ã‚’
+			else                                      //ä½•ã®ãƒœã‚¿ãƒ³ã‚‚æŠ¼ã•ã‚Œã¦ãªã‹ã£ãŸã‚‰
+				player.walking_flag = 0;              //æ­©ã‹ãªã„ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
 		}		
 
-		//‚æ‚ë‚¸‰®
-		if (talk == 2) {
-			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
-				returnflag = 1;
-				talk = 0;
-			}
+		//printfDx("%d \n", talk);
+
+		//ä¼šè©±çµ‚äº†ï¼Œãƒ¡ãƒ‹ãƒ¥ãƒ¼é–‰ã˜ã‚‹
+		if (talk >= 1 && (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0)) {
+			returnflag = 1;
+			talk = 0;
 		}
-		//ƒƒjƒ…[‰æ–Ê
-		if (up_key[KEY_INPUT_E] > 0 && menu == 1 && eflag == 0 && talk == 0) {
+		else if (up_key[KEY_INPUT_E] > 0 && menu >= 1 && eflag == 0 && talk == 0) {
 			menu = 0;
 			eflag = 1;
 		}
+		//ã‚ˆã‚ãšå±‹
+		else if (talk == 2) {
+
+		}
+		//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç”»é¢
+		else if (menu == 2) {
+			if (key[KEY_INPUT_LEFT] > 0 || key[KEY_INPUT_A] > 0) menu = 1;
+		}
 		else if ((up_key[KEY_INPUT_E] > 0 || menu == 1) && eflag == 0 && talk == 0) {
+			selector2_y = 180;
 			eflag = 1;
-			player.walking_flag = 0;
 			menu = 1;
 			if (up_key[KEY_INPUT_UP] > 0 || up_key[KEY_INPUT_W] > 0) select--, selector_y -= 175;
 			else if (up_key[KEY_INPUT_DOWN] > 0 || up_key[KEY_INPUT_S] > 0) select++, selector_y += 175;
-			if (select > 3) select = 0, selector_y -= 700;
-			if (select < 0) select = 3, selector_y += 700;
-			//Œˆ’è
+			if (select > 2) select = 0, selector_y -= 525;
+			if (select < 0) select = 2, selector_y += 525;
+			//æ±ºå®š
+			if ((key[KEY_INPUT_RIGHT] > 0 || key[KEY_INPUT_D] > 0) && select == 0) menu = 2;
 			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
 				returnflag = 1;
-				if (select == 0) select = 0;
-				if (select == 1) select = 1;
-				if (select == 2) select = 2;
-				if (select == 3) scene_id = 1, menu = 0;
+				if (select == 0) menu = 2;
+				if (select == 1) menu = 0;
+				if (select == 2) scene_id = 1, menu = 0;
 			}
 		}
+		//é‡£ã‚Šå ´ç§»è¡Œ
+		else if (player.x > tsuri_area) {
+			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+				returnflag = 1;
+				StopSoundMem(bgm);
+				scene_id = 3;
+			}
+		}
+		//ãƒ¢ãƒ–ã¨ã®ä¼šè©±
 		else {
 			for (i = 0; i < mob_num; i++) {
 				if (player.x + player.sizeX * 2 > mob[i].x &&
 					player.x < mob[i].x + mob[i].sizeX * 2 &&
 					player.y + player.sizeY > mob[i].y &&
-					player.y < mob[i].y + mob[i].sizeY) {
-					//‹ß‚Ã‚¢‚½ó‘Ô‚Å˜b‚µ‚©‚¯‚é
-					if (talk >= 1 && (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0)) {
-						talk = 0;
-					}
-					else if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
+					player.y < mob[i].y + mob[i].sizeY / 2) {
+					//è¿‘ã¥ã„ãŸçŠ¶æ…‹ã§è©±ã—ã‹ã‘ã‚‹
+					if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
 						returnflag = 1;
-						player.walking_flag = 0;
 
 						if (talk == 0) {
 							talk = i+1;
-							//ƒ‚ƒu‚ÌU‚èŒü‚«
+							//ãƒ¢ãƒ–ã®æŒ¯ã‚Šå‘ã
 							if (player.x + player.sizeX/2 < mob[i].x) mob[i].img = mob[i].image[1];
 							else if (player.x + player.sizeX/2 > mob[i].x + player.sizeX) mob[i].img = mob[i].image[2];
-							//else if (player.y < mob[i].y + mob[i].sizeY / 4) mob[i].img = mob[i].image[3];
+							else if (player.y < mob[i].y + mob[i].sizeY / 4) mob[i].img = mob[i].image[3];
 							else mob[i].img = mob[i].image[0];
 						}
+						break;
 					}
 				}
-				//’Ş‚èêˆÚs
-				else if (player.x > tsuri_area) {
-					if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+			}
+			//hatake
+			for (i = 0; i < 10; i++) {
+				if (player.x + player.sizeX * 2 > hatake[i].x &&
+					player.x < hatake[i].x + hatake[i].size * 2 &&
+					player.y + player.sizeY / 2 > hatake[i].y - 128 &&
+					player.y < hatake[i].y + hatake[i].size / 2 - 128) {
+					//è¿‘ã¥ã„ãŸçŠ¶æ…‹ã§è©±ã—ã‹ã‘ã‚‹
+					if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
 						returnflag = 1;
-						StopSoundMem(bgm);
-						scene_id = 3;
+						if (talk == 0) {
+							talk = 10;
+						
+							break;
+						}
 					}
 				}
 			}
 		}
 
-		//ˆÚ“®ˆ—
-		if (player.walking_flag == 1) {       //•à‚­ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç
-			if (player.muki == 0)             //ãŒü‚«‚È‚çyÀ•W‚ğŒ¸‚ç‚·
+		//ç§»å‹•å‡¦ç†
+		if (player.walking_flag == 1) {       //æ­©ããƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ãŸã‚‰
+			if (player.muki == 0)             //ä¸Šå‘ããªã‚‰yåº§æ¨™ã‚’æ¸›ã‚‰ã™
 				player.y-= player.speed, player.img_num = 19;
 			else if (player.muki == 1)
 				player.x-= player.speed, player.y-= player.speed, player.img_num = 16;
-			else if (player.muki == 2)        //¶Œü‚«‚È‚çxÀ•W‚ğŒ¸‚ç‚·
+			else if (player.muki == 2)        //å·¦å‘ããªã‚‰xåº§æ¨™ã‚’æ¸›ã‚‰ã™
 				player.x-= player.speed, player.img_num = 7;
 			else if (player.muki == 3)
 				player.x-= player.speed, player.y+= player.speed, player.img_num = 4;
-			else if (player.muki == 4)        //‰ºŒü‚«‚È‚çyÀ•W‚ğ‘‚â‚·
+			else if (player.muki == 4)        //ä¸‹å‘ããªã‚‰yåº§æ¨™ã‚’å¢—ã‚„ã™
 				player.y+= player.speed, player.img_num = 1;
 			else if (player.muki == 5)
 				player.x+= player.speed, player.y+= player.speed, player.img_num = 10;
-			else if (player.muki == 6)        //‰EŒü‚«‚È‚çxÀ•W‚ğ‘‚â‚·
+			else if (player.muki == 6)        //å³å‘ããªã‚‰xåº§æ¨™ã‚’å¢—ã‚„ã™
 				player.x+= player.speed, player.img_num = 13;
 			else if (player.muki == 7)
 				player.x+= player.speed, player.y-= player.speed, player.img_num = 22;
 		
-			if (player.x <= map_width / 2 - player.sizeX || player.x >= map_width + map_width / 2 - player.sizeX) {   //ƒvƒŒƒCƒ„[‚Ì‚İ“®‚©‚·
+			if (player.x <= map_width / 2 - player.sizeX || player.x >= map_width + map_width / 2 - player.sizeX) {   //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã¿å‹•ã‹ã™
 				if (player.muki == 0)
 					player.py-= player.speed;
 				else if (player.muki == 1)
@@ -210,7 +253,7 @@ public:
 				else if (player.muki == 7)
 					player.px+= player.speed, player.py-= player.speed;
 			}
-			else {  //”wŒi‚ğ’Ç]‚³‚¹‚é(ƒvƒŒƒCƒ„[‚ÌxÀ•WŒÅ’è)
+			else {  //èƒŒæ™¯ã‚’è¿½å¾“ã•ã›ã‚‹(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®xåº§æ¨™å›ºå®š)
 				if (player.muki == 0)
 					player.py-= player.speed;
 				else if (player.muki == 1)
@@ -226,18 +269,18 @@ public:
 			}
 		}
 
-		//ƒJƒƒ‰’Ç]
+		//ã‚«ãƒ¡ãƒ©è¿½å¾“
 		if (player.x <= map_width / 2 - player.sizeX) background_x = 0;
 		else if (player.x >= map_width + map_width / 2 - player.sizeX) background_x = -map_width;
 		else background_x = map_width / 2 - player.sizeX - player.x;
 
-		//i“ü‹Ö~ƒGƒŠƒA‚Ìw’è
+		//é€²å…¥ç¦æ­¢ã‚¨ãƒªã‚¢ã®æŒ‡å®š
 		if (player.x < 0) player.x = player.bx, player.px = player.bpx;
 		else if (player.x > player.size*110 && player.px > player.size * 48) player.x = player.bx, player.px = player.bpx;
-		if (player.y < player.size * 11) player.y = player.by, player.py = player.bpy;
+		if (player.y < player.size * 13) player.y = player.by, player.py = player.bpy;
 		else if (player.y > player.size*26) player.y = player.by, player.py = player.bpy;
 		
-		//Mob‚Æ‚Ì“–‚½‚è”»’è
+		//Mobã¨ã®å½“ãŸã‚Šåˆ¤å®š
 		for (i = 0; i < mob_num; i++) {
 			if (player.x + player.sizeX > mob[i].x &&
 				player.x < mob[i].x + mob[i].sizeX &&
@@ -246,8 +289,17 @@ public:
 				player.px = player.bpx, player.x = player.bx, player.py = player.bpy, player.y = player.by;
 			}
 		}
-		
-		//ƒvƒŒƒCƒ„[‚Ì•àsƒAƒjƒ[ƒVƒ‡ƒ“
+		//ç•‘ã®å½“ãŸã‚Šåˆ¤å®š
+		for (i = 0; i < hatake_num; i++) {
+			if (player.x + player.sizeX > hatake[i].x &&
+				player.x < hatake[i].x + hatake[i].size &&
+				player.y + player.sizeY / 4 > hatake[i].y - 128 &&
+				player.y < hatake[i].y + hatake[i].size / 4 - 128) {
+				player.px = player.bpx, player.x = player.bx, player.py = player.bpy, player.y = player.by;
+			}
+		}
+
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		if ((player.x % 32 == 0 && player.y % 32 == 0) && player.walking_ani_flag == 0) {
 			if (player.px % 32 != 0) {
 				if (player.bpx > player.px) player.px += player.speed;
@@ -267,96 +319,115 @@ public:
 		else if (player.walking_ani % 4 == 2) player.img = player.image[player.img_num + 1];
 		else if (player.walking_ani % 4 == 3) player.img = player.image[player.img_num];
 			
-		//printfDx("%d \n", fished_count);
-		//DrawGraph(200, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
-		//DrawGraph(328, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
-		//DrawGraph(456, 850, hatake_image, TRUE);  //‚Í‚½‚¯‚ğ•`‰æ
 		
-		//ƒ‚[ƒh„ˆÚŒã‚Ìƒtƒ‰ƒOˆ—
+		//ãƒ¢ãƒ¼ãƒ‰æ¨ç§»å¾Œã®ãƒ•ãƒ©ã‚°å‡¦ç†
 		if (go_fish_count != go_fish_before) {
 			sakana_total += fished_count;
 			bgm_flag = 0;
 		}
 
-		//W—ƒŒƒxƒ‹‚ÌŠÇ—
+		//é›†è½ãƒ¬ãƒ™ãƒ«ã®ç®¡ç†
 		if (sakana_total >= 100) sakanaya_level = 2;
 		else if (sakana_total >= 30) sakanaya_level = 1;
 		
-        //BGMÄ¶
+        //BGMå†ç”Ÿ
 		if (bgm_flag == 0) {
 			PlaySoundMem(bgm, DX_PLAYTYPE_BACK);
 			bgm_flag = 1;
 		}
 
-		//‘OƒtƒŒ[ƒ€‚Ìƒf[ƒ^‚ğ‹L˜^
+		//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¨˜éŒ²
 		player.bpx = player.px;
 		player.bpy = player.py;
 		player.bx = player.x;
 		player.by = player.y;
 		go_fish_before = go_fish_count;
 
-		Draw(yorozuya_level, sakanaya_level);
+		Draw(yorozuya_level, sakanaya_level, farm_level);
 	}
 
-	void Draw(int yorozuya_level, int sakanaya_level) {
-		//”wŒi‚ğ•`‰æ
+	void Draw(int yorozuya_level, int sakanaya_level, int farm_level) {
+		//èƒŒæ™¯ã‚’æç”»
 		DrawGraph(background_x, 0, map_image, TRUE);
 		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
 		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
+		DrawGraph(background_x, 0, farm_image[farm_level], TRUE);
 
-		//‚Â‚èƒGƒŠƒA‚ÌƒAƒCƒRƒ“•\¦
+		//ã¤ã‚Šã‚¨ãƒªã‚¢ã®ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤º
 		if (player.x > tsuri_area) {
 			DrawGraph(0, 0, area_icon_image, TRUE);
 			DrawGraph(tsuri_area + background_x - 400, -250, fish_icon_image, TRUE);
-			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, "EnterƒL[‚Å’Ş‚èƒGƒŠƒA‚Ö");
+			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, "Enterã‚­ãƒ¼ã§é‡£ã‚Šã‚¨ãƒªã‚¢ã¸");
 		}
-		//‚¨‚¶‚¢‚ÌƒAƒCƒRƒ“‚ğ•`‰æ
+		//ãŠã˜ã„ã®ã‚¢ã‚¤ã‚³ãƒ³ã‚’æç”»
 		DrawGraph(mob[0].x + background_x - 64, mob[0].y - 200, icon_image, TRUE);
 
-		//Œã•û‚ÌƒLƒƒƒ‰‚©‚ç•\¦
+		//å¾Œæ–¹ã®ã‚‚ã®ã‹ã‚‰è¡¨ç¤º
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y <= player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);//ji‚ğ•`‰æ
-		DrawGraph(player.px, player.py, player.img, TRUE);   //ƒvƒŒƒCƒ„[‚ğ•`‰æ
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);//jiã‚’æç”»
+		for (i = 0; i < hatake_num; i++)
+			if (hatake[i].y + hatake[i].size/ 2 <= player.y + player.sizeY)
+				if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width) DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);//hatake
+		DrawGraph(player.px, player.py, player.img, TRUE);   //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æç”»
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y > player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);  //ji‚ğ•`‰æ
-		
-		//ƒƒjƒ…[‚Ì•`‰æ
-		if (menu == 1) {
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);  //jiã‚’æç”»
+		for (i = 0; i < hatake_num; i++)
+			if (hatake[i].y + hatake[i].size / 2 > player.y + player.sizeY)
+				if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width)  DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);  //hatake
+
+		//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®æç”»
+		if (menu >= 1) {
 			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(-25, selector_y, selector_image, TRUE);
+			DrawGraph(0, selector_y, selector_image, TRUE);
+			DrawFormatStringToHandle(1600, 170, GetColor(0, 0, 0), FontHandle_big, "%d", player.money);
+
+			DrawFormatStringToHandle(560, 180, GetColor(255, 255, 255), FontHandle, "ã‚¢ã‚¤ãƒ†ãƒ ");
+			DrawFormatStringToHandle(560, 250, GetColor(255, 255, 255), FontHandle, "ã‚¢ã‚¤ãƒ†ãƒ ");
+			DrawFormatStringToHandle(560, 320, GetColor(255, 255, 255), FontHandle, "ã‚¢ã‚¤ãƒ†ãƒ ");
+			DrawFormatStringToHandle(560, 390, GetColor(255, 255, 255), FontHandle, "ã‚¢ã‚¤ãƒ†ãƒ ");
+			if (menu == 2) {
+				DrawGraph(500, selector2_y, selector_image, TRUE);
+
+			}
 		}
 
-		//ƒeƒLƒXƒgƒ{ƒbƒNƒX
+		//ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹
 		if(talk >= 1) {
 			DrawGraph(0, 0, textwindow_image, TRUE);
 			if (talk == 1) {
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä");
-				DrawFormatStringToHandle(130, 875, GetColor(255, 255, 255), FontHandle, "’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä’Ş‚èês‚Á‚Ä");
-				DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "‘c•ƒ");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦");
+				DrawFormatStringToHandle(130, 880, GetColor(255, 255, 255), FontHandle, "é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦é‡£ã‚Šå ´è¡Œã£ã¦");
+				DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "ç¥–çˆ¶");
 			}
 			else if (talk == 2) {
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "‚È‚ñ‚©”ƒ‚¤H");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "ãªã‚“ã‹è²·ã†ï¼Ÿ");
 				DrawFormatStringToHandle(130, 875, GetColor(255, 255, 255), FontHandle, "");
-				DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "‚æ‚ë‚¸‰®");
+				DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "ã‚ˆã‚ãšå±‹");
+			}
+			else if (talk == 10) {
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "æ¤ãˆã‚‹ç¨®ã‚’é¸ã‚“ã§ãã ã•ã„");
+				DrawFormatStringToHandle(280, 730, GetColor(255, 255, 255), FontHandle, "ç•‘");
 			}
 		}
-		
+	
 	}
 
 private:
 	Mob mob[2];
 	Player player;
-	Item item[10];
+	Hatake hatake[10];
 
 	std::uint_fast32_t go_fish_before = 0;
-	int i;
-	int mob_num = 2;
+	int i, j;
+	int mob_num = 3;
+	int hatake_num = 10;
 	int select = 0;
 	int FontHandle;
 	int FontHandle_big;
 	int sakana_total = 0;
+	int item_select = 0;
 
 	//flag
 	int bgm, bgm_flag = 0;
@@ -369,29 +440,28 @@ private:
 	int map_image;
 	int sakanaya_image[3];
 	int yorozuya_image[3];
+	int farm_image[4];
+	int tomato_image[3];
+	int kyabetsu_image[3];
+	int morokoshi_image[3];
+	int hatake_image;
 	int area_icon_image;
 	int fish_icon_image;
 	int icon_image;
 	int menu_image;
     int selector_image;
 	int textwindow_image;
-	int hatake_image;
 
-	//À•W
+	//åº§æ¨™
 	int background_x = 0;
 	int selector_y = 0;
+	int selector2_y = 0;
+	int selector3_y = 0;
 	int tsuri_area = 2800;
 
 
-	int chip_size = 32;
+	int chip_size = 128;
 	int map_width = 1920;//3840 120
 	int map_hight = 1080;//640 20
 
-	
-	//std::unique_ptr<int[][map_width]> map(new int[map_hight][map_width]);
-
-	//map[map_hight][map_width] = {
-	//	{0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0},
-	//	{}
-	//};
 };
