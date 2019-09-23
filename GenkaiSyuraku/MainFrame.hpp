@@ -61,7 +61,7 @@ public:
 
 		// 釣り画面
 		case scene_fish:
-			fish.call(down_key, scene_id, fished_count, go_fish_count);
+			fish.call(up_key, down_key, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 閉じる画面
