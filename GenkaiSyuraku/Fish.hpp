@@ -53,12 +53,15 @@ enum :std::uint_fast8_t {
 };
 
 // 魚の大きさ
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_large,fish_large,fish_small } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_whale_shark,fish_regalecus_glesne,fish_small } };
 
 // 魚の浮き待機フレーム
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 24,20,16,16,10,16,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 24,20,16,16,10,12,1 } };
 constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,5,5,5,1 } };
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,12,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,8,1 } };
+
+constexpr std::array<float, 8> fish_sin{ { 0.0f,0.7f,1.0f,0.7f,0.0f,-0.7f,-1.0f,-0.7f } };
+constexpr std::array<float, fish_num + 1> fish_shake{ { 3.0f,6.0f,9.0f,18.0f,60.0f,25.0f,0.0f } };
 
 // 魚別のスコア
 constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,50,35,1 } };
@@ -110,6 +113,9 @@ public:
 		for (std::size_t i{}; i < 4; ++i) {
 			fish_start_image[i] = LoadGraph(std::string("image/fish_start" + std::to_string(i) + ".png").c_str());
 		}
+		bottle = LoadGraph("image/bottle.png");
+		rare = LoadGraph("image/rare.png");
+		super_rare = LoadGraph("image/super_rare.png");
 		image_find_fish = LoadGraph("image/find_fish.png");
 		image_result = LoadGraph("image/result2.png");
 		back = LoadGraph("image/ocean.png");
@@ -154,6 +160,13 @@ public:
 	void call(std::array<int, item_num>& item_count, bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
 		std::mt19937 engine(seed_gen());
 
+		shake_value -= 0.5f;
+		if (shake_value < 0.0f)shake_value = 0.0f;
+		++shake_count;
+		if (shake_count >= 8) shake_count = 0;
+
+		int shake_y{ int(shake_value * fish_sin[shake_count])};
+
 		++cloud_move_time;
 		if (fish_scene != fish_scene_end)
 		if (cloud_move_time >= cloud_move_time_max) {
@@ -172,9 +185,12 @@ public:
 			if (fish_get[i].status == fish_status_down_fly) {
 				fish_get[i].y += 20;
 				fish_get[i].r += fish_get[i].add_r;
-				if (fish_get[i].y > 750 - fish_get.size() * 5) fish_get[i].status = fish_status_stay;
+				if (fish_get[i].y > 750 - fish_get.size() * 5) {
+					fish_get[i].status = fish_status_stay;
+					shake_value += fish_shake[fish_get[i].fish_type];
+				}
 			}
-			DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
+			DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y + shake_y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
 		}
 		uki_y = 872;
 		bool is_hit{ false };
@@ -193,8 +209,18 @@ public:
 				++fish_swim[i].frame;
 				is_hit = true;
 				std::uniform_real_distribution<double> dist_r(0.01, 0.2);
+				// 魚がかかっている時
 				DxLib::DrawGraph(500, 600, image_find_fish, TRUE);
-				
+				if (fish_swim[i].fish_type == fish_sunfish || fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
+					DxLib::DrawGraph(460, 600, image_find_fish, TRUE);
+				}
+				if (fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
+					DxLib::DrawGraph(420, 600, image_find_fish, TRUE);
+					DxLib::DrawGraph(0, 0, super_rare, TRUE);
+				}
+				if (fish_swim[i].fish_type == fish_sunfish) {
+					DxLib::DrawGraph(0, 0, rare, TRUE);
+				}
 
 				if (fish_swim[i].frame >= fish_frame[fish_swim[i].fish_type]) {
 					fish_swim.erase(fish_swim.begin() + i);
@@ -230,13 +256,13 @@ public:
 		// 海と島
 		DxLib::DrawGraph(0, 0, image_ocean_island, TRUE);
 
-		DxLib::DrawGraph(850, 400, fisher_image[fisher_status], TRUE);
-		(fisher_timer > 0)? DxLib::DrawLine(uki_x, uki_y, 1250, 498, 0x00000000) :
+		DxLib::DrawGraph(850, 400 + shake_y, fisher_image[fisher_status], TRUE);
+		(fisher_timer > 0)? DxLib::DrawLine(uki_x, uki_y, 1250, 498 + shake_y, 0x00000000) :
 		(is_hit) ?
-			DxLib::DrawLine(uki_x, uki_y, 898, 637, 0x00000000) :
-			DxLib::DrawLine(uki_x, uki_y, 957, 527, 0x00000000);
+			DxLib::DrawLine(uki_x, uki_y, 898, 637 + shake_y, 0x00000000) :
+			DxLib::DrawLine(uki_x, uki_y, 957, 527 + shake_y, 0x00000000);
 		//898,637
-		DxLib::DrawGraph(850, 400, wave, TRUE);
+		DxLib::DrawGraph(850, 400 + shake_y, wave, TRUE);
 
 		DxLib::DrawGraph(460, uki_y - 2, image_uki, TRUE);
 
@@ -270,7 +296,7 @@ public:
 					fish_get[i].y = 0;
 					fish_get[i].status = fish_status_down_fly;
 				}
-				DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
+				DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y + shake_y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
 			}
 		}
 
@@ -309,6 +335,7 @@ public:
 		if (fish_scene == fish_scene_fish) {
 			DrawBox(650, 600, 700, 700, 0xffffffff, TRUE);
 			DrawBox(650, 600, 700, 700 - fisher_timer * 100 / 30, 0xff33aa33, TRUE);
+			DxLib::DrawGraph(610, 552, bottle, TRUE);
 		}
 		// 強制リザルト画面
 		if (up_key[KEY_INPUT_T]) timer = 0;
@@ -378,6 +405,7 @@ private:
 
 	std::uint_fast8_t uki_frame{};
 
+	int shake_count{};
 	int timer{ 60 * 15 };
 
 	const int cloud_move_time_max{ 6 };
@@ -399,6 +427,10 @@ private:
 	int back{ -1 };
 	int wave{ -1 };
 
+	int bottle{ -1 };
+	int rare{ -1 };
+	int super_rare{ -1 };
+
 	int font_timer{ -1 };
 
 	int image_find_fish{ -1 };
@@ -407,6 +439,8 @@ private:
 	int image_ocean_cloud{ -1 };
 	int image_ocean_island{ -1 };
 	int image_result{ -1 };
+
+	float shake_value{};
 
 	std::array<int, 6> message_image{ -1 };
 	std::array<int, 4> fish_start_image{ -1 };

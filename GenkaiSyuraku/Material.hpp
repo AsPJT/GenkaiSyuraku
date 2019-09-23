@@ -110,6 +110,8 @@ public:
 		for (std::size_t i{}; i < 4; ++i) {
 			material_start_image[i] = LoadGraph(std::string("image/material_start" + std::to_string(i) + ".png").c_str());
 		}
+		up_time = LoadGraph("image/up_time.png");
+		bottle = LoadGraph("image/bottle.png");
 		image_material_grid = LoadGraph("image/material_grid.png");
 		image_materialer_hand = LoadGraph("image/materialer_hand.png");
 		image_select_range = LoadGraph("image/select_range.png");
@@ -216,7 +218,10 @@ public:
 									material_get.back().status = material_status_up_fly;
 									material_get.back().add_r = dist_r(engine);
 								}
-								else timer += 180;
+								else {
+									timer += 180;
+									time_plus_timer = 100;
+								}
 								field[material_swim[i].yy][material_swim[i].xx] = material_num;
 								material_swim.erase(material_swim.begin() + i);
 
@@ -297,6 +302,14 @@ public:
 		if (material_scene == material_scene_material) {
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xffffffff, TRUE);
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+			DxLib::DrawGraph(field_x + ((select_x + 1) * 128)-40, field_y + (select_y * 128)-48, bottle, TRUE);
+		}
+
+		if (time_plus_timer > 0) {
+			--time_plus_timer;
+			if (time_plus_timer >= 80) DxLib::DrawGraph(550 + (time_plus_timer - 80) * 100, 500, up_time, TRUE);
+			else if (time_plus_timer > 20) DxLib::DrawGraph(550, 500, up_time, TRUE);
+			else DxLib::DrawGraph(550 + (time_plus_timer - 20) * 100, 500, up_time, TRUE);
 		}
 
 		switch (material_scene)
@@ -410,6 +423,11 @@ private:
 	const int materialer_timer_max{ 30 };
 	int materialer_timer{ 0 };
 
+	const int time_plus_timer_max{ 40 };
+	int time_plus_timer{ 0 };
+
+	int up_time{ -1 };
+	int bottle{ -1 };
 	int font_timer{ -1 };
 
 	int image_material_grid{ -1 };
