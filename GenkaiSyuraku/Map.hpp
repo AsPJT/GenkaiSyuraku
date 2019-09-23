@@ -104,27 +104,27 @@ public:
 		}
 	}
 
-	void call(bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, int& yorozuya_level, int& sakanaya_level, int& farm_level) {
+	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, int& yorozuya_level, int& sakanaya_level, int& farm_level) {
 		//キー入力
 		eflag = 0;
 		returnflag = 0;
 		if (player.x % player.size == 0 && player.y % player.size == 0 && talk == 0 && menu == 0) {       //座標が32で割り切れたら入力可能
 			player.walking_flag = 1;                  //歩くフラグを立てる。
-			if ((key[KEY_INPUT_UP] > 0 && key[KEY_INPUT_LEFT] > 0) || (key[KEY_INPUT_W] > 0 && key[KEY_INPUT_A] > 0))
+			if ((key[KEY_INPUT_UP]  && key[KEY_INPUT_LEFT] ) || (key[KEY_INPUT_W]  && key[KEY_INPUT_A] ))
 				player.muki = 1;
-			else if (key[KEY_INPUT_LEFT] > 0 && key[KEY_INPUT_DOWN] > 0 || (key[KEY_INPUT_A] > 0 && key[KEY_INPUT_S] > 0))
+			else if (key[KEY_INPUT_LEFT]  && key[KEY_INPUT_DOWN]  || (key[KEY_INPUT_A]  && key[KEY_INPUT_S] ))
 				player.muki = 3;
-			else if (key[KEY_INPUT_DOWN] > 0 && key[KEY_INPUT_RIGHT] > 0 || (key[KEY_INPUT_S] > 0 && key[KEY_INPUT_D] > 0))
+			else if (key[KEY_INPUT_DOWN]  && key[KEY_INPUT_RIGHT]  || (key[KEY_INPUT_S]  && key[KEY_INPUT_D] ))
 				player.muki = 5;
-			else if (key[KEY_INPUT_RIGHT] > 0 && key[KEY_INPUT_UP] > 0 || (key[KEY_INPUT_D] > 0 && key[KEY_INPUT_W] > 0))
+			else if (key[KEY_INPUT_RIGHT]  && key[KEY_INPUT_UP]  || (key[KEY_INPUT_D]  && key[KEY_INPUT_W] ))
 				player.muki = 7;
-			else if (key[KEY_INPUT_UP] > 0 || key[KEY_INPUT_W] > 0)    //上ボタンが押されたら
+			else if (key[KEY_INPUT_UP]  || key[KEY_INPUT_W] )    //上ボタンが押されたら
 				player.muki = 0;                       //上向きフラグを立てる
-			else if (key[KEY_INPUT_LEFT] > 0 || key[KEY_INPUT_A] > 0)  //左ボタンが押されたら
+			else if (key[KEY_INPUT_LEFT]  || key[KEY_INPUT_A] )  //左ボタンが押されたら
 				player.muki = 2;                       //左向きフラグを
-			else if (key[KEY_INPUT_DOWN] > 0 || key[KEY_INPUT_S] > 0)  //下ボタンが押されたら
+			else if (key[KEY_INPUT_DOWN]  || key[KEY_INPUT_S] )  //下ボタンが押されたら
 				player.muki = 4;                       //右向きフラグを立てる
-			else if (key[KEY_INPUT_RIGHT] > 0 || key[KEY_INPUT_D] > 0) //右ボタンが押されたら
+			else if (key[KEY_INPUT_RIGHT]  || key[KEY_INPUT_D] ) //右ボタンが押されたら
 				player.muki = 6;                       //下向きフラグを
 			else                                      //何のボタンも押されてなかったら
 				player.walking_flag = 0;              //歩かないフラグを立てる
@@ -133,11 +133,11 @@ public:
 		//printfDx("%d \n", talk);
 
 		//会話終了，メニュー閉じる
-		if (talk >= 1 && (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0)) {
+		if (talk >= 1 && (up_key[KEY_INPUT_RETURN]  && returnflag == 0)) {
 			returnflag = 1;
 			talk = 0;
 		}
-		else if (up_key[KEY_INPUT_E] > 0 && menu >= 1 && eflag == 0 && talk == 0) {
+		else if (up_key[KEY_INPUT_E]  && menu >= 1 && eflag == 0 && talk == 0) {
 			menu = 0;
 			eflag = 1;
 		}
@@ -147,19 +147,32 @@ public:
 		}
 		//メニュー画面
 		else if (menu == 2) {
-			if (key[KEY_INPUT_LEFT] > 0 || key[KEY_INPUT_A] > 0) menu = 1;
+			if (key[KEY_INPUT_LEFT]  || key[KEY_INPUT_A] ) menu = 1;
+
+			if (up_key[KEY_INPUT_UP]  || up_key[KEY_INPUT_W] ) select--, selector2_y -= 70;
+			else if (up_key[KEY_INPUT_DOWN]  || up_key[KEY_INPUT_S] ) select++, selector2_y += 70;
+			if (select2 > 3) select2 = 0, selector_y -= 70;
+			if (select2 < 0) select2 = 3, selector_y += 70;
+			//決定
+			if ((key[KEY_INPUT_RIGHT]  || key[KEY_INPUT_D] ) && select == 0) menu = 2;
+			if (up_key[KEY_INPUT_RETURN]  && returnflag == 0) {
+				returnflag = 1;
+				if (select2 == 0) menu = 2;
+				if (select2 == 1) menu = 0;
+				if (select2 == 2) scene_id = 1, menu = 0;
+			}
 		}
-		else if ((up_key[KEY_INPUT_E] > 0 || menu == 1) && eflag == 0 && talk == 0) {
-			selector2_y = 180;
+		else if ((up_key[KEY_INPUT_E]  || menu == 1) && eflag == 0 && talk == 0) {
+			selector2_y = -180;
 			eflag = 1;
 			menu = 1;
-			if (up_key[KEY_INPUT_UP] > 0 || up_key[KEY_INPUT_W] > 0) select--, selector_y -= 175;
-			else if (up_key[KEY_INPUT_DOWN] > 0 || up_key[KEY_INPUT_S] > 0) select++, selector_y += 175;
+			if (up_key[KEY_INPUT_UP]  || up_key[KEY_INPUT_W] ) select--, selector_y -= 175;
+			else if (up_key[KEY_INPUT_DOWN]  || up_key[KEY_INPUT_S] ) select++, selector_y += 175;
 			if (select > 2) select = 0, selector_y -= 525;
 			if (select < 0) select = 2, selector_y += 525;
 			//決定
-			if ((key[KEY_INPUT_RIGHT] > 0 || key[KEY_INPUT_D] > 0) && select == 0) menu = 2;
-			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+			if ((key[KEY_INPUT_RIGHT]  || key[KEY_INPUT_D] ) && select == 0) menu = 2;
+			if (up_key[KEY_INPUT_RETURN]  && returnflag == 0) {
 				returnflag = 1;
 				if (select == 0) menu = 2;
 				if (select == 1) menu = 0;
@@ -168,7 +181,7 @@ public:
 		}
 		//釣り場移行
 		else if (player.x > tsuri_area) {
-			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+			if (up_key[KEY_INPUT_RETURN]  && returnflag == 0) {
 				returnflag = 1;
 				StopSoundMem(bgm);
 				scene_id = 3;
@@ -182,7 +195,7 @@ public:
 					player.y + player.sizeY > mob[i].y &&
 					player.y < mob[i].y + mob[i].sizeY / 2) {
 					//近づいた状態で話しかける
-					if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
+					if ((up_key[KEY_INPUT_RETURN]  && returnflag == 0) || talk >= 1) {
 						returnflag = 1;
 
 						if (talk == 0) {
@@ -204,7 +217,7 @@ public:
 					player.y + player.sizeY / 2 > hatake[i].y - 128 &&
 					player.y < hatake[i].y + hatake[i].size / 2 - 128) {
 					//近づいた状態で話しかける
-					if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
+					if ((up_key[KEY_INPUT_RETURN]  && returnflag == 0) || talk >= 1) {
 						returnflag = 1;
 						if (talk == 0) {
 							talk = 10;
@@ -343,10 +356,10 @@ public:
 		player.by = player.y;
 		go_fish_before = go_fish_count;
 
-		Draw(yorozuya_level, sakanaya_level, farm_level);
+		Draw(yorozuya_level, sakanaya_level, farm_level, item_count);
 	}
 
-	void Draw(int yorozuya_level, int sakanaya_level, int farm_level) {
+	void Draw(int yorozuya_level, int sakanaya_level, int farm_level, std::array<int, item_num>& item_count) {
 		//背景を描画
 		DrawGraph(background_x, 0, map_image, TRUE);
 		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
@@ -383,12 +396,12 @@ public:
 			DrawGraph(0, selector_y, selector_image, TRUE);
 			DrawFormatStringToHandle(1600, 170, GetColor(0, 0, 0), FontHandle_big, "%d", player.money);
 
-			DrawFormatStringToHandle(560, 180, GetColor(255, 255, 255), FontHandle, "アイテム");
-			DrawFormatStringToHandle(560, 250, GetColor(255, 255, 255), FontHandle, "アイテム");
-			DrawFormatStringToHandle(560, 320, GetColor(255, 255, 255), FontHandle, "アイテム");
-			DrawFormatStringToHandle(560, 390, GetColor(255, 255, 255), FontHandle, "アイテム");
+			DrawFormatStringToHandle(600, 180, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+1]);
+			DrawFormatStringToHandle(600, 250, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+2]);
+			DrawFormatStringToHandle(600, 320, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+3]);
+			DrawFormatStringToHandle(600, 390, GetColor(255, 255, 255), FontHandle, "%s", item_name[select2+4]);
 			if (menu == 2) {
-				DrawGraph(500, selector2_y, selector_image, TRUE);
+				DrawGraph(380, selector2_y, selector_image, TRUE);
 
 			}
 		}
@@ -397,18 +410,17 @@ public:
 		if(talk >= 1) {
 			DrawGraph(0, 0, textwindow_image, TRUE);
 			if (talk == 1) {
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "釣り場行って釣り場行って釣り場行って釣り場行って釣り場行って");
-				DrawFormatStringToHandle(130, 880, GetColor(255, 255, 255), FontHandle, "釣り場行って釣り場行って釣り場行って釣り場行って釣り場行って");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "釣りをしてこの集落を復興させてくれ！");
 				DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "祖父");
 			}
 			else if (talk == 2) {
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "なんか買う？");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "なんか用？");
 				DrawFormatStringToHandle(130, 875, GetColor(255, 255, 255), FontHandle, "");
 				DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "よろず屋");
 			}
 			else if (talk == 10) {
 				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "植える種を選んでください");
-				DrawFormatStringToHandle(280, 730, GetColor(255, 255, 255), FontHandle, "畑");
+				DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
 			}
 		}
 	
@@ -424,6 +436,7 @@ private:
 	int mob_num = 3;
 	int hatake_num = 10;
 	int select = 0;
+	int select2 = 0;
 	int FontHandle;
 	int FontHandle_big;
 	int sakana_total = 0;

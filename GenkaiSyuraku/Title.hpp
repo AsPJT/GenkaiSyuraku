@@ -37,13 +37,13 @@ public:
 		else if (background_x == 0) ret = 0;
 
 		//メニュー選択
-		if (up_key[KEY_INPUT_UP] > 0) select--;
-		else if (up_key[KEY_INPUT_DOWN] > 0) select++;
+		if (up_key[KEY_INPUT_UP] ) select--;
+		else if (up_key[KEY_INPUT_DOWN] ) select++;
 		if (select > 2) select = 0;
 		if (select < 0) select = 2;
 
 		//メニュー決定
-		if (up_key[KEY_INPUT_RETURN] > 0) {
+		if (up_key[KEY_INPUT_RETURN] ) {
 			StopSoundMem(bgm);
 			if (select == 0) scene_id = 2;
 			if (select == 1) scene_id = 2;

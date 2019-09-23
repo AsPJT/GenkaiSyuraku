@@ -61,7 +61,7 @@ public:
 
 		// マップ画面
 		case scene_map:
-			map.call(up_key, key_frame, scene_id, fished_count, go_fish_count, yorozuya_level, sakanaya_level, farm_level);
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, yorozuya_level, sakanaya_level, farm_level);
 			break;
 
 		// 釣り画面
