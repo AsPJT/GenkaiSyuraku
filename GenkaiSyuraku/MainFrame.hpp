@@ -66,7 +66,7 @@ public:
 
 		// 釣り画面
 		case scene_fish:
-			fish.call(up_key, down_key, scene_id, fished_count, go_fish_count);
+			fish.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 素材あつめ画面

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <random>
 #include <string>
+#include "Item.hpp"
 
 // 釣りの状態
 enum :std::uint_fast8_t {
@@ -117,20 +118,22 @@ public:
 		image_hand = LoadGraph("image/hand.png");
 		image_broom = LoadGraph("image/broom.png");
 		image_find_material = LoadGraph("image/find_fish.png");
-		image_result = LoadGraph("image/result2.png");
+		image_result = LoadGraph("image/result3.png");
 		back = LoadGraph("image/ocean.png");
 		image_uki = LoadGraph("image/uki.png");
 		wave = LoadGraph("image/wave.png");
 		materialer_image[materialer_scene_empty] = LoadGraph("image/materialer1.png");
 		materialer_image[materialer_scene_hit] = LoadGraph("image/materialer2.png");
 		materialer_image[materialer_scene_go] = LoadGraph("image/materialer3.png");
+		broomer_image[materialer_scene_empty] = LoadGraph("image/broomer1.png");
+		broomer_image[materialer_scene_hit] = LoadGraph("image/broomer2.png");
+		broomer_image[materialer_scene_go] = LoadGraph("image/broomer3.png");
 
 		image_ocean_sky = LoadGraph("image/ocean_sky.png");
 		image_ocean_cloud = LoadGraph("image/ocean_cloud.png");
 		image_ocean_island = LoadGraph("image/ocean_island.png");
 		for (std::size_t i{}; i < material_image.size(); ++i) {
 			material_image[i] = LoadGraph(std::string("image/material" + std::to_string(i + 1) + ".png").c_str());
-			result_shadow_image[i] = LoadGraph(std::string("image/result_shadow" + std::to_string(i + 1) + ".png").c_str());
 			material_30shadow_image[i] = LoadGraph(std::string("image/material_30shadow" + std::to_string(i + 1) + ".png").c_str());
 		}
 		for (std::size_t i{}; i < field.size(); ++i)
@@ -236,7 +239,13 @@ public:
 
 		// 海と島
 		//DxLib::DrawGraph(0, 0, image_ocean_island, TRUE);
-		DxLib::DrawGraph(0,0, materialer_image[materialer_status], TRUE);
+		if (width == 1 && height == 1) {
+			DxLib::DrawGraph(0, 0, materialer_image[materialer_status], TRUE);
+		}
+		else {
+			DxLib::DrawGraph(0, 0, broomer_image[materialer_status], TRUE);
+		}
+
 		if (field[select_y][select_x] != material_num) DxLib::DrawGraph(1350, 800, material_image[field[select_y][select_x]], TRUE);
 
 		// 泳ぐ素材の制御
@@ -264,32 +273,6 @@ public:
 				DrawRotaGraph((int)material_get[i].window_x, (int)material_get[i].window_y, 1.0f, material_get[i].r, material_image[material_get[i].material_type], TRUE);
 			}
 		}
-
-		switch (material_scene)
-		{
-		case material_scene_empty:
-			break;
-		case material_scene_start:
-			--material_scene_start_timer;
-			DxLib::DrawGraph(0, 0, material_start_image[material_scene_start_timer / 60], TRUE);
-			if (material_scene_start_timer <= 0) material_scene = material_scene_material;
-			break;
-		case material_scene_material:
-			DrawFormatStringToHandle(0, 0, GetColor(30,30,30), font_timer, "制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
-			break;
-		case material_scene_end:
-			DxLib::DrawGraph(0, 0, image_result, TRUE);
-			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_money]);
-			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_stone]);
-			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_wood]);
-			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_gold]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_timer]);
-			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_straw]);
-			for (std::size_t i{}; i < material_num; ++i) {
-				if (material_count[i] == 0) DxLib::DrawGraph(0, 0, result_shadow_image[i], TRUE);
-			}
-			break;
-		}
 		
 		if (width == 1 && height == 1) {
 			DxLib::DrawGraph(field_x + (int)select_x * 128, field_y + (int)select_y * 128, image_select_range, TRUE);
@@ -301,14 +284,39 @@ public:
 				DxLib::DrawGraph(field_x + (int)j * 128, field_y + (int)i * 128, image_broom, TRUE);
 			}
 		}
-		if (materialer_status == materialer_scene_go && material_get.size() > 0) {
-			DrawGraph(1300, 750, material_image[material_get.back().material_type], TRUE);
-			DrawGraph(0, 0, image_materialer_hand, TRUE);
+		if (width == 1 && height == 1) {
+			if (materialer_status == materialer_scene_go && material_get.size() > 0) {
+				DrawGraph(1300, 750, material_image[material_get.back().material_type], TRUE);
+				DrawGraph(0, 0, image_materialer_hand, TRUE);
+			}
 		}
 
 		if (material_scene == material_scene_material) {
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xffffffff, TRUE);
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+		}
+
+		switch (material_scene)
+		{
+		case material_scene_empty:
+			break;
+		case material_scene_start:
+			--material_scene_start_timer;
+			DxLib::DrawGraph(0, 0, material_start_image[material_scene_start_timer / 60], TRUE);
+			if (material_scene_start_timer <= 0) material_scene = material_scene_material;
+			break;
+		case material_scene_material:
+			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, "制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+			break;
+		case material_scene_end:
+			DxLib::DrawGraph(0, 0, image_result, TRUE);
+			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_money]);
+			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_stone]);
+			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_wood]);
+			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_gold]);
+			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_timer]);
+			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_straw]);
+			break;
 		}
 
 		// 強制リザルト画面
@@ -377,8 +385,8 @@ private:
 	int image_hand{ -1 };
 	int image_broom{ -1 };
 
-	const int width{1};
-	const int height{1};
+	const int width{2};
+	const int height{2};
 	int select_x{};
 	int select_y{};
 
@@ -406,9 +414,9 @@ private:
 
 	std::array<int, 4> material_start_image{ -1 };
 	std::array<int, materialer_scene_num> materialer_image{ -1 };
+	std::array<int, materialer_scene_num> broomer_image{ -1 };
 	std::array<int, material_num> material_image{};
 	std::array<int, material_num> material_30shadow_image{};
-	std::array<int, material_num> result_shadow_image{};
 
 	std::array<std::array<std::uint_fast8_t, 6>, 6> field{};
 
