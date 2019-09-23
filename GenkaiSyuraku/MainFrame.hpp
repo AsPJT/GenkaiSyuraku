@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
+#include "Item.hpp"
 #include "Title.hpp"
 #include "Map.hpp"
 #include "Fish.hpp"
@@ -70,7 +71,7 @@ public:
 
 		// 素材あつめ画面
 		case scene_material:
-			material.call(up_key, down_key, scene_id, fished_count, go_fish_count);
+			material.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
 			break;
 
 		// 閉じる画面
@@ -113,6 +114,7 @@ public:
 private:
 	Fish fish{};
 	Material material{};
+	std::array<int, item_num> item_count{ {} };
 
 private:
 	Map map;

@@ -24,6 +24,7 @@ enum :std::uint_fast8_t {
 	fish_status_stay
 };
 
+// 漁師の状態
 enum :std::uint_fast8_t {
 	fisher_scene_empty,
 	fisher_scene_hit,
@@ -32,6 +33,7 @@ enum :std::uint_fast8_t {
 	fisher_scene_num
 };
 
+// 魚リスト
 enum :std::uint_fast8_t {
 	// 小魚
 	fish_small,
