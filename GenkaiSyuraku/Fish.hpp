@@ -61,7 +61,7 @@ constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,
 constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,12,1 } };
 
 // 魚別のスコア
-constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 100,500,1000,4000,100000,30000,1 } };
+constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,50,35,1 } };
 
 // 魚のデフォルトサイズ
 constexpr std::array<float, fish_num + 1> fish_gram{ { 50,80,120,150,300,300,1 } };
@@ -122,6 +122,9 @@ public:
 		image_ocean_sky = LoadGraph("image/ocean_sky.png");
 		image_ocean_cloud = LoadGraph("image/ocean_cloud.png");
 		image_ocean_island = LoadGraph("image/ocean_island.png");
+		for (std::size_t i{}; i < 6; ++i) {
+			message_image[i] = LoadGraph(std::string("image/fish_message" + std::to_string(i) + ".png").c_str());
+		}
 		for (std::size_t i{}; i < fish_image.size(); ++i) {
 			fish_image[i] = LoadGraph(std::string("image/fish" + std::to_string(i + 1) + ".png").c_str());
 		}
@@ -299,6 +302,7 @@ public:
 			for (std::size_t i{}; i < fish_num; ++i) {
 				if (fish_count[i] == 0) DxLib::DrawGraph(0, 0, result_shadow_image[i], TRUE);
 			}
+			DxLib::DrawGraph(0, 0, message_image[scoreFish(total_score)], TRUE);
 			break;
 		}
 
@@ -404,6 +408,7 @@ private:
 	int image_ocean_island{ -1 };
 	int image_result{ -1 };
 
+	std::array<int, 6> message_image{ -1 };
 	std::array<int, 4> fish_start_image{ -1 };
 	std::array<int, fisher_scene_num> fisher_image{ -1 };
 	std::array<int, fish_num> fish_image{};
@@ -434,6 +439,15 @@ private:
 		if (fish_count_ < 248) return fish_sunfish;
 		if (fish_count_ < 252) return fish_whale_shark;
 		return fish_regalecus_glesne;
+	}
+
+	std::uint_fast8_t scoreFish(const std::int_fast32_t fish_count_) const {
+		if (fish_count_ <= 0) return 0;
+		if (fish_count_ < 80) return 1;
+		if (fish_count_ < 180) return 2;
+		if (fish_count_ < 220) return 3;
+		if (fish_count_ < 300) return 4;
+		return 5;
 	}
 
 };
