@@ -30,14 +30,26 @@ public:
 	int walking_ani = 0;
 	int walking_ani_flag = 0;
 	int speed = 4;
+	int money = 1000;
+};
+
+class Item {
+public:
+	char name[32];
+	char effect[64];
+	int num = 0;
 };
 
 class Map {
 public:
 	void init() {
-		map_image[0] = LoadGraph("image/map1.png", TRUE);
-		map_image[1] = LoadGraph("image/map2.png", TRUE);
-		map_image[2] = LoadGraph("image/map3.png", TRUE);
+		map_image = LoadGraph("image/map.png", TRUE);
+		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
+		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
+		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
+		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
+		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
+		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
 		icon_image = LoadGraph("image/ex_icon.png", TRUE);
 		fish_icon_image = LoadGraph("image/fish_icon.png", TRUE);
 		area_icon_image = LoadGraph("image/area_icon.png", TRUE);
@@ -49,17 +61,32 @@ public:
 
 		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//画像を分割してimage配列に保存
 		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);//画像を分割してimage配列に保存
+		LoadDivGraph("image/ba.png", 4, 1, 4, mob[1].sizeX, mob[1].sizeY, mob[1].image);//画像を分割してimage配列に保存
 
 		//Font
-		FontHandle = CreateFontToHandle(NULL, 100, 9, DX_FONTTYPE_EDGE);
+		FontHandle = CreateFontToHandle(NULL, 50, 2, DX_FONTTYPE_EDGE);
+		FontHandle_big = CreateFontToHandle(NULL, 70, 2, DX_FONTTYPE_EDGE);
 
 		//おじいの初期位置
-		mob[0].x = mob[0].size * 23;
-		mob[0].y = mob[0].size * 12;  //3076 384 93 12
+		mob[0].x = mob[0].size * 43;
+		mob[0].y = mob[0].size * 12;
+		mob[0].img = mob[0].image[0];
+
+		//おばあの初期位置
+		mob[1].x = mob[1].size * 20;
+		mob[1].y = mob[1].size * 12;
+		mob[1].img = mob[1].image[0];
+
+		//item
+		item[0].num = 0;
+		//item[0].name = "トマトの種";
+
 	}
 
-	void control(bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count) {
+	void control(bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, int& yorozuya_level, int& sakanaya_level) {
 		//キー入力
+		eflag = 0;
+		returnflag = 0;
 		if (player.x % player.size == 0 && player.y % player.size == 0) {       //座標が32で割り切れたら入力可能
 			player.walking_flag = 1;                  //歩くフラグを立てる。
 			if ((key[KEY_INPUT_UP] > 0 && key[KEY_INPUT_LEFT] > 0) || (key[KEY_INPUT_W] > 0 && key[KEY_INPUT_A] > 0))
@@ -80,10 +107,22 @@ public:
 				player.muki = 6;                       //下向きフラグを
 			else                                      //何のボタンも押されてなかったら
 				player.walking_flag = 0;              //歩かないフラグを立てる
-		}
+		}		
 
+		//よろず屋
+		if (talk == 2) {
+			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+				returnflag = 1;
+				talk = 0;
+			}
+		}
 		//メニュー画面
-		if (up_key[KEY_INPUT_E] > 0 || menu == 1) {
+		if (up_key[KEY_INPUT_E] > 0 && menu == 1 && eflag == 0 && talk == 0) {
+			menu = 0;
+			eflag = 1;
+		}
+		else if ((up_key[KEY_INPUT_E] > 0 || menu == 1) && eflag == 0 && talk == 0) {
+			eflag = 1;
 			player.walking_flag = 0;
 			menu = 1;
 			if (up_key[KEY_INPUT_UP] > 0 || up_key[KEY_INPUT_W] > 0) select--, selector_y -= 175;
@@ -91,11 +130,46 @@ public:
 			if (select > 3) select = 0, selector_y -= 700;
 			if (select < 0) select = 3, selector_y += 700;
 			//決定
-			if (up_key[KEY_INPUT_RETURN] > 0) {
+			if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+				returnflag = 1;
 				if (select == 0) select = 0;
 				if (select == 1) select = 1;
 				if (select == 2) select = 2;
 				if (select == 3) scene_id = 1, menu = 0;
+			}
+		}
+		else {
+			for (i = 0; i < mob_num; i++) {
+				if (player.x + player.sizeX * 2 > mob[i].x &&
+					player.x < mob[i].x + mob[i].sizeX * 2 &&
+					player.y + player.sizeY > mob[i].y &&
+					player.y < mob[i].y + mob[i].sizeY) {
+					//近づいた状態で話しかける
+					if (talk >= 1 && (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0)) {
+						talk = 0;
+					}
+					else if ((up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) || talk >= 1) {
+						returnflag = 1;
+						player.walking_flag = 0;
+
+						if (talk == 0) {
+							talk = i+1;
+							//モブの振り向き
+							if (player.x + player.sizeX/2 < mob[i].x) mob[i].img = mob[i].image[1];
+							else if (player.x + player.sizeX/2 > mob[i].x + player.sizeX) mob[i].img = mob[i].image[2];
+							//else if (player.y < mob[i].y + mob[i].sizeY / 4) mob[i].img = mob[i].image[3];
+							else mob[i].img = mob[i].image[0];
+						}
+					}
+				}
+				//釣り場移行
+				else if (player.x > tsuri_area) {
+					if (up_key[KEY_INPUT_RETURN] > 0 && returnflag == 0) {
+						returnflag = 1;
+						StopSoundMem(bgm);
+						scene_id = 3;
+					}
+				}
 			}
 		}
 
@@ -164,7 +238,7 @@ public:
 		else if (player.y > player.size*26) player.y = player.by, player.py = player.bpy;
 		
 		//Mobとの当たり判定
-		for (i = 0; i < 1; i++) {
+		for (i = 0; i < mob_num; i++) {
 			if (player.x + player.sizeX > mob[i].x &&
 				player.x < mob[i].x + mob[i].sizeX &&
 				player.y + player.sizeY / 4 > mob[i].y &&
@@ -193,42 +267,21 @@ public:
 		else if (player.walking_ani % 4 == 2) player.img = player.image[player.img_num + 1];
 		else if (player.walking_ani % 4 == 3) player.img = player.image[player.img_num];
 			
-		for (i = 0; i < 1; i++) {
-			//Mobに近づくとアイコンを出す
-			if (player.x + player.sizeX > mob[i].x &&
-				player.x < mob[i].x + mob[i].sizeX &&
-				player.y + player.sizeY > mob[i].y &&
-				player.y < mob[i].y + mob[i].sizeY) {
-				//近づいた状態で話しかける
-				if (up_key[KEY_INPUT_RETURN] > 0) {
-					//if (player.px + player.sizeX < mob[0].x) mob[0].img = mob[0].image[1];
-					//else if (player.x < mob[i].x + mob[i].sizeX / 2) mob[0].img = mob[0].image[2];
-					//else if (player.y < mob[i].y + mob[i].sizeY / 4) mob[0].img = mob[0].image[3];
-					//else mob[0].img = mob[0].image[0];
-
-					if (talk == 0) {
-						StopSoundMem(bgm);
-						scene_id = 3;
-						talk = 1;
-					}
-				}
-			}
-			//釣り場移行
-			else if (player.x > tsuri_area) {
-				if (up_key[KEY_INPUT_RETURN] > 0) {
-					StopSoundMem(bgm);
-					scene_id = 3;
-				}
-			}
-		}
-		//printfDx("%d %d \n", player.px, player.x);
+		//printfDx("%d \n", fished_count);
 		//DrawGraph(200, 850, hatake_image, TRUE);  //はたけを描画
 		//DrawGraph(328, 850, hatake_image, TRUE);  //はたけを描画
 		//DrawGraph(456, 850, hatake_image, TRUE);  //はたけを描画
 		
 		//モード推移後のフラグ処理
-		if (go_fish_count != go_fish_before) talk = 0, map_level++, bgm_flag = 0;
+		if (go_fish_count != go_fish_before) {
+			sakana_total += fished_count;
+			bgm_flag = 0;
+		}
 
+		//集落レベルの管理
+		if (sakana_total >= 100) sakanaya_level = 2;
+		else if (sakana_total >= 30) sakanaya_level = 1;
+		
         //BGM再生
 		if (bgm_flag == 0) {
 			PlaySoundMem(bgm, DX_PLAYTYPE_BACK);
@@ -242,55 +295,80 @@ public:
 		player.by = player.y;
 		go_fish_before = go_fish_count;
 
-		Draw();
+		Draw(yorozuya_level, sakanaya_level);
 	}
 
-	void Draw() {
-		//背景と人物の描画
-		DrawGraph(background_x, 0, map_image[map_level], TRUE);  //背景を描画
+	void Draw(int yorozuya_level, int sakanaya_level) {
+		//背景を描画
+		DrawGraph(background_x, 0, map_image, TRUE);
+		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
+		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
 
 		//つりエリアのアイコン表示
 		if (player.x > tsuri_area) {
 			DrawGraph(0, 0, area_icon_image, TRUE);
 			DrawGraph(tsuri_area + background_x - 400, -250, fish_icon_image, TRUE);
-			//DrawFormatStringToHandle(tsuri_area + background_x - 400, -150, GetColor(0, 0, 0), FontHandle, "Enterキーで釣りエリアへ");
-			//DrawString(0, 0, "hello! DX Library!", GetColor(0, 0, 0));
+			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, "Enterキーで釣りエリアへ");
 		}
 		//おじいのアイコンを描画
 		DrawGraph(mob[0].x + background_x - 64, mob[0].y - 200, icon_image, TRUE);
 
 		//後方のキャラから表示
-		for (i = 0; i < 1; i++)
+		for (i = 0; i < mob_num; i++)
 			if (mob[i].y <= player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[0].x + background_x, mob[0].y, mob[0].image[0], TRUE);//jiを描画
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);//jiを描画
 		DrawGraph(player.px, player.py, player.img, TRUE);   //プレイヤーを描画
-		for (i = 0; i < 1; i++)
+		for (i = 0; i < mob_num; i++)
 			if (mob[i].y > player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[0].x + background_x, mob[0].y, mob[0].image[0], TRUE);  //jiを描画
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);  //jiを描画
 		
 		//メニューの描画
 		if (menu == 1) {
 			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(0, selector_y, selector_image, TRUE);
+			DrawGraph(-25, selector_y, selector_image, TRUE);
 		}
+
+		//テキストボックス
+		if(talk >= 1) {
+			DrawGraph(0, 0, textwindow_image, TRUE);
+			if (talk == 1) {
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "釣り場行って釣り場行って釣り場行って釣り場行って釣り場行って");
+				DrawFormatStringToHandle(130, 875, GetColor(255, 255, 255), FontHandle, "釣り場行って釣り場行って釣り場行って釣り場行って釣り場行って");
+				DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			}
+			else if (talk == 2) {
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "なんか買う？");
+				DrawFormatStringToHandle(130, 875, GetColor(255, 255, 255), FontHandle, "");
+				DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "よろず屋");
+			}
+		}
+		
 	}
 
 private:
-	Mob mob[5];
+	Mob mob[2];
 	Player player;
+	Item item[10];
+
 	std::uint_fast32_t go_fish_before = 0;
 	int i;
+	int mob_num = 2;
 	int select = 0;
-	int map_level = 0;
 	int FontHandle;
+	int FontHandle_big;
+	int sakana_total = 0;
 
 	//flag
 	int bgm, bgm_flag = 0;
 	int talk = 0;
 	int menu = 0;
+	int eflag = 0;
+	int returnflag = 0;
 
 	//image
-	int map_image[3];
+	int map_image;
+	int sakanaya_image[3];
+	int yorozuya_image[3];
 	int area_icon_image;
 	int fish_icon_image;
 	int icon_image;
