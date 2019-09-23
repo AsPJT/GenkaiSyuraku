@@ -16,8 +16,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	if (DxLib::DxLib_Init() == -1) return false;
 
+	// ロード中表示
+	DxLib::DrawStringToHandle(600, 500, "Now Loading...\n■■■■", GetColor(255, 255, 255), CreateFontToHandle(NULL, 100, 0, DX_FONTTYPE_NORMAL));
+
 	// 描画先グラフィック領域の指定
 	DxLib::SetDrawScreen(DX_SCREEN_BACK);
+
 	// メインフレームを定義
 	MainFrame mainFrame;
 

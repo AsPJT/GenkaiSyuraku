@@ -56,9 +56,9 @@ enum :std::uint_fast8_t {
 constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_large,fish_large,fish_small } };
 
 // 魚の浮き待機フレーム
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 20,18,12,12,6,12,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 24,20,16,16,10,16,1 } };
 constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,5,5,5,1 } };
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 12,12,8,8,4,8,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,12,1 } };
 
 // 魚別のスコア
 constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 100,500,1000,4000,100000,30000,1 } };
@@ -180,7 +180,7 @@ public:
 		for (std::size_t i{}; i < fish_swim.size(); ++i) {
 
 			++fish_swim[i].start_frame;
-			fish_swim[i].x = std::int_fast32_t(fish_swim[i].x * 0.95 + uki_x * 0.05);
+			fish_swim[i].x = std::int_fast32_t(double(fish_swim[i].x) * 0.95 + double(uki_x) * 0.05);
 			fish_swim[i].y = std::int_fast32_t(fish_swim[i].y * 0.95 + (uki_y + 50) * 0.05);
 
 			std::int_fast32_t fish_dis{ (fish_swim[i].x - uki_x) * (fish_swim[i].x - uki_x) + (fish_swim[i].y - (uki_y + 50)) * (fish_swim[i].y - (uki_y + 50)) };
@@ -253,7 +253,7 @@ public:
 		std::uniform_int_distribution<std::size_t> dist(1, 100);
 		if (fish_scene == fish_scene_fish)
 		if (dist(engine) > 92 && fish_swim.size() < 10) this->addFish();
-		//if (dist(engine) > 98) this->addFish();
+
 
 		// 釣った魚を描画
 		for (std::size_t i{}; i < fish_get.size(); ++i) {
@@ -281,7 +281,7 @@ public:
 			break;
 		case fish_scene_start:
 			--fish_scene_start_timer;
-			DxLib::DrawGraph(0, 0, fish_start_image[fish_scene_start_timer/60], TRUE);
+			DxLib::DrawGraph(0, 0, fish_start_image[fish_scene_start_timer/100], TRUE);
 			if (fish_scene_start_timer <= 0) fish_scene = fish_scene_fish;
 			break;
 		case fish_scene_fish:
@@ -322,10 +322,18 @@ public:
 			for (std::size_t i{}; i < fish_num; ++i) {
 				fish_count[i] = 0;
 			}
+
+			item_count[item_fish_small] = fish_count[fish_small];
+			item_count[item_fish_medium] = fish_count[fish_medium];
+			item_count[item_fish_large] = fish_count[fish_large];
+			item_count[item_fish_sunfish] = fish_count[fish_sunfish];
+			item_count[item_fish_whale_shark] = fish_count[fish_whale_shark];
+			item_count[item_fish_regalecus_glesne] = fish_count[fish_regalecus_glesne];
+
 			cloud_move_time = 0;
 			cloud_x = 0;
 			fisher_timer = 0;
-			fish_scene_start_timer = 60 * 4;
+			fish_scene_start_timer = 100 * 4;
 			fish_scene = fish_scene_start;
 			total_score = 0;
 			uki_frame = 0;
@@ -375,7 +383,7 @@ private:
 	std::array<int, fish_num> fish_30shadow_image{};
 	std::array<int, fish_num> result_shadow_image{};
 
-	std::int_fast32_t fish_scene_start_timer{ 60 * 4 };
+	std::int_fast32_t fish_scene_start_timer{ 100 * 4 };
 	std::uint_fast8_t fish_scene{ fish_scene_start };
 	std::uint_fast32_t total_score{};
 

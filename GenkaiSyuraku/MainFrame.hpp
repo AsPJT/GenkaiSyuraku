@@ -71,7 +71,7 @@ public:
 
 		// 素材あつめ画面
 		case scene_material:
-			material.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
+			material.call(item_count, up_key, down_key, key_frame, scene_id, material_count, go_material_count);
 			break;
 
 		// 閉じる画面
@@ -127,6 +127,8 @@ private:
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};
+	std::uint_fast32_t material_count{};
+	std::uint_fast32_t go_material_count{};
 
 	// 画面遷移のタイプ
 	std::uint_fast8_t scene_id{ scene_map };
