@@ -53,7 +53,9 @@ enum :std::uint_fast8_t {
 constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_large,fish_large,fish_small } };
 
 // 魚の浮き待機フレーム
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 20,15,10,10,5,10,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 20,18,12,12,6,12,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,5,5,5,1 } };
+constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 12,12,8,8,4,8,1 } };
 
 // 魚別のスコア
 constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 100,500,1000,4000,100000,30000,1 } };
@@ -74,6 +76,7 @@ public:
 		bool can_fly{ true };
 		std::uint_fast8_t status{ fish_status_swim };
 		std::int_fast32_t frame{};
+		std::int_fast32_t start_frame{};
 
 		FishStatus() = default;
 		FishStatus(const std::uint_fast8_t fish_type_, const std::uint_fast32_t x_, const std::uint_fast32_t y_)
@@ -122,6 +125,7 @@ public:
 		for (std::size_t i{}; i < fish_shadow_image.size(); ++i) {
 			fish_shadow_image[i] = LoadGraph(std::string("image/fish_shadow" + std::to_string(i + 1) + ".png").c_str());
 			result_shadow_image[i] = LoadGraph(std::string("image/result_shadow" + std::to_string(i + 1) + ".png").c_str());
+			fish_30shadow_image[i] = LoadGraph(std::string("image/fish_30shadow" + std::to_string(i + 1) + ".png").c_str());
 		}
 
 		std::mt19937 engine(seed_gen());
@@ -141,12 +145,18 @@ public:
 
 	}
 
-	void call(bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
+	void call(bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& fished_count, std::uint_fast32_t& go_fish_count) {
 		std::mt19937 engine(seed_gen());
+
+		++cloud_move_time;
+		if (cloud_move_time >= cloud_move_time_max) {
+			++cloud_x;
+			cloud_move_time = 0;
+		}
 
 		// 背景を描画
 		DxLib::DrawGraph(0, 0, image_ocean_sky, FALSE);
-		DxLib::DrawGraph(0, 0, image_ocean_cloud, TRUE);
+		DxLib::DrawGraph(-cloud_x, 0, image_ocean_cloud, TRUE);
 
 		// 釣った魚を描画
 		total_score = 0;
@@ -159,17 +169,20 @@ public:
 			}
 			DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
 		}
+		uki_y = 872;
 		bool is_hit{ false };
 		bool is_fisher{ false };
 		// 泳ぐ魚の制御
 		if (fish_scene == fish_scene_fish)
 		for (std::size_t i{}; i < fish_swim.size(); ++i) {
 
+			++fish_swim[i].start_frame;
 			fish_swim[i].x = std::int_fast32_t(fish_swim[i].x * 0.95 + uki_x * 0.05);
 			fish_swim[i].y = std::int_fast32_t(fish_swim[i].y * 0.95 + (uki_y + 50) * 0.05);
 
 			std::int_fast32_t fish_dis{ (fish_swim[i].x - uki_x) * (fish_swim[i].x - uki_x) + (fish_swim[i].y - (uki_y + 50)) * (fish_swim[i].y - (uki_y + 50)) };
 			if (fish_dis < 1500) {
+				uki_y = 890;
 				++fish_swim[i].frame;
 				is_hit = true;
 				std::uniform_real_distribution<double> dist_r(0.01, 0.2);
@@ -218,14 +231,20 @@ public:
 		//898,637
 		DxLib::DrawGraph(850, 400, wave, TRUE);
 
-		DxLib::DrawGraph(460, 870, image_uki, TRUE);
+		DxLib::DrawGraph(460, uki_y - 2, image_uki, TRUE);
 
 		//DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
 
 
 		// 泳ぐ魚の制御
 		for (std::size_t i{}; i < fish_swim.size(); ++i) {
-			DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_shadow_image[fish_size[fish_swim[i].fish_type]], TRUE); //todo
+			if (fish_swim[i].start_frame < fish_start_frame[fish_swim[i].fish_type]) {
+				DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
+			}
+			else if (fish_swim[i].frame >= fish_half_frame[fish_swim[i].fish_type]) {
+				DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
+			}
+			else DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
 		}
 
 		std::uniform_int_distribution<std::size_t> dist(1, 100);
@@ -286,7 +305,7 @@ public:
 		if (fish_scene == fish_scene_fish)
 		if (timer > 0) --timer;
 		if (timer == 0) {
-			if (down_key[KEY_INPUT_RETURN]) timer = -1;
+			if (up_key[KEY_INPUT_RETURN]) timer = -1;
 			fish_scene = fish_scene_end;
 		}
 
@@ -299,6 +318,8 @@ public:
 			for (std::size_t i{}; i < fish_num; ++i) {
 				fish_count[i] = 0;
 			}
+			cloud_move_time = 0;
+			cloud_x = 0;
 			fisher_timer = 0;
 			fish_scene_start_timer = 60 * 4;
 			fish_scene = fish_scene_start;
@@ -314,6 +335,10 @@ private:
 	std::uint_fast8_t uki_frame{};
 
 	int timer{ 60 * 15 };
+
+	const int cloud_move_time_max{ 6 };
+	int cloud_move_time{};
+	int cloud_x{};
 
 	const int fisher_timer_max{ 30 };
 	int fisher_timer{ 0 };
@@ -343,6 +368,7 @@ private:
 	std::array<int, fisher_scene_num> fisher_image{ -1 };
 	std::array<int, fish_num> fish_image{};
 	std::array<int, fish_num> fish_shadow_image{};
+	std::array<int, fish_num> fish_30shadow_image{};
 	std::array<int, fish_num> result_shadow_image{};
 
 	std::int_fast32_t fish_scene_start_timer{ 60 * 4 };
