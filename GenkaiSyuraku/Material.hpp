@@ -40,11 +40,11 @@ enum :std::uint_fast8_t {
 	// 大素材
 	material_wood,
 	// マンボウ
-	material_dummy,
+	material_gold,
 	// ジンベイザメ
-	material_whale_shark,
+	material_timer,
 	// リュウグウノツカイ
-	material_regalecus_glesne,
+	material_straw,
 	// 素材の種類
 	material_num
 };
@@ -53,9 +53,9 @@ enum :std::uint_fast8_t {
 constexpr std::array<std::uint_fast8_t, material_num + 1> material_size{ { material_money,material_stone,material_wood,material_stone,material_wood,material_wood,material_money } };
 
 // 素材の浮き待機フレーム
-constexpr std::array<std::uint_fast8_t, material_num + 1> material_frame{ { 200,100,120,120,100,120,1 } };
-constexpr std::array<std::uint_fast8_t, material_num + 1> material_start_frame{ { 5,5,5,5,5,5,1 } };
-constexpr std::array<std::uint_fast8_t, material_num + 1> material_half_frame{ { 180,90,110,110,90,110,1 } };
+constexpr std::array<std::uint_fast8_t, material_num + 1> material_frame{ { 120,120,200,60,60,200,1 } };
+constexpr std::array<std::uint_fast8_t, material_num + 1> material_start_frame{ { 8,8,8,8,8,8,1 } };
+constexpr std::array<std::uint_fast8_t, material_num + 1> material_half_frame{ { 80,80,180,80,80,180,1 } };
 
 // 素材別のスコア
 constexpr std::array<std::uint_fast32_t, material_num + 1> material_score{ { 100,500,1000,4000,100000,30000,1 } };
@@ -110,24 +110,26 @@ public:
 		for (std::size_t i{}; i < 4; ++i) {
 			material_start_image[i] = LoadGraph(std::string("image/fish_start" + std::to_string(i) + ".png").c_str());
 		}
+		image_material_grid = LoadGraph("image/material_grid.png");
+		image_materialer_hand = LoadGraph("image/materialer_hand.png");
+		//image_materialer_broom = LoadGraph("image/materialer_broom.png");
+		image_select_range = LoadGraph("image/select_range.png");
 		image_hand = LoadGraph("image/hand.png");
+		image_broom = LoadGraph("image/broom.png");
 		image_find_material = LoadGraph("image/find_fish.png");
 		image_result = LoadGraph("image/result2.png");
 		back = LoadGraph("image/ocean.png");
 		image_uki = LoadGraph("image/uki.png");
 		wave = LoadGraph("image/wave.png");
-		materialer_image[materialer_scene_empty] = LoadGraph("image/fisher1.png");
-		materialer_image[materialer_scene_hit] = LoadGraph("image/fisher2.png");
-		materialer_image[materialer_scene_go] = LoadGraph("image/fisher3.png");
+		materialer_image[materialer_scene_empty] = LoadGraph("image/materialer1.png");
+		materialer_image[materialer_scene_hit] = LoadGraph("image/materialer2.png");
+		materialer_image[materialer_scene_go] = LoadGraph("image/materialer3.png");
 
 		image_ocean_sky = LoadGraph("image/ocean_sky.png");
 		image_ocean_cloud = LoadGraph("image/ocean_cloud.png");
 		image_ocean_island = LoadGraph("image/ocean_island.png");
 		for (std::size_t i{}; i < material_image.size(); ++i) {
 			material_image[i] = LoadGraph(std::string("image/material" + std::to_string(i + 1) + ".png").c_str());
-		}
-		for (std::size_t i{}; i < material_shadow_image.size(); ++i) {
-			material_shadow_image[i] = LoadGraph(std::string("image/material_shadow" + std::to_string(i + 1) + ".png").c_str());
 			result_shadow_image[i] = LoadGraph(std::string("image/result_shadow" + std::to_string(i + 1) + ".png").c_str());
 			material_30shadow_image[i] = LoadGraph(std::string("image/material_30shadow" + std::to_string(i + 1) + ".png").c_str());
 		}
@@ -136,12 +138,31 @@ public:
 				field[i][j] = material_num;
 	}
 
-	void call(bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& materialed_count, std::uint_fast32_t& go_material_count) {
+	void call(std::array<int, item_num>& item_count, bool up_key[], bool down_key[], std::uint_fast8_t& scene_id, std::uint_fast32_t& materialed_count, std::uint_fast32_t& go_material_count) {
 		std::mt19937 engine(seed_gen());
+
+		if (down_key[KEY_INPUT_D]) ++select_x;
+		if (down_key[KEY_INPUT_A]) --select_x;
+		if (down_key[KEY_INPUT_S]) ++select_y;
+		if (down_key[KEY_INPUT_W]) --select_y;
+		if (down_key[KEY_INPUT_RIGHT]) ++select_x;
+		if (down_key[KEY_INPUT_LEFT]) --select_x;
+		if (down_key[KEY_INPUT_DOWN]) ++select_y;
+		if (down_key[KEY_INPUT_UP]) --select_y;
+		if (select_x - width < -1) select_x = width - 1;
+		if (select_y - height < -1) select_y = height - 1;
+		if (select_x >= 6) select_x = 5;
+		if (select_y >= 6) select_y = 5;
 
 		// 背景を描画
 		DxLib::DrawGraph(0, 0, image_ocean_sky, FALSE);
 		DxLib::DrawGraph(0, 0, image_ocean_cloud, TRUE);
+
+		std::uniform_int_distribution<std::size_t> dist(1, 100);
+		DxLib::DrawGraph(0, 0, image_material_grid, TRUE);
+		for (std::size_t i{}; i < field.size(); ++i)
+			for (std::size_t j{}; j < field[i].size(); ++j)
+				if (field[i][j] == material_num && material_scene == material_scene_material && dist(engine) > 92 && material_swim.size() < 10) field[i][j] = this->addMaterial(j, i);
 
 		// 釣った素材を描画
 		total_score = 0;
@@ -150,47 +171,59 @@ public:
 			if (material_get[i].status == material_status_down_fly) {
 				material_get[i].window_y += 20;
 				material_get[i].r += material_get[i].add_r;
-				if (material_get[i].window_y > 750 - material_get.size() * 5) material_get[i].status = material_status_stay;
+				if (material_get[i].window_y > 850 - material_get.size() * 10) material_get[i].status = material_status_stay;
 			}
 			DrawRotaGraph((int)material_get[i].window_x, (int)material_get[i].window_y, 1.0f, material_get[i].r, material_image[material_get[i].material_type], TRUE);
 		}
 		bool is_hit{ false };
 		bool is_materialer{ false };
 		// 泳ぐ素材の制御
+
 		if (material_scene == material_scene_material)
 			for (std::size_t i{}; i < material_swim.size(); ++i) {
-
 				++material_swim[i].start_frame;
 				++material_swim[i].frame;
-				if (material_swim[i].frame >= material_frame[material_swim[i].material_type]) {
-					field[material_swim[i].yy][material_swim[i].xx] = material_num;
-					material_swim.erase(material_swim.begin() + i);
-					--i;
-					continue;
-				}
-				if (i >= material_swim.size()) break;
 
-				if (material_swim[i].xx == select_x && material_swim[i].yy == select_y) {
-					is_hit = true;
-					std::uniform_real_distribution<double> dist_r(0.01, 0.2);
-					DxLib::DrawGraph(500, 600, image_find_material, TRUE);
-
-					if (down_key[KEY_INPUT_SPACE] && timer > 0 && materialer_timer == 0) {
-						is_materialer = true;
-						material_get.emplace_back(material_swim[i]);
-						material_get.back().status = material_status_up_fly;
-						material_get.back().add_r = dist_r(engine);
-						field[material_get.back().yy][material_get.back().xx] = material_num;
-						material_swim.erase(material_swim.begin() + i);
-
-						++material_count[material_get.back().material_type];
-
-						--i;
-						continue;
-					}
-
-				}
 			}
+		
+		if (material_scene == material_scene_material)
+			for (int select_all_y{ select_y - height + 1 }; select_all_y <= select_y; ++select_all_y)
+				for (int select_all_x{ select_x - width + 1 }; select_all_x <= select_x; ++select_all_x)
+					for (std::size_t i{}; i < material_swim.size(); ++i) {
+						if (material_swim[i].frame >= material_frame[material_swim[i].material_type]) {
+							field[material_swim[i].yy][material_swim[i].xx] = material_num;
+							material_swim.erase(material_swim.begin() + i);
+							--i;
+							continue;
+						}
+						if (i >= material_swim.size()) break;
+						if (material_swim[i].xx == select_all_x && material_swim[i].yy == select_all_y) {
+							is_hit = true;
+							std::uniform_real_distribution<double> dist_r(0.01, 0.2);
+							DxLib::DrawGraph(1500, 200, image_find_material, TRUE);
+
+							if (down_key[KEY_INPUT_SPACE] && timer > 0 && materialer_timer == 0) {
+								is_materialer = true;
+								const bool is_timer{ material_swim[i].material_type == material_timer };
+								if (!is_timer) {
+									material_get.emplace_back(material_swim[i]);
+									material_get.back().status = material_status_up_fly;
+									material_get.back().add_r = dist_r(engine);
+								}
+								else timer += 180;
+								field[material_swim[i].yy][material_swim[i].xx] = material_num;
+								material_swim.erase(material_swim.begin() + i);
+
+								if (!is_timer) {
+									++material_count[material_get.back().material_type];
+								}
+
+								--i;
+								continue;
+							}
+
+						}
+					}
 		if (is_materialer) materialer_timer = 30;
 
 		std::uint_fast8_t materialer_status{ materialer_scene_empty };
@@ -202,19 +235,19 @@ public:
 		}
 
 		// 海と島
-		DxLib::DrawGraph(0, 0, image_ocean_island, TRUE);
-		DxLib::DrawGraph(850, 400, materialer_image[materialer_status], TRUE);
-		DxLib::DrawGraph(850, 400, wave, TRUE);
+		//DxLib::DrawGraph(0, 0, image_ocean_island, TRUE);
+		DxLib::DrawGraph(0,0, materialer_image[materialer_status], TRUE);
+		if (field[select_y][select_x] != material_num) DxLib::DrawGraph(1350, 800, material_image[field[select_y][select_x]], TRUE);
 
 		// 泳ぐ素材の制御
 		for (std::size_t i{}; i < material_swim.size(); ++i) {
 			if (material_swim[i].start_frame < material_start_frame[material_swim[i].material_type]) {
-				DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_30shadow_image[material_size[material_swim[i].material_type]], TRUE);
+				DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_30shadow_image[material_swim[i].material_type], TRUE);
 			}
 			else if (material_swim[i].frame >= material_half_frame[material_swim[i].material_type]) {
-				DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_30shadow_image[material_size[material_swim[i].material_type]], TRUE);
+				DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_30shadow_image[material_swim[i].material_type], TRUE);
 			}
-			else DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_shadow_image[material_size[material_swim[i].material_type]], TRUE);
+			else DrawRotaGraph((int)material_swim[i].window_x, (int)material_swim[i].window_y, 1.0f, 0.0, material_image[material_swim[i].material_type], TRUE);
 		}
 
 		// 釣った素材を描画
@@ -230,11 +263,6 @@ public:
 				}
 				DrawRotaGraph((int)material_get[i].window_x, (int)material_get[i].window_y, 1.0f, material_get[i].r, material_image[material_get[i].material_type], TRUE);
 			}
-		}
-
-		DrawCircle(200, 200, 80, 0xffffffff);
-		if (material_get.size() > 0) {
-			DrawRotaGraph(200, 200, 0.5f, 0.0f, material_image[material_get.back().material_type], TRUE);
 		}
 
 		switch (material_scene)
@@ -254,45 +282,34 @@ public:
 			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_money]);
 			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_stone]);
 			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_wood]);
-			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_dummy]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_whale_shark]);
-			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_regalecus_glesne]);
+			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_gold]);
+			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_timer]);
+			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_straw]);
 			for (std::size_t i{}; i < material_num; ++i) {
 				if (material_count[i] == 0) DxLib::DrawGraph(0, 0, result_shadow_image[i], TRUE);
 			}
 			break;
 		}
-
-		std::uniform_int_distribution<std::size_t> dist(1, 100);
-		for (std::size_t i{}; i < field.size(); ++i) {
-			for (std::size_t j{}; j < field[i].size(); ++j) {
-				//DrawCircle(field_x + (int)j * 128, field_y + (int)i * 128, 64, GetColor(0, 0, 0), FALSE);
-				DrawBox(field_x + (int)j * 128, field_y + (int)i * 128, field_x + (int)(j + 1) * 128, field_y + (int)(i + 1) * 128, GetColor(0, 0, 0), FALSE);
-				if (field[i][j] == material_num &&
-					material_scene == material_scene_material && dist(engine) > 92 && material_swim.size() < 10) field[i][j] = this->addMaterial(j, i);
-				//field[i][j];
+		
+		if (width == 1 && height == 1) {
+			DxLib::DrawGraph(field_x + (int)select_x * 128, field_y + (int)select_y * 128, image_select_range, TRUE);
+			DxLib::DrawGraph(field_x + (int)select_x * 128, field_y + (int)select_y * 128, image_hand, TRUE);
+		}
+		else for (int i{ select_y - height + 1 }; i <= select_y; ++i) {
+			for (int j{ select_x - width + 1 }; j <= select_x; ++j) {
+				DxLib::DrawGraph(field_x + (int)j * 128, field_y + (int)i * 128, image_select_range, TRUE);
+				DxLib::DrawGraph(field_x + (int)j * 128, field_y + (int)i * 128, image_broom, TRUE);
 			}
 		}
-		//DrawBox(field_x + (int)select_x * 128, field_y + (int)select_y * 128, field_x + (int)(select_x + 1) * 128, field_y + (int)(select_y + 1) * 128, GetColor(255, 0, 0), FALSE);
-		DxLib::DrawGraph(field_x + (int)select_x * 128, field_y + (int)select_y * 128, image_hand, TRUE);
-
-		if (material_scene == material_scene_material) {
-			DrawBox(650, 600, 700, 700, 0xffffffff, TRUE);
-			DrawBox(650, 600, 700, 700 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+		if (materialer_status == materialer_scene_go && material_get.size() > 0) {
+			DrawGraph(1300, 750, material_image[material_get.back().material_type], TRUE);
+			DrawGraph(0, 0, image_materialer_hand, TRUE);
 		}
 
-		if (down_key[KEY_INPUT_D]) ++select_x;
-		if (down_key[KEY_INPUT_A]) --select_x;
-		if (down_key[KEY_INPUT_S]) ++select_y;
-		if (down_key[KEY_INPUT_W]) --select_y;
-		if (down_key[KEY_INPUT_RIGHT]) ++select_x;
-		if (down_key[KEY_INPUT_LEFT]) --select_x;
-		if (down_key[KEY_INPUT_DOWN]) ++select_y;
-		if (down_key[KEY_INPUT_UP]) --select_y;
-		if (select_x < 0) select_x = 0;
-		if (select_y < 0) select_y = 0;
-		if (select_x >= 6) select_x = 5;
-		if (select_y >= 6) select_y = 5;
+		if (material_scene == material_scene_material) {
+			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xffffffff, TRUE);
+			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+		}
 
 		// 強制リザルト画面
 		if (up_key[KEY_INPUT_T]) timer = 0;
@@ -322,6 +339,33 @@ public:
 			material_get.resize(0);
 			material_swim.resize(0);
 		}
+
+		if (up_key[KEY_INPUT_R]) {
+			timer = 60 * 15;
+			materialed_count = (std::uint_fast32_t)material_get.size();
+			++go_material_count;
+
+			for (std::size_t i{}; i < field.size(); ++i)
+				for (std::size_t j{}; j < field[i].size(); ++j)
+					field[i][j] = material_num;
+			for (std::size_t i{}; i < material_num; ++i) {
+				material_count[i] = 0;
+			}
+
+			item_count[item_stone] = material_count[material_stone];
+			item_count[item_wood] = material_count[material_wood];
+			item_count[item_gold] = material_count[material_gold];
+			item_count[item_straw] = material_count[material_straw];
+			item_count[item_ore] = material_count[material_money];
+
+			materialer_timer = 0;
+			material_scene_start_timer = 60 * 4;
+			material_scene = material_scene_start;
+			total_score = 0;
+			uki_frame = 0;
+			material_get.resize(0);
+			material_swim.resize(0);
+		}
 	}
 
 private:
@@ -331,6 +375,10 @@ private:
 	int timer{ 60 * 15 };
 
 	int image_hand{ -1 };
+	int image_broom{ -1 };
+
+	const int width{1};
+	const int height{1};
 	int select_x{};
 	int select_y{};
 
@@ -345,6 +393,10 @@ private:
 
 	int font_timer{ -1 };
 
+	int image_material_grid{ -1 };
+	int image_materialer_hand{ -1 };
+	int image_materialer_broom{ -1 };
+	int image_select_range{ -1 };
 	int image_find_material{ -1 };
 	int image_uki{ -1 };
 	int image_ocean_sky{ -1 };
@@ -355,7 +407,6 @@ private:
 	std::array<int, 4> material_start_image{ -1 };
 	std::array<int, materialer_scene_num> materialer_image{ -1 };
 	std::array<int, material_num> material_image{};
-	std::array<int, material_num> material_shadow_image{};
 	std::array<int, material_num> material_30shadow_image{};
 	std::array<int, material_num> result_shadow_image{};
 
@@ -378,13 +429,12 @@ private:
 
 	// 素材の生成確率
 	std::uint_fast8_t spawnMaterial(const std::int_fast32_t material_count_) const {
-		if (material_count_ < 110) return material_money;
-		if (material_count_ < 170) return material_stone;
-		return material_wood;
-		//if (material_count_ < 220) return material_wood;
-		//if (material_count_ < 248) return material_dummy;
-		//if (material_count_ < 252) return material_whale_shark;
-		//return material_regalecus_glesne;
+		if (material_count_ < 83) return material_money;
+		if (material_count_ < 166) return material_stone;
+		if (material_count_ < 207) return material_wood;
+		if (material_count_ < 248) return material_straw;
+		if (material_count_ < 252) return material_timer;
+		return material_gold;
 	}
 
 };
