@@ -282,7 +282,7 @@ public:
 			if (fish_scene_start_timer <= 0) fish_scene = fish_scene_fish;
 			break;
 		case fish_scene_fish:
-			DrawFormatStringToHandle(900, 150, GetColor(255, 255, 255), font_timer, "%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, "制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 			break;
 		case fish_scene_end:
 			DxLib::DrawGraph(0, 0, image_result, TRUE);
@@ -302,14 +302,15 @@ public:
 			DrawBox(650, 600, 700, 700, 0xffffffff, TRUE);
 			DrawBox(650, 600, 700, 700 - fisher_timer * 100 / 30, 0xff33aa33, TRUE);
 		}
-		if (fish_scene == fish_scene_fish)
-		if (timer > 0) --timer;
+		// 強制リザルト画面
+		if (up_key[KEY_INPUT_T]) timer = 0;
+
+		if (fish_scene == fish_scene_fish && timer > 0) --timer;
 		if (timer == 0) {
 			if (up_key[KEY_INPUT_RETURN]) timer = -1;
 			fish_scene = fish_scene_end;
 		}
-
-		if (timer <= -1) {
+		else if (timer <= -1) {
 			scene_id = 2; // マップ
 			timer = 60 * 15;
 			fished_count = (std::uint_fast32_t)fish_get.size();

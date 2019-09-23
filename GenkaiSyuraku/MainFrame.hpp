@@ -5,6 +5,7 @@
 #include "Title.hpp"
 #include "Map.hpp"
 #include "Fish.hpp"
+#include "Material.hpp"
 
 // 画面遷移
 enum :std::uint_fast8_t {
@@ -20,6 +21,9 @@ enum :std::uint_fast8_t {
 
 	// 釣り画面
 	scene_fish,
+
+	// 素材あつめ画面
+	scene_material,
 
 	// 閉じる画面
 	scene_close
@@ -64,6 +68,11 @@ public:
 			fish.call(up_key, down_key, scene_id, fished_count, go_fish_count);
 			break;
 
+		// 素材あつめ画面
+		case scene_material:
+			material.call(up_key, down_key, scene_id, fished_count, go_fish_count);
+			break;
+
 		// 閉じる画面
 		case scene_close:
 			return false;
@@ -103,6 +112,7 @@ public:
 	}
 private:
 	Fish fish{};
+	Material material{};
 
 private:
 	Map map;
@@ -112,7 +122,7 @@ private:
 	std::uint_fast32_t go_fish_count{};
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_title };
+	std::uint_fast8_t scene_id{ scene_material };
 
 
 };
