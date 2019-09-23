@@ -104,7 +104,7 @@ public:
 
 	Fish() {
 
-		font_timer = CreateFontToHandle(NULL, 100, 9, DX_FONTTYPE_EDGE);
+		font_timer = CreateFontToHandle(NULL, 100, 0, DX_FONTTYPE_NORMAL);
 
 		// 画像格納
 		for (std::size_t i{}; i < 4; ++i) {
@@ -152,6 +152,7 @@ public:
 		std::mt19937 engine(seed_gen());
 
 		++cloud_move_time;
+		if (fish_scene != fish_scene_end)
 		if (cloud_move_time >= cloud_move_time_max) {
 			++cloud_x;
 			cloud_move_time = 0;
@@ -315,6 +316,33 @@ public:
 		}
 		else if (timer <= -1) {
 			scene_id = 2; // マップ
+			timer = 60 * 15;
+			fished_count = (std::uint_fast32_t)fish_get.size();
+			++go_fish_count;
+
+			for (std::size_t i{}; i < fish_num; ++i) {
+				fish_count[i] = 0;
+			}
+
+			item_count[item_fish_small] = fish_count[fish_small];
+			item_count[item_fish_medium] = fish_count[fish_medium];
+			item_count[item_fish_large] = fish_count[fish_large];
+			item_count[item_fish_sunfish] = fish_count[fish_sunfish];
+			item_count[item_fish_whale_shark] = fish_count[fish_whale_shark];
+			item_count[item_fish_regalecus_glesne] = fish_count[fish_regalecus_glesne];
+
+			cloud_move_time = 0;
+			cloud_x = 0;
+			fisher_timer = 0;
+			fish_scene_start_timer = 100 * 4;
+			fish_scene = fish_scene_start;
+			total_score = 0;
+			uki_frame = 0;
+			fish_get.resize(0);
+			fish_swim.resize(0);
+		}
+
+		if (up_key[KEY_INPUT_R]) {
 			timer = 60 * 15;
 			fished_count = (std::uint_fast32_t)fish_get.size();
 			++go_fish_count;
