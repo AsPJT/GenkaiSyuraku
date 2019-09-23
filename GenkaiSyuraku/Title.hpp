@@ -4,9 +4,13 @@
 class Title {
 public:
 	void init() {
-		title_backimage[0] = LoadGraph("image/map1.png", TRUE);
-		title_backimage[1] = LoadGraph("image/map4.png", TRUE);
-		//title_backimage[2] = LoadGraph("image/map3.png", TRUE);
+		title_backimage = LoadGraph("image/map.png", TRUE);
+		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
+		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
+		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
+		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
+		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
+		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
 		title_image[0] = LoadGraph("image/title1.png", TRUE);
 		title_image[1] = LoadGraph("image/title2.png", TRUE);
 		start_image[0] = LoadGraph("image/start.png", TRUE);
@@ -18,27 +22,33 @@ public:
 		bgm = LoadSoundMem("music/genkaivillage.wav");
 	}
 
-	void start(bool down_key[], std::uint_fast8_t& scene_id) {
+	void start(bool up_key[], std::uint_fast8_t& scene_id, int yorozuya_level, int sakanaya_level) {
+		if (yorozuya_level >= 1 && sakanaya_level >= 1) map_level = 1;
+
 		if (ret == 0) background_x--;
 		else background_x++;
 		if (background_x == -1920) ret = 1;
 		else if (background_x == 0) ret = 0;
 
 		//メニュー選択
-		if (down_key[KEY_INPUT_UP] > 0) select--;
-		else if (down_key[KEY_INPUT_DOWN] > 0) select++;
+		if (up_key[KEY_INPUT_UP] > 0) select--;
+		else if (up_key[KEY_INPUT_DOWN] > 0) select++;
 		if (select > 2) select = 0;
 		if (select < 0) select = 2;
 
 		//メニュー決定
-		if (down_key[KEY_INPUT_RETURN] > 0) {
+		if (up_key[KEY_INPUT_RETURN] > 0) {
 			StopSoundMem(bgm);
 			if (select == 0) scene_id = 2;
 			if (select == 1) scene_id = 2;
 			if (select == 2) scene_id = 4;
 		}
 		//背景
-		DrawGraph(background_x, 0, title_backimage[map_level], TRUE);
+		DrawGraph(background_x, 0, title_backimage, TRUE);
+		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
+		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
+
+
 		//タイトル
 		DrawGraph(0, -200, title_image[map_level], TRUE);
 			   		 
@@ -62,9 +72,11 @@ public:
 private:
 	int background_x = 0, ret = 0;
 	int select = 0;
-	int map_level = 0;
 	int bgm, bgm_flag = 0;
-	int title_backimage[3];
+	int map_level = 0;
+	int title_backimage;
+	int sakanaya_image[3];
+	int yorozuya_image[3];
 	int title_image[2];
 	int start_image[2];
 	int continue_image[2];

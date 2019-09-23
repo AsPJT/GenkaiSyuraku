@@ -51,12 +51,12 @@ public:
 
 		// タイトル画面
 		case scene_title:
-			title.start(down_key, scene_id);
+			title.start(up_key, scene_id, yorozuya_level, sakanaya_level);
 			break;
 
 		// マップ画面
 		case scene_map:
-			map.control(up_key, key_frame, scene_id, fished_count, go_fish_count);
+			map.control(up_key, key_frame, scene_id, fished_count, go_fish_count, yorozuya_level, sakanaya_level);
 			break;
 
 		// 釣り画面
@@ -107,6 +107,10 @@ private:
 private:
 	Map map;
 	Title title;
+
+	//集落レベル
+	int yorozuya_level = 0;
+	int sakanaya_level = 0;
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};
