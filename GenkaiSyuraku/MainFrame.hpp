@@ -123,7 +123,7 @@ private:
 	//集落レベル
 	int yorozuya_level = 0;
 	int sakanaya_level = 1;
-	int farm_level = 0;
+	int farm_level = 1;
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};

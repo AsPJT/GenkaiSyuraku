@@ -304,7 +304,7 @@ public:
 					returnflag = 1;
 					if (select7 == 0 && item_count[item_wood] >= 10) hiroba_level = 2, item_count[item_wood] -= 10, menu = 0;
 					else if (select7 == 1 && item_count[item_stone] >= 20) hiroba_level = 5, item_count[item_stone] -=20, menu = 0;
-					else if (select7 == 2 && item_count[item_wood] >= 10) hiroba_level = 8, item_count[item_wood] -= 10, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 10) hiroba_level = 8, item_count[item_stone] -= 10, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
@@ -318,7 +318,7 @@ public:
 					returnflag = 1;
 					if (select7 == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && hiroba_level == 2) hiroba_level = 3, item_count[item_wood] -= 10, item_count[item_stone] -= 20, menu = 0;
 					else if (select7 == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && hiroba_level == 5) hiroba_level = 6, item_count[item_stone] -= 20, item_count[item_ore] -= 10, menu = 0;
-					else if (select7 == 2 && item_count[item_wood] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8) hiroba_level = 9, item_count[item_wood] -= 10, item_count[item_ore] -= 10, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8) hiroba_level = 9, item_count[item_stone] -= 10, item_count[item_ore] -= 10, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
@@ -332,9 +332,13 @@ public:
 					returnflag = 1;
 					if (select7 == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && hiroba_level == 3) hiroba_level = 4, item_count[item_wood] -= 10, item_count[item_stone] -= 30, menu = 0;
 					else if (select7 == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && hiroba_level == 6) hiroba_level = 7, item_count[item_stone] -= 30, item_count[item_ore] -= 30, menu = 0;
-					else if (select7 == 2 && item_count[item_wood] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9) hiroba_level = 10, item_count[item_wood] -= 20, item_count[item_ore] -= 20, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9) hiroba_level = 10, item_count[item_stone] -= 20, item_count[item_ore] -= 20, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
+			}
+			else {
+				talk = 20;
+				menu = 0;
 			}
 			break;
 		default:
@@ -360,13 +364,13 @@ public:
 							else mob[i].img = mob[i].image[0];
 							if (talk == 0) {
 								if (i == 0) {//jii
-									if (hiroba_level == 7) talk = 14;
-									if (farm_level == 2) talk = 8;
-									else if (farm_level == 1) talk = 7;
-									else if (hiroba_level == 1) talk = 10;
+									if (hiroba_level >= 1) talk = 10;
 									//else if (sakanaya_level == 2) talk = 2;
 									else if (sakanaya_level == 1) talk = 1;
-									
+									//if (hiroba_level == 7) talk = 14;
+									//if (farm_level == 2) talk = 8;
+									//else if (farm_level == 1) talk = 7;
+									//else
 								}
 								else if (i == 1) {//baa
 									if(yorozuya_level == 1) talk = 4;
@@ -622,11 +626,10 @@ public:
 				farm_level = 3;
 				sakanaya_level = 3;
 				yorozuya_level = 1;
-				hatake_level = 1;
 				//ミニゲーム男
-				mob[3].x = mob[3].size * 37;
-				mob[3].y = mob[3].size * 13;
-				mob[3].img = mob[3].image[0];
+				//mob[3].x = mob[3].size * 37;
+				//mob[3].y = mob[3].size * 13;
+				//mob[3].img = mob[3].image[0];
 				//建築男
 				mob[4].x = mob[4].size * 27;
 				mob[4].y = mob[4].size * 13;
@@ -653,11 +656,10 @@ public:
 				farm_level = 2;
 				sakanaya_level = 3;
 				yorozuya_level = 1;
-				hatake_level = 1;
 				//ミニゲーム男
-				mob[3].x = mob[3].size * 37;
-				mob[3].y = mob[3].size * 13;
-				mob[3].img = mob[3].image[0];
+				//mob[3].x = mob[3].size * 37;
+				//mob[3].y = mob[3].size * 13;
+				//mob[3].img = mob[3].image[0];
 				//建築男
 				mob[4].x = mob[4].size * 27;
 				mob[4].y = mob[4].size * 13;
@@ -685,12 +687,11 @@ public:
 				farm_level = 1;
 				yorozuya_level = 1;
 				hatake_level = 1;
-				hiroba_level = 1;
 
 				//ミニゲーム男
-				mob[3].x = mob[3].size * 37;
-				mob[3].y = mob[3].size * 13;
-				mob[3].img = mob[3].image[0];
+				//mob[3].x = mob[3].size * 37;
+				//mob[3].y = mob[3].size * 13;
+				//mob[3].img = mob[3].image[0];
 				//建築男
 				mob[4].x = mob[4].size * 27;
 				mob[4].y = mob[4].size * 13;
@@ -714,7 +715,7 @@ public:
 				sakanaya_level = 2;
 				yorozuya_level = 1;
 				hatake_level = 1;
-				hiroba_level = 1;
+				if(hiroba_level < 2) hiroba_level = 1;
 
 				//建築男
 				mob[4].x = mob[4].size * 27;
@@ -762,7 +763,8 @@ public:
 		
         //BGM再生
 		if (bgm_flag == 0) {
-			PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
+			if(hiroba_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
+			else PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
 			bgm_flag = 1;
 		}
 		
@@ -919,6 +921,10 @@ public:
 			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"素材を集めて建築をしよう");
 			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"おじさん");
 			break;
+		case 20:
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"ここまで大きくしてくれてありがとう。");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"おじさん");
+			break;
 
 			//50~53畑
 		case 50:
@@ -1065,7 +1071,29 @@ public:
 				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
 				DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：木材10個");
 				DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材20個");
-				DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：木材10個");
+				DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材10個");
+				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
+			}
+			else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
+				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
+				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
+				if(hiroba_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材20個 木材10個");
+				else  DrawFormatStringToHandle(330, 815, GetColor(128, 128, 128), FontHandle_mini, u8"タワー：石材20個 木材10個");
+				if (hiroba_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材20個 鉱石10個");
+				else DrawFormatStringToHandle(330, 865, GetColor(128, 128, 128), FontHandle_mini, u8"城：石材20個 鉱石10個");
+				if (hiroba_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材10個 鉱石10個");
+				else DrawFormatStringToHandle(330, 915, GetColor(128, 128, 128), FontHandle_mini, u8"像：石材10個 鉱石10個");
+				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
+			}
+			else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
+				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
+				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
+				if (hiroba_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材30個 木材10個");
+				else  DrawFormatStringToHandle(330, 815, GetColor(128, 128, 128), FontHandle_mini, u8"タワー：石材30個 木材10個");
+				if (hiroba_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材30個 鉱石30個");
+				else DrawFormatStringToHandle(330, 865, GetColor(128, 128, 128), FontHandle_mini, u8"城：石材30個 鉱石30個");
+				if (hiroba_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材20個 鉱石20個");
+				else DrawFormatStringToHandle(330, 915, GetColor(128, 128, 128), FontHandle_mini, u8"像：石材20個 鉱石20個");
 				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
 			}
 			break;
