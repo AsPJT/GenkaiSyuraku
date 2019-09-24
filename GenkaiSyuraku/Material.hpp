@@ -219,6 +219,7 @@ public:
 									material_get.back().add_r = dist_r(engine);
 								}
 								else {
+									++timer_count;
 									timer += 180;
 									time_plus_timer = 100;
 								}
@@ -301,7 +302,7 @@ public:
 
 		if (material_scene == material_scene_material) {
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xffffffff, TRUE);
-			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128)+ materialer_timer * 100 / 30, field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xff33aa33, TRUE);
 			DxLib::DrawGraph(field_x + ((select_x + 1) * 128)-40, field_y + (select_y * 128)-48, bottle, TRUE);
 		}
 
@@ -331,7 +332,7 @@ public:
 			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_stone]);
 			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_wood]);
 			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_gold]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_timer]);
+			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, u8"%d回", timer_count);
 			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_straw]);
 			DxLib::DrawGraph(0, 0, message_image[scoreMaterial(total_score)], TRUE);
 			break;
@@ -357,12 +358,19 @@ public:
 			materialed_count = (std::uint_fast32_t)material_get.size();
 			++go_material_count;
 
+			item_count[item_stone] += material_count[material_stone];
+			item_count[item_wood] += material_count[material_wood];
+			item_count[item_gold] += material_count[material_gold];
+			item_count[item_straw] += material_count[material_straw];
+			item_count[item_ore] += material_count[material_money];
+
 			for (std::size_t i{}; i < field.size(); ++i)
 				for (std::size_t j{}; j < field[i].size(); ++j)
 					field[i][j] = material_num;
 			for (std::size_t i{}; i < material_num; ++i) {
 				material_count[i] = 0;
 			}
+
 			width = 1;
 			height = 1;
 			first_frame = true;
@@ -380,18 +388,18 @@ public:
 			materialed_count = (std::uint_fast32_t)material_get.size();
 			++go_material_count;
 
+			item_count[item_stone] += material_count[material_stone];
+			item_count[item_wood] += material_count[material_wood];
+			item_count[item_gold] += material_count[material_gold];
+			item_count[item_straw] += material_count[material_straw];
+			item_count[item_ore] += material_count[material_money];
+
 			for (std::size_t i{}; i < field.size(); ++i)
 				for (std::size_t j{}; j < field[i].size(); ++j)
 					field[i][j] = material_num;
 			for (std::size_t i{}; i < material_num; ++i) {
 				material_count[i] = 0;
 			}
-
-			item_count[item_stone] += material_count[material_stone];
-			item_count[item_wood] += material_count[material_wood];
-			item_count[item_gold] += material_count[material_gold];
-			item_count[item_straw] += material_count[material_straw];
-			item_count[item_ore] += material_count[material_money];
 
 			width = 1;
 			height = 1;
@@ -412,6 +420,7 @@ private:
 
 	std::uint_fast8_t uki_frame{};
 
+	int timer_count{};
 	int timer{ 60 * 15 };
 
 	int image_hand{ -1 };
