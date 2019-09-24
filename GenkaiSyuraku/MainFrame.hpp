@@ -61,7 +61,7 @@ public:
 
 		// マップ画面
 		case scene_map:
-			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, yorozuya_level, sakanaya_level, farm_level);
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level);
 			break;
 
 		// 釣り画面
@@ -122,7 +122,7 @@ private:
 
 	//集落レベル
 	int yorozuya_level = 0;
-	int sakanaya_level = 0;
+	int sakanaya_level = 1;
 	int farm_level = 0;
 
 	std::uint_fast32_t fished_count{};
@@ -131,7 +131,7 @@ private:
 	std::uint_fast32_t go_material_count{};
 
 	// 画面遷移のタイプ
-	std::uint_fast8_t scene_id{ scene_map };
+	std::uint_fast8_t scene_id{ scene_title };
 
 
 };

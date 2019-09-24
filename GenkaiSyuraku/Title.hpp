@@ -28,7 +28,7 @@ public:
 	}
 
 	void call(bool up_key[], std::uint_fast8_t& scene_id, int yorozuya_level, int sakanaya_level, int farm_level) {
-		if (yorozuya_level >= 1 && sakanaya_level >= 1) title_level = 1;
+		if (sakanaya_level == 3) title_level = 1;
 		if (farm_level == 3) map_level = 1;
 
 		if (ret == 0) background_x--;
@@ -51,13 +51,14 @@ public:
 		}
 		//背景
 		DrawGraph(background_x, 0, title_backimage[map_level], TRUE);
-		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
-		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
-		DrawGraph(background_x, 0, farm_image[farm_level], TRUE);
+		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level-1], TRUE);
+		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level-1], TRUE);
+		DrawGraph(background_x, 0, farm_image[farm_level-1], TRUE);
 
 
 		//タイトル
-		DrawGraph(0, -200, title_image[title_level], TRUE);
+		if(title_level == 0) DrawGraph(0, -200, title_image[title_level], TRUE);
+		else DrawGraph(0, -50, title_image[title_level], TRUE);
 			   		 
 		//その他表示
 		DrawGraph(0, 0, start_image[0], TRUE);
@@ -70,7 +71,7 @@ public:
 		else DrawGraph(0, 0, end_image[1], TRUE);
 			
 		if (bgm_flag == 0) {
-			PlaySoundMem(bgm, DX_PLAYTYPE_BACK);//バックグラウンド再生
+			PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);//バックグラウンド再生
 			bgm_flag = 1;
 		}
 
