@@ -315,16 +315,16 @@ public:
 			if (fish_scene_start_timer <= 0) fish_scene = fish_scene_fish;
 			break;
 		case fish_scene_fish:
-			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, "制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, u8"制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 			break;
 		case fish_scene_end:
 			DxLib::DrawGraph(0, 0, image_result, TRUE);
-			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_small]);
-			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_medium]);
-			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_large]);
-			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_sunfish]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_whale_shark]);
-			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d匹", fish_count[fish_regalecus_glesne]);
+			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_small]);
+			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_medium]);
+			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_large]);
+			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_sunfish]);
+			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_whale_shark]);
+			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_regalecus_glesne]);
 			for (std::size_t i{}; i < fish_num; ++i) {
 				if (fish_count[i] == 0) DxLib::DrawGraph(0, 0, result_shadow_image[i], TRUE);
 			}
@@ -382,12 +382,12 @@ public:
 				fish_count[i] = 0;
 			}
 
-			item_count[item_fish_small] = fish_count[fish_small];
-			item_count[item_fish_medium] = fish_count[fish_medium];
-			item_count[item_fish_large] = fish_count[fish_large];
-			item_count[item_fish_sunfish] = fish_count[fish_sunfish];
-			item_count[item_fish_whale_shark] = fish_count[fish_whale_shark];
-			item_count[item_fish_regalecus_glesne] = fish_count[fish_regalecus_glesne];
+			item_count[item_fish_small] += fish_count[fish_small];
+			item_count[item_fish_medium] += fish_count[fish_medium];
+			item_count[item_fish_large] += fish_count[fish_large];
+			item_count[item_fish_sunfish] += fish_count[fish_sunfish];
+			item_count[item_fish_whale_shark] += fish_count[fish_whale_shark];
+			item_count[item_fish_regalecus_glesne] += fish_count[fish_regalecus_glesne];
 
 			cloud_move_time = 0;
 			cloud_x = 0;

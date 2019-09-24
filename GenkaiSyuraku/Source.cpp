@@ -4,6 +4,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ログ出力を行わない
 	DxLib::SetOutApplicationLogValidFlag(FALSE);
 
+	// UTF-8に変更
+	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
+
 	// ウインドウモードにする
 	DxLib::ChangeWindowMode(TRUE);
 

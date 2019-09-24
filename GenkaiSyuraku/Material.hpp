@@ -323,16 +323,16 @@ public:
 			if (material_scene_start_timer <= 0) material_scene = material_scene_material;
 			break;
 		case material_scene_material:
-			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, "制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, u8"制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 			break;
 		case material_scene_end:
 			DxLib::DrawGraph(0, 0, image_result, TRUE);
-			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_money]);
-			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_stone]);
-			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_wood]);
-			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_gold]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_timer]);
-			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_straw]);
+			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_money]);
+			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_stone]);
+			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_wood]);
+			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_gold]);
+			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_timer]);
+			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, u8"%d個", material_count[material_straw]);
 			DxLib::DrawGraph(0, 0, message_image[scoreMaterial(total_score)], TRUE);
 			break;
 		}
@@ -380,11 +380,11 @@ public:
 				material_count[i] = 0;
 			}
 
-			item_count[item_stone] = material_count[material_stone];
-			item_count[item_wood] = material_count[material_wood];
-			item_count[item_gold] = material_count[material_gold];
-			item_count[item_straw] = material_count[material_straw];
-			item_count[item_ore] = material_count[material_money];
+			item_count[item_stone] += material_count[material_stone];
+			item_count[item_wood] += material_count[material_wood];
+			item_count[item_gold] += material_count[material_gold];
+			item_count[item_straw] += material_count[material_straw];
+			item_count[item_ore] += material_count[material_money];
 
 			width = 1;
 			height = 1;
