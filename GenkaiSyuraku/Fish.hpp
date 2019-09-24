@@ -68,7 +68,7 @@ constexpr ::std::array<float, 8> fish_sin{ { 0.0f,0.7f,1.0f,0.7f,0.0f,-0.7f,-1.0
 constexpr ::std::array<float, fish_num + 1> fish_shake{ { 3.0f,6.0f,9.0f,18.0f,60.0f,25.0f,0.0f } };
 
 // 魚別のスコア
-constexpr ::std::array<::std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,50,35,1 } };
+constexpr ::std::array<::std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,35,25,1 } };
 
 // 魚のデフォルトサイズ
 constexpr ::std::array<float, fish_num + 1> fish_gram{ { 50,80,120,150,300,300,1 } };
@@ -300,8 +300,8 @@ public:
 			}
 		}
 
-		DrawCircle(200, 200, 80, 0xffffffff);
-		if (fish_get.size() > 0) {
+		if (fish_scene == fish_scene_fish && fish_get.size() > 0) {
+			DrawCircle(200, 200, 80, 0xffffffff);
 			DrawRotaGraph(200, 200, 0.5f, 0.0f, fish_image[fish_get.back().fish_type], TRUE);
 		}
 		
@@ -315,7 +315,7 @@ public:
 			if (fish_scene_start_timer <= 0) fish_scene = fish_scene_fish;
 			break;
 		case fish_scene_fish:
-			DrawFormatStringToHandle(0, 0, GetColor(30, 30, 30), font_timer, u8"制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
+			DrawFormatStringToHandle(0, 0, GetColor(255, 255, 255), font_timer, u8"制限時間：%d.%d", timer / 60, (int)((timer % 60) / 60.0 * 100));
 			break;
 		case fish_scene_end:
 			DxLib::DrawGraph(0, 0, image_result, TRUE);
@@ -334,7 +334,7 @@ public:
 
 		if (fish_scene == fish_scene_fish) {
 			DrawBox(650, 600, 700, 700, 0xffffffff, TRUE);
-			DrawBox(650, 600, 700, 700 - fisher_timer * 100 / 30, 0xff33aa33, TRUE);
+			DrawBox(650, 600+ fisher_timer * 100 / 30, 700, 700, 0xff33aa33, TRUE);
 			DxLib::DrawGraph(610, 552, bottle, TRUE);
 		}
 		// 強制リザルト画面
@@ -351,16 +351,16 @@ public:
 			fished_count = (std::uint_fast32_t)fish_get.size();
 			++go_fish_count;
 
+			item_count[item_fish_small] += fish_count[fish_small];
+			item_count[item_fish_medium] += fish_count[fish_medium];
+			item_count[item_fish_large] += fish_count[fish_large];
+			item_count[item_fish_sunfish] += fish_count[fish_sunfish];
+			item_count[item_fish_whale_shark] += fish_count[fish_whale_shark];
+			item_count[item_fish_regalecus_glesne] += fish_count[fish_regalecus_glesne];
+
 			for (std::size_t i{}; i < fish_num; ++i) {
 				fish_count[i] = 0;
 			}
-
-			item_count[item_fish_small] = fish_count[fish_small];
-			item_count[item_fish_medium] = fish_count[fish_medium];
-			item_count[item_fish_large] = fish_count[fish_large];
-			item_count[item_fish_sunfish] = fish_count[fish_sunfish];
-			item_count[item_fish_whale_shark] = fish_count[fish_whale_shark];
-			item_count[item_fish_regalecus_glesne] = fish_count[fish_regalecus_glesne];
 
 			cloud_move_time = 0;
 			cloud_x = 0;
@@ -378,16 +378,16 @@ public:
 			fished_count = (std::uint_fast32_t)fish_get.size();
 			++go_fish_count;
 
-			for (std::size_t i{}; i < fish_num; ++i) {
-				fish_count[i] = 0;
-			}
-
 			item_count[item_fish_small] += fish_count[fish_small];
 			item_count[item_fish_medium] += fish_count[fish_medium];
 			item_count[item_fish_large] += fish_count[fish_large];
 			item_count[item_fish_sunfish] += fish_count[fish_sunfish];
 			item_count[item_fish_whale_shark] += fish_count[fish_whale_shark];
 			item_count[item_fish_regalecus_glesne] += fish_count[fish_regalecus_glesne];
+
+			for (std::size_t i{}; i < fish_num; ++i) {
+				fish_count[i] = 0;
+			}
 
 			cloud_move_time = 0;
 			cloud_x = 0;
