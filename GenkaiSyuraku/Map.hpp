@@ -30,7 +30,7 @@ public:
 	int walking_ani = 0;
 	int walking_ani_flag = 0;
 	int speed = 4;
-	int money = 1000;
+	int money = 100;
 };
 
 class Hatake {
@@ -53,7 +53,7 @@ public:
 		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
 		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
 		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
-		hiroba_image[0] = LoadGraph("image/tower1.png", TRUE);
+		hiroba_image[0] = LoadGraph("image/hiroba.png", TRUE);
 		hiroba_image[1] = LoadGraph("image/tower1.png", TRUE);
 		hiroba_image[2] = LoadGraph("image/tower2.png", TRUE);
 		hiroba_image[3] = LoadGraph("image/tower3.png", TRUE);
@@ -103,6 +103,7 @@ public:
 		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX, mob[10].sizeY, mob[10].image);
 		
 		bgm = LoadSoundMem("music/genkaivillage.wav");
+		bgm2 = LoadSoundMem("music/goukavillage.wav");
 
 		//Font
 		FontHandle_mini = CreateFontToHandle(NULL, 20, 2, DX_FONTTYPE_EDGE);
@@ -303,18 +304,37 @@ public:
 					returnflag = 1;
 					if (select7 == 0 && item_count[item_wood] >= 10) hiroba_level = 2, item_count[item_wood] -= 10, menu = 0;
 					else if (select7 == 1 && item_count[item_stone] >= 20) hiroba_level = 5, item_count[item_stone] -=20, menu = 0;
-					else if (select7 == 2 && item_count[item_wood] >= 10) menu = 0;
+					else if (select7 == 2 && item_count[item_wood] >= 10) hiroba_level = 8, item_count[item_wood] -= 10, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
 			else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
-
+				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
+				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
+				if (select7 > 3) select7 = 0, selector7_y -= 200;
+				if (select7 < 0) select7 = 3, selector7_y += 200;
+				//決定
+				if (up_key[KEY_INPUT_RETURN]) {
+					returnflag = 1;
+					if (select7 == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && hiroba_level == 2) hiroba_level = 3, item_count[item_wood] -= 10, item_count[item_stone] -= 20, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && hiroba_level == 5) hiroba_level = 6, item_count[item_stone] -= 20, item_count[item_ore] -= 10, menu = 0;
+					else if (select7 == 2 && item_count[item_wood] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8) hiroba_level = 9, item_count[item_wood] -= 10, item_count[item_ore] -= 10, menu = 0;
+					else if (select7 == 3) menu = 0;
+				}
 			}
 			else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
-
-			}
-			else if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10) {
-
+				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
+				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
+				if (select7 > 3) select7 = 0, selector7_y -= 200;
+				if (select7 < 0) select7 = 3, selector7_y += 200;
+				//決定
+				if (up_key[KEY_INPUT_RETURN]) {
+					returnflag = 1;
+					if (select7 == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && hiroba_level == 3) hiroba_level = 4, item_count[item_wood] -= 10, item_count[item_stone] -= 30, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && hiroba_level == 6) hiroba_level = 7, item_count[item_stone] -= 30, item_count[item_ore] -= 30, menu = 0;
+					else if (select7 == 2 && item_count[item_wood] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9) hiroba_level = 10, item_count[item_wood] -= 20, item_count[item_ore] -= 20, menu = 0;
+					else if (select7 == 3) menu = 0;
+				}
 			}
 			break;
 		default:
@@ -459,13 +479,8 @@ public:
 				break;
 			case 19:
 				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
-					if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10) {
-
-					}
-					else {
 						talk = 0;
 						menu = 7;
-					}
 				}
 				break;
 			case 50:
@@ -603,24 +618,84 @@ public:
 				}
 			}
 			//集落レベルの管理, mobの再配置
-			if (sakana_total >= 50 && material_total >= 50) {
+			if (sakana_total >= 120 && material_total >= 120) {
+				farm_level = 3;
+				sakanaya_level = 3;
+				yorozuya_level = 1;
+				hatake_level = 1;
+				//ミニゲーム男
+				mob[3].x = mob[3].size * 37;
+				mob[3].y = mob[3].size * 13;
+				mob[3].img = mob[3].image[0];
+				//建築男
+				mob[4].x = mob[4].size * 27;
+				mob[4].y = mob[4].size * 13;
+				mob[4].img = mob[4].image[0];
+
+				//の位置 条件分岐
+				mob[10].x = mob[10].size * 45;
+				mob[10].y = mob[10].size * 13;
+				mob[10].img = mob[10].image[0];
+				//こども
+				mob[9].x = mob[9].size * 91;
+				mob[9].y = mob[9].size * 13;
+				mob[9].img = mob[9].image[0];
+				//おじいの位置
+				mob[0].x = mob[0].size * 60;
+				mob[0].y = mob[0].size * 13;
+				mob[0].img = mob[0].image[0];
+				//おばあの位置
+				mob[1].x = mob[1].size * 18;
+				mob[1].y = mob[1].size * 13;
+				mob[1].img = mob[1].image[0];
+			}
+			else if (sakana_total >= 70 && material_total >= 70) {
 				farm_level = 2;
 				sakanaya_level = 3;
 				yorozuya_level = 1;
 				hatake_level = 1;
-				hiroba_level = 1;
+				//ミニゲーム男
+				mob[3].x = mob[3].size * 37;
+				mob[3].y = mob[3].size * 13;
+				mob[3].img = mob[3].image[0];
+				//建築男
+				mob[4].x = mob[4].size * 27;
+				mob[4].y = mob[4].size * 13;
+				mob[4].img = mob[4].image[0];
+
+				//の位置 条件分岐
+				mob[10].x = mob[10].size * 45;
+				mob[10].y = mob[10].size * 13;
+				mob[10].img = mob[10].image[0];
+				//こども
+				mob[9].x = mob[9].size * 91;
+				mob[9].y = mob[9].size * 13;
+				mob[9].img = mob[9].image[0];
+				//おじいの位置
+				mob[0].x = mob[0].size * 60;
+				mob[0].y = mob[0].size * 13;
+				mob[0].img = mob[0].image[0];
+				//おばあの位置
+				mob[1].x = mob[1].size * 18;
+				mob[1].y = mob[1].size * 13;
+				mob[1].img = mob[1].image[0];
 			}
-			else if (sakana_total >= 50) {
+			else if (sakana_total >= 70) {
 				sakanaya_level = 3;
 				farm_level = 1;
 				yorozuya_level = 1;
 				hatake_level = 1;
 				hiroba_level = 1;
 
-				//の位置 条件分岐
-				mob[2].x = mob[2].size * 35;
-				mob[2].y = mob[2].size * 13;
-				mob[2].img = mob[2].image[0];
+				//ミニゲーム男
+				mob[3].x = mob[3].size * 37;
+				mob[3].y = mob[3].size * 13;
+				mob[3].img = mob[3].image[0];
+				//建築男
+				mob[4].x = mob[4].size * 27;
+				mob[4].y = mob[4].size * 13;
+				mob[4].img = mob[4].image[0];
+
 				//こども
 				mob[9].x = mob[9].size * 91;
 				mob[9].y = mob[9].size * 13;
@@ -641,16 +716,21 @@ public:
 				hatake_level = 1;
 				hiroba_level = 1;
 
+				//建築男
+				mob[4].x = mob[4].size * 27;
+				mob[4].y = mob[4].size * 13;
+				mob[4].img = mob[4].image[0];
+
 				//こども
 				mob[9].x = mob[9].size * 91;
 				mob[9].y = mob[9].size * 13;
 				mob[9].img = mob[9].image[0];
 				//おじいの位置
-				mob[0].x = mob[0].size * 35;
+				mob[0].x = mob[0].size * 37;
 				mob[0].y = mob[0].size * 13;
 				mob[0].img = mob[0].image[0];
 				//おばあの位置
-				mob[1].x = mob[1].size * 18;
+				mob[1].x = mob[1].size * 16;
 				mob[1].y = mob[1].size * 13;
 				mob[1].img = mob[1].image[0];
 			}
@@ -696,7 +776,7 @@ public:
 			selector4_y = 230;
 			selector5_y = 230;
 			selector6_y = 615;
-			selector7_y = 810;
+			selector7_y = 820;
 			select = 0;
 			select2 = 0;
 			select3 = 0;
@@ -714,7 +794,7 @@ public:
 		go_fish_before = go_fish_count;
 		go_material_before = go_material_count;
 
-		printfDx("%d %d %d\n", talk, menu, buy);
+		//printfDx("%d %d %d\n", talk, menu, buy);
 	}
 
 	void Draw(int yorozuya_level, int sakanaya_level, int farm_level, std::array<int, item_num>& item_count) {
@@ -757,124 +837,6 @@ public:
 		if (hatake_find != 10) {
 			DrawRotaGraph(hatake[hatake_find].x + background_x + 64, hatake[hatake_find].y + 96, 0.3, 0, find_image, TRUE, FALSE);
 		}
-		//メニューの描画
-		switch (menu)
-		{
-		case 1:
-			//メインメニュー
-			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(170, selector_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
-			break;
-		case 2:
-			//アイテム選択
-			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(520, selector2_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
-
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
-
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1].c_str());
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size ].c_str());
-
-			DrawFormatStringToHandle(1200, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 5]);
-			DrawFormatStringToHandle(1200, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 4]);
-			DrawFormatStringToHandle(1200, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 3]);
-			DrawFormatStringToHandle(1200, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 2]);
-			DrawFormatStringToHandle(1200, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 1]);
-			DrawFormatStringToHandle(1200, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size ]);
-
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1].c_str());
-
-			break;
-		case 3:
-			//よろず屋
-			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(170, selector3_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
-			break;
-		case 4:
-			//買う
-			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(520, selector4_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
-
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　売値　　　所持数");
-
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, u8"とじる");
-
-			DrawFormatStringToHandle(1400, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_tomato_seed]);
-			DrawFormatStringToHandle(1400, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_cabbage_seed]);
-			DrawFormatStringToHandle(1400, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_corn_seed]);
-			DrawFormatStringToHandle(1400, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_broom]);
-
-			DrawFormatStringToHandle(1000, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_tomato_seed]);
-			DrawFormatStringToHandle(1000, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_cabbage_seed]);
-			DrawFormatStringToHandle(1000, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_corn_seed]);
-			DrawFormatStringToHandle(1000, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_broom]);
-
-			if (select4 == 0) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed].c_str());
-			else if (select4 == 1) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed].c_str());
-			else if (select4 == 2) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed].c_str());
-			else if (select4 == 3) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom].c_str());
-			
-			break;
-		case 5:
-			//売る
-			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(520, selector5_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
-
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　買値　　　所持数");
-
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1].c_str());
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size].c_str());
-
-			DrawFormatStringToHandle(1400, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 5]);
-			DrawFormatStringToHandle(1400, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 4]);
-			DrawFormatStringToHandle(1400, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 3]);
-			DrawFormatStringToHandle(1400, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 2]);
-			DrawFormatStringToHandle(1400, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 1]);
-			DrawFormatStringToHandle(1400, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size]);
-
-			DrawFormatStringToHandle(1000, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 5]);
-			DrawFormatStringToHandle(1000, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 4]);
-			DrawFormatStringToHandle(1000, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 3]);
-			DrawFormatStringToHandle(1000, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 2]);
-			DrawFormatStringToHandle(1000, 530, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 1]);
-			DrawFormatStringToHandle(1000, 600, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size]);
-
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1].c_str());
-			break;
-		case 6:
-			//畑
-			DrawGraph(0, 0, window_image, TRUE);
-			DrawRotaGraph(1450, selector6_y, 0.5, 0, selector_image, TRUE, FALSE);
-			DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, u8"トマトの種 ×%d", item_count[item_tomato_seed]);
-			DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, u8"キャベツの種 ×%d", item_count[item_cabbage_seed]);
-			DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, u8"とうもろこしの種 ×%d", item_count[item_corn_seed]);
-			DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, u8"やめる");
-			break;
-		case 7:
-			//資材選択
-			DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
-
-			break;
-		default:
-			break;
-		}
 
 		if (talk >= 1) DrawGraph(0, 0, textwindow_image, TRUE);
 		//テキストボックス
@@ -891,7 +853,7 @@ public:
 			break;
 		case 3:
 			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"お兄ちゃんは今日はどれくらいお魚釣るの？");
-			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
+			DrawFormatStringToHandle(200, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
 			break;
 		case 4:
 			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"なんか用？");
@@ -985,6 +947,132 @@ public:
 		default:
 			break;
 		}	
+
+		//メニューの描画
+		switch (menu)
+		{
+		case 1:
+			//メインメニュー
+			DrawGraph(0, 0, menu_image, TRUE);
+			DrawGraph(170, selector_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			break;
+		case 2:
+			//アイテム選択
+			DrawGraph(0, 0, menu_image, TRUE);
+			DrawGraph(520, selector2_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
+
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size].c_str());
+
+			DrawFormatStringToHandle(1200, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 5]);
+			DrawFormatStringToHandle(1200, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 4]);
+			DrawFormatStringToHandle(1200, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 3]);
+			DrawFormatStringToHandle(1200, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 2]);
+			DrawFormatStringToHandle(1200, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 1]);
+			DrawFormatStringToHandle(1200, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size]);
+
+			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1].c_str());
+
+			break;
+		case 3:
+			//よろず屋
+			DrawGraph(0, 0, menu2_image, TRUE);
+			DrawGraph(170, selector3_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			break;
+		case 4:
+			//買う
+			DrawGraph(0, 0, menu2_image, TRUE);
+			DrawGraph(520, selector4_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　売値　　　所持数");
+
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, u8"とじる");
+
+			DrawFormatStringToHandle(1500, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_tomato_seed]);
+			DrawFormatStringToHandle(1500, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_cabbage_seed]);
+			DrawFormatStringToHandle(1500, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_corn_seed]);
+			DrawFormatStringToHandle(1500, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_broom]);
+
+			DrawFormatStringToHandle(1100, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_tomato_seed]);
+			DrawFormatStringToHandle(1100, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_cabbage_seed]);
+			DrawFormatStringToHandle(1100, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_corn_seed]);
+			DrawFormatStringToHandle(1100, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_broom]);
+
+			if (select4 == 0) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed].c_str());
+			else if (select4 == 1) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed].c_str());
+			else if (select4 == 2) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed].c_str());
+			else if (select4 == 3) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom].c_str());
+
+			break;
+		case 5:
+			//売る
+			DrawGraph(0, 0, menu2_image, TRUE);
+			DrawGraph(520, selector5_y, selector_image, TRUE);
+			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　買値　　　所持数");
+
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size].c_str());
+
+			DrawFormatStringToHandle(1500, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 5]);
+			DrawFormatStringToHandle(1500, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 4]);
+			DrawFormatStringToHandle(1500, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 3]);
+			DrawFormatStringToHandle(1500, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 2]);
+			DrawFormatStringToHandle(1500, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 1]);
+			DrawFormatStringToHandle(1500, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size]);
+
+			DrawFormatStringToHandle(1100, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 5]);
+			DrawFormatStringToHandle(1100, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 4]);
+			DrawFormatStringToHandle(1100, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 3]);
+			DrawFormatStringToHandle(1100, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 2]);
+			DrawFormatStringToHandle(1100, 530, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 1]);
+			DrawFormatStringToHandle(1100, 600, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size]);
+
+			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1].c_str());
+			break;
+		case 6:
+			//畑
+			DrawGraph(0, 0, window_image, TRUE);
+			DrawRotaGraph(1450, selector6_y, 0.5, 0, selector_image, TRUE, FALSE);
+			DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, u8"トマトの種 ×%d", item_count[item_tomato_seed]);
+			DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, u8"キャベツの種 ×%d", item_count[item_cabbage_seed]);
+			DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, u8"とうもろこしの種 ×%d", item_count[item_corn_seed]);
+			DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, u8"やめる");
+			break;
+		case 7:
+			//資材選択
+			if (hiroba_level == 1) {
+				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
+				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
+				DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：木材10個");
+				DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材20個");
+				DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：木材10個");
+				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
+			}
+			break;
+		default:
+			break;
+		}
+
 	}
 
 private:
@@ -1021,7 +1109,7 @@ private:
 	int hatake_level = 0;
 
 	//flag
-	int bgm, bgm_flag = 0;
+	int bgm, bgm2, bgm_flag = 0;
 	int talk = 0;
 	int menu = 0;
 	int returnflag = 0;
