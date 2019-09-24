@@ -293,8 +293,29 @@ public:
 			break;
 		case 7:
 			//資材選択
+			if (hiroba_level == 1) {
+				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
+				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
+				if (select7 > 3) select7 = 0, selector7_y -= 200;
+				if (select7 < 0) select7 = 3, selector7_y += 200;
+				//決定
+				if (up_key[KEY_INPUT_RETURN]) {
+					returnflag = 1;
+					if (select7 == 0 && item_count[item_wood] >= 10) hiroba_level = 2, item_count[item_wood] -= 10, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 20) hiroba_level = 5, item_count[item_stone] -=20, menu = 0;
+					else if (select7 == 2 && item_count[item_wood] >= 10) menu = 0;
+					else if (select7 == 3) menu = 0;
+				}
+			}
+			else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
 
+			}
+			else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
 
+			}
+			else if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10) {
+
+			}
 			break;
 		default:
 			break;
@@ -336,8 +357,10 @@ public:
 									if (hiroba_level == 10) talk = 17;
 								}
 								else if (i == 3) {//man2
+									if (sakanaya_level == 3) talk = 18;
 								}
 								else if (i == 4) {//man3
+									if (sakanaya_level >= 2) talk = 19;
 								}
 								else if (i == 5) {//foreign1 farm_level == 3
 									talk = 9;
@@ -423,6 +446,26 @@ public:
 					StopSoundMem(bgm);
 					talk = 0;
 					scene_id = 4;
+				}
+				break;
+			case 18:
+				//ミニゲームmaterial
+				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
+					bgm_flag = 0;
+					StopSoundMem(bgm);
+					talk = 0;
+					scene_id = 4;
+				}
+				break;
+			case 19:
+				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
+					if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10) {
+
+					}
+					else {
+						talk = 0;
+						menu = 7;
+					}
 				}
 				break;
 			case 50:
@@ -653,12 +696,14 @@ public:
 			selector4_y = 230;
 			selector5_y = 230;
 			selector6_y = 615;
+			selector7_y = 810;
 			select = 0;
 			select2 = 0;
 			select3 = 0;
 			select4 = 0;
 			select5 = 0;
 			select6 = 0;
+			select7 = 0;
 			menu_size = 6;
 		}
 		//前フレームのデータを記録
@@ -684,7 +729,7 @@ public:
 		if (player.x > tsuri_area) {
 			DrawGraph(0, 0, area_icon_image, TRUE);
 			DrawGraph(tsuri_area + background_x - 400, -250, fish_icon_image, TRUE);
-			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, "Enterキーで釣りエリアへ");
+			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, u8"Enterキーで釣りエリアへ");
 		}
 		//おじいのアイコンを描画
 		DrawGraph(mob[0].x + background_x - 64, mob[0].y - 200, icon_image, TRUE);
@@ -727,14 +772,14 @@ public:
 			DrawGraph(520, selector2_y, selector_image, TRUE);
 			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, "アイテム名　　　　　　所持数");
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5]);
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4]);
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3]);
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2]);
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1]);
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size ]);
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size ].c_str());
 
 			DrawFormatStringToHandle(1200, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 5]);
 			DrawFormatStringToHandle(1200, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 4]);
@@ -743,7 +788,7 @@ public:
 			DrawFormatStringToHandle(1200, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 1]);
 			DrawFormatStringToHandle(1200, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size ]);
 
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1]);
+			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1].c_str());
 
 			break;
 		case 3:
@@ -758,13 +803,13 @@ public:
 			DrawGraph(520, selector4_y, selector_image, TRUE);
 			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, "アイテム名　　　売値　　　所持数");
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　売値　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed]);
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed]);
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed]);
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom]);
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "とじる");
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, u8"とじる");
 
 			DrawFormatStringToHandle(1400, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_tomato_seed]);
 			DrawFormatStringToHandle(1400, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_cabbage_seed]);
@@ -776,10 +821,10 @@ public:
 			DrawFormatStringToHandle(1000, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_corn_seed]);
 			DrawFormatStringToHandle(1000, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_broom]);
 
-			if (select4 == 0) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed]);
-			else if (select4 == 1) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed]);
-			else if (select4 == 2) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed]);
-			else if (select4 == 3) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom]);
+			if (select4 == 0) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed].c_str());
+			else if (select4 == 1) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed].c_str());
+			else if (select4 == 2) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed].c_str());
+			else if (select4 == 3) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom].c_str());
 			
 			break;
 		case 5:
@@ -788,14 +833,14 @@ public:
 			DrawGraph(520, selector5_y, selector_image, TRUE);
 			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, "アイテム名　　　買値　　　所持数");
+			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　買値　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5]);
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4]);
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3]);
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2]);
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1]);
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size]);
+			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size].c_str());
 
 			DrawFormatStringToHandle(1400, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 5]);
 			DrawFormatStringToHandle(1400, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 4]);
@@ -811,19 +856,21 @@ public:
 			DrawFormatStringToHandle(1000, 530, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 1]);
 			DrawFormatStringToHandle(1000, 600, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size]);
 
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1]);
+			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1].c_str());
 			break;
 		case 6:
 			//畑
 			DrawGraph(0, 0, window_image, TRUE);
 			DrawRotaGraph(1450, selector6_y, 0.5, 0, selector_image, TRUE, FALSE);
-			DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, "トマトの種 ×%d", item_count[item_tomato_seed]);
-			DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, "キャベツの種 ×%d", item_count[item_cabbage_seed]);
-			DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, "とうもろこしの種 ×%d", item_count[item_corn_seed]);
-			DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, "やめる");
+			DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, u8"トマトの種 ×%d", item_count[item_tomato_seed]);
+			DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, u8"キャベツの種 ×%d", item_count[item_cabbage_seed]);
+			DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, u8"とうもろこしの種 ×%d", item_count[item_corn_seed]);
+			DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, u8"やめる");
 			break;
 		case 7:
 			//資材選択
+			DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
+
 			break;
 		default:
 			break;
@@ -835,95 +882,103 @@ public:
 		{
 		
 		case 1:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "釣りをしてこの集落を復興させてくれ！");
-			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"釣りをしてこの集落を復興させてくれ！");
+			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 2:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "今日も釣りをしてくれて感謝じゃ！");
-			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"今日も釣りをしてくれて感謝じゃ！");
+			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 3:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "お兄ちゃんは今日はどれくらいお魚釣るの？");
-			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, "こども");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"お兄ちゃんは今日はどれくらいお魚釣るの？");
+			DrawFormatStringToHandle(240, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
 			break;
 		case 4:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "なんか用？");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "よろず屋");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"なんか用？");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"よろず屋");
 			break;
 		case 5:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "いらっしゃい！何か買ってくかい？");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "よろず屋");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"いらっしゃい！何か買ってくかい？");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"よろず屋");
 			break;
 		case 6:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "いつもごひいきにありがとうね！\nいろいろ見ていっておくれ！");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "よろず屋");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"いつもごひいきにありがとうね！\nいろいろ見ていっておくれ！");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"よろず屋");
 			break;
 		case 7:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "この牧場も寂しいのう……");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"この牧場も寂しいのう……");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 8:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "この牧場もだいぶ賑やかになってきたのう！");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"この牧場もだいぶ賑やかになってきたのう！");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 9:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "この羊たちに囲まれて寝てみたいデース！");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "外国人");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"この羊たちに囲まれて寝てみたいデース！");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"外国人");
 			break;
 		case 10:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "次は素材集めでこの広場を賑やかにするのじゃ！");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"次は素材集めでこの広場を賑やかにするのじゃ！");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 11:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "この塔に登ってみたいな！もっと高くなるのかな……");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "こども");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"この塔に登ってみたいな！もっと高くなるのかな……");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
 			break;
 		case 12:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "ココハ　ワタシタチノ　スンデイタトコロニ　ニテイマスネ。");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "宇宙人");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"ココハ　ワタシタチノ　スンデイタトコロニ　ニテイマスネ。");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"宇宙人");
 			break;
 		case 13:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "ワタシの国にはこれより大きい城がいくつもアリマース。");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "おじさん");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"ワタシの国にはこれより大きい城がいくつもアリマース。");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"おじさん");
 			break;
 		case 14:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "ぼくがこのおしろのおうさまだ！えっへん。");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "祖父");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"ぼくがこのおしろのおうさまだ！えっへん。");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"祖父");
 			break;
 		case 15:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "もっとこの像が豪華になったらいいのになあ……");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "こども");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"もっとこの像が豪華になったらいいのになあ……");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
 			break;
 		case 16:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "こんなに立派な像、ワタシの国でも見たことないデス！！");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "外国人");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"こんなに立派な像、ワタシの国でも見たことないデス！！");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"外国人");
 			break;
 		case 17:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "生まれ変わったら羊になりたいなあ……");
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, "こども");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"生まれ変わったら羊になりたいなあ……");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"こども");
+			break;
+		case 18:
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"素材集めゲームを始めます");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"おじさん");
+			break;
+		case 19:
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"素材を集めて建築をしよう");
+			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, u8"おじさん");
 			break;
 
 			//50~53畑
 		case 50:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "植える種を選んでください。");
-			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"植える種を選んでください。");
+			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
 		case 51:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "種を持っていません。");
-			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"種を持っていません。");
+			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
 		case 52:
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "育つまでミニゲームで遊ぼう。");
-			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"育つまでミニゲームで遊ぼう。");
+			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
 		case 53:
 			if (hatake[hatake_select].img == tomato_image[2])
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "トマトを収穫しました。");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"トマトを収穫しました。");
 			else if (hatake[hatake_select].img == kyabetsu_image[2])
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "キャベツを収穫しました。");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"キャベツを収穫しました。");
 			else if (hatake[hatake_select].img == morokoshi_image[2])
-				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, "とうもろこしを収穫しました。");
-			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, "畑");
+				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"とうもろこしを収穫しました。");
+			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
 		case 54:
 			break;
@@ -948,6 +1003,7 @@ private:
 	int sakana_total = 0;
 	int material_total = 0;
 	int menu_size = 4;
+	int sizai = 0;
 
 	//selector
 	int select = 0;
@@ -956,6 +1012,7 @@ private:
 	int select4 = 0;
 	int select5 = 0;
 	int select6 = 0;
+	int select7 = 0;
 	int item_select = 0;
 	int hatake_select = 0;
 
@@ -999,6 +1056,7 @@ private:
 	int selector4_y = 0;
 	int selector5_y = 0;
 	int selector6_y = 0;
+	int selector7_y = 0;
 	int tsuri_area = 2800;
 
 
