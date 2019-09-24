@@ -371,6 +371,7 @@ public:
 				material_count[i] = 0;
 			}
 
+			timer_count = 0;
 			width = 1;
 			height = 1;
 			first_frame = true;
@@ -401,6 +402,7 @@ public:
 				material_count[i] = 0;
 			}
 
+			timer_count = 0;
 			width = 1;
 			height = 1;
 			first_frame = true;
