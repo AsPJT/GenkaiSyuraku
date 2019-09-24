@@ -104,6 +104,7 @@ public:
 	}
 
 	Material() {
+		first_frame = true;
 		font_timer = CreateFontToHandle(NULL, 100, 0, DX_FONTTYPE_NORMAL);
 
 		// 画像格納
@@ -137,7 +138,6 @@ public:
 		for (std::size_t i{}; i < field.size(); ++i)
 			for (std::size_t j{}; j < field[i].size(); ++j)
 				field[i][j] = material_num;
-		first_frame = true;
 	}
 
 	void call(std::array<int, item_num>& item_count, bool up_key[], bool down_key[], std::int_fast32_t key_frame[], std::uint_fast8_t& scene_id, std::uint_fast32_t& materialed_count, std::uint_fast32_t& go_material_count) {
@@ -340,6 +340,9 @@ public:
 		// 強制リザルト画面
 		if (up_key[KEY_INPUT_T]) timer = 0;
 
+		// 初期フレームだったら初期フレームを終了
+		if (first_frame) first_frame = false;
+
 		if (material_scene == material_scene_material && timer > 0) --timer;
 		if (material_scene == material_scene_material && timer > 0 && key_frame[KEY_INPUT_LSHIFT] > 0) --timer;
 
@@ -350,6 +353,7 @@ public:
 		else if (timer <= -1) {
 			scene_id = 2; // マップ
 			timer = 60 * 15;
+
 			materialed_count = (std::uint_fast32_t)material_get.size();
 			++go_material_count;
 
@@ -359,6 +363,9 @@ public:
 			for (std::size_t i{}; i < material_num; ++i) {
 				material_count[i] = 0;
 			}
+			width = 1;
+			height = 1;
+			first_frame = true;
 			materialer_timer = 0;
 			material_scene_start_timer = 100 * 4;
 			material_scene = material_scene_start;
@@ -397,8 +404,6 @@ public:
 			material_get.resize(0);
 			material_swim.resize(0);
 		}
-		// 初期フレームだったら初期フレームを終了
-		if (first_frame) first_frame = false;
 	}
 
 private:
