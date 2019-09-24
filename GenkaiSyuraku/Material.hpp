@@ -59,7 +59,7 @@ constexpr std::array<std::uint_fast8_t, material_num + 1> material_start_frame{ 
 constexpr std::array<std::uint_fast8_t, material_num + 1> material_half_frame{ { 80,80,180,80,80,180,1 } };
 
 // 素材別のスコア
-constexpr std::array<std::uint_fast32_t, material_num + 1> material_score{ { 100,500,1000,4000,100000,30000,1 } };
+constexpr std::array<std::uint_fast32_t, material_num + 1> material_score{ { 1,3,8,50,35,12,1 } };
 
 // 素材のデフォルトサイズ
 constexpr std::array<float, material_num + 1> material_gram{ { 50,80,120,150,300,300,1 } };
@@ -110,6 +110,8 @@ public:
 		for (std::size_t i{}; i < 4; ++i) {
 			material_start_image[i] = LoadGraph(std::string("image/material_start" + std::to_string(i) + ".png").c_str());
 		}
+		up_time = LoadGraph("image/up_time.png");
+		bottle = LoadGraph("image/bottle.png");
 		image_material_grid = LoadGraph("image/material_grid.png");
 		image_materialer_hand = LoadGraph("image/materialer_hand.png");
 		image_select_range = LoadGraph("image/select_range.png");
@@ -125,6 +127,9 @@ public:
 		broomer_image[materialer_scene_go] = LoadGraph("image/broomer3.png");
 
 		image_ocean_sky = LoadGraph("image/material_sky.png");
+		for (std::size_t i{}; i < 6; ++i) {
+			message_image[i] = LoadGraph(std::string("image/fish_message" + std::to_string(i) + ".png").c_str());
+		}
 		for (std::size_t i{}; i < material_image.size(); ++i) {
 			material_image[i] = LoadGraph(std::string("image/material" + std::to_string(i + 1) + ".png").c_str());
 			material_30shadow_image[i] = LoadGraph(std::string("image/material_30shadow" + std::to_string(i + 1) + ".png").c_str());
@@ -213,7 +218,10 @@ public:
 									material_get.back().status = material_status_up_fly;
 									material_get.back().add_r = dist_r(engine);
 								}
-								else timer += 180;
+								else {
+									timer += 180;
+									time_plus_timer = 100;
+								}
 								field[material_swim[i].yy][material_swim[i].xx] = material_num;
 								material_swim.erase(material_swim.begin() + i);
 
@@ -294,6 +302,14 @@ public:
 		if (material_scene == material_scene_material) {
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100, 0xffffffff, TRUE);
 			DrawBox(field_x + ((select_x+1) * 128), field_y + (select_y * 128), field_x + ((select_x+1) * 128)+50, field_y + (select_y * 128)+100 - materialer_timer * 100 / 30, 0xff33aa33, TRUE);
+			DxLib::DrawGraph(field_x + ((select_x + 1) * 128)-40, field_y + (select_y * 128)-48, bottle, TRUE);
+		}
+
+		if (time_plus_timer > 0) {
+			--time_plus_timer;
+			if (time_plus_timer >= 80) DxLib::DrawGraph(550 + (time_plus_timer - 80) * 100, 500, up_time, TRUE);
+			else if (time_plus_timer > 20) DxLib::DrawGraph(550, 500, up_time, TRUE);
+			else DxLib::DrawGraph(550 + (time_plus_timer - 20) * 100, 500, up_time, TRUE);
 		}
 
 		switch (material_scene)
@@ -317,6 +333,7 @@ public:
 			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_gold]);
 			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_timer]);
 			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, "%d個", material_count[material_straw]);
+			DxLib::DrawGraph(0, 0, message_image[scoreMaterial(total_score)], TRUE);
 			break;
 		}
 
@@ -406,6 +423,11 @@ private:
 	const int materialer_timer_max{ 30 };
 	int materialer_timer{ 0 };
 
+	const int time_plus_timer_max{ 40 };
+	int time_plus_timer{ 0 };
+
+	int up_time{ -1 };
+	int bottle{ -1 };
 	int font_timer{ -1 };
 
 	int image_material_grid{ -1 };
@@ -415,6 +437,7 @@ private:
 	int image_ocean_sky{ -1 };
 	int image_result{ -1 };
 
+	std::array<int, 6> message_image{ -1 };
 	std::array<int, 4> material_start_image{ -1 };
 	std::array<int, materialer_scene_num> materialer_image{ -1 };
 	std::array<int, materialer_scene_num> broomer_image{ -1 };
@@ -446,6 +469,15 @@ private:
 		if (material_count_ < 248) return material_straw;
 		if (material_count_ < 252) return material_timer;
 		return material_gold;
+	}
+
+	std::uint_fast8_t scoreMaterial(const std::int_fast32_t fish_count_) const {
+		if (fish_count_ <= 0) return 0;
+		if (fish_count_ < 80) return 1;
+		if (fish_count_ < 150) return 2;
+		if (fish_count_ < 200) return 3;
+		if (fish_count_ < 300) return 4;
+		return 5;
 	}
 
 };
