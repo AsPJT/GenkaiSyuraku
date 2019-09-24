@@ -74,7 +74,6 @@ public:
 			PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);//バックグラウンド再生
 			bgm_flag = 1;
 		}
-
 	}
 
 private:
