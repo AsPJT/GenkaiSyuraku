@@ -8,7 +8,7 @@
 #include "Item.hpp"
 
 // 釣りの状態
-enum :std::uint_fast8_t {
+enum : ::std::uint_fast8_t {
 	fish_scene_empty,
 	fish_scene_start,
 	fish_scene_fish,
@@ -16,7 +16,7 @@ enum :std::uint_fast8_t {
 };
 
 // 魚の状態
-enum :std::uint_fast8_t {
+enum : ::std::uint_fast8_t {
 	fish_status_empty,
 	fish_status_swim,
 	fish_status_get,
@@ -26,7 +26,7 @@ enum :std::uint_fast8_t {
 };
 
 // 漁師の状態
-enum :std::uint_fast8_t {
+enum : ::std::uint_fast8_t {
 	fisher_scene_empty,
 	fisher_scene_hit,
 	fisher_scene_get,
@@ -35,7 +35,7 @@ enum :std::uint_fast8_t {
 };
 
 // 魚リスト
-enum :std::uint_fast8_t {
+enum : ::std::uint_fast8_t {
 	// 小魚
 	fish_small,
 	// 中魚
@@ -53,21 +53,25 @@ enum :std::uint_fast8_t {
 };
 
 // 魚の大きさ
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_whale_shark,fish_regalecus_glesne,fish_small } };
+constexpr ::std::array<::std::uint_fast8_t, fish_num + 1> fish_size{ { fish_small,fish_medium,fish_large,fish_medium,fish_whale_shark,fish_regalecus_glesne,fish_small } };
 
-// 魚の浮き待機フレーム
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_frame{ { 24,20,16,16,10,12,1 } };
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,5,5,5,1 } };
-constexpr std::array<std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,8,1 } };
+// 魚の浮き待機期間（フレーム数）
+constexpr ::std::array<::std::uint_fast8_t, fish_num + 1> fish_frame{ { 24,20,16,16,10,12,1 } };
+// 魚の発生時の半透明期間（フレーム数）
+constexpr ::std::array<::std::uint_fast8_t, fish_num + 1> fish_start_frame{ { 5,5,5,5,5,5,1 } };
+// 魚の逃避時の半透明期間（フレーム数）
+constexpr ::std::array<::std::uint_fast8_t, fish_num + 1> fish_half_frame{ { 18,18,12,12,8,8,1 } };
 
-constexpr std::array<float, 8> fish_sin{ { 0.0f,0.7f,1.0f,0.7f,0.0f,-0.7f,-1.0f,-0.7f } };
-constexpr std::array<float, fish_num + 1> fish_shake{ { 3.0f,6.0f,9.0f,18.0f,60.0f,25.0f,0.0f } };
+// 船の揺れる周期
+constexpr ::std::array<float, 8> fish_sin{ { 0.0f,0.7f,1.0f,0.7f,0.0f,-0.7f,-1.0f,-0.7f } };
+// 魚の揺らす力
+constexpr ::std::array<float, fish_num + 1> fish_shake{ { 3.0f,6.0f,9.0f,18.0f,60.0f,25.0f,0.0f } };
 
 // 魚別のスコア
-constexpr std::array<std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,50,35,1 } };
+constexpr ::std::array<::std::uint_fast32_t, fish_num + 1> fish_score{ { 1,3,8,12,50,35,1 } };
 
 // 魚のデフォルトサイズ
-constexpr std::array<float, fish_num + 1> fish_gram{ { 50,80,120,150,300,300,1 } };
+constexpr ::std::array<float, fish_num + 1> fish_gram{ { 50,80,120,150,300,300,1 } };
 
 class Fish {
 public:
@@ -161,15 +165,11 @@ public:
 		std::mt19937 engine(seed_gen());
 
 		shake_value -= 0.5f;
-		if (shake_value < 0.0f)shake_value = 0.0f;
-		++shake_count;
-		if (shake_count >= 8) shake_count = 0;
+		if (shake_value < 0.0f) shake_value = 0.0f;
+		if (++shake_count >= 8) shake_count = 0;
 
-		int shake_y{ int(shake_value * fish_sin[shake_count])};
-
-		++cloud_move_time;
-		if (fish_scene != fish_scene_end)
-		if (cloud_move_time >= cloud_move_time_max) {
+		int shake_y{ static_cast<int>(shake_value * fish_sin[shake_count])};
+		if (fish_scene != fish_scene_end && ++cloud_move_time >= cloud_move_time_max) {
 			++cloud_x;
 			cloud_move_time = 0;
 		}
@@ -200,8 +200,8 @@ public:
 		for (std::size_t i{}; i < fish_swim.size(); ++i) {
 
 			++fish_swim[i].start_frame;
-			fish_swim[i].x = std::int_fast32_t(double(fish_swim[i].x) * 0.95 + double(uki_x) * 0.05);
-			fish_swim[i].y = std::int_fast32_t(fish_swim[i].y * 0.95 + (uki_y + 50) * 0.05);
+			fish_swim[i].x = static_cast<std::int_fast32_t>(static_cast<double>(fish_swim[i].x) * 0.95 + static_cast<double>(uki_x) * 0.05);
+			fish_swim[i].y = static_cast<std::int_fast32_t>(static_cast<double>(fish_swim[i].y) * 0.95 + (static_cast<double>(uki_y) + 50.0) * 0.05);
 
 			std::int_fast32_t fish_dis{ (fish_swim[i].x - uki_x) * (fish_swim[i].x - uki_x) + (fish_swim[i].y - (uki_y + 50)) * (fish_swim[i].y - (uki_y + 50)) };
 			if (fish_dis < 1500) {
@@ -475,6 +475,7 @@ private:
 		return fish_regalecus_glesne;
 	}
 
+	// 釣りのトータルスコア評価
 	std::uint_fast8_t scoreFish(const std::int_fast32_t fish_count_) const {
 		if (fish_count_ <= 0) return 0;
 		if (fish_count_ < 80) return 1;
