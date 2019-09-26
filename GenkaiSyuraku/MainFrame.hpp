@@ -37,6 +37,8 @@ public:
 
 	// 初期化処理
 	bool init() {
+		button1 = ::DxLib::LoadGraph(u8"image/button1.png");
+		button2 = ::DxLib::LoadGraph(u8"image/button2.png");
 		title.init();
 		map.init();
 		return true;
@@ -57,21 +59,27 @@ public:
 		// タイトル画面
 		case scene_title:
 			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level);
+			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 			break;
 
 		// マップ画面
 		case scene_map:
 			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level);
+			::DxLib::DrawGraph(0, 568, button2, TRUE);
+			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 			break;
 
 		// 釣り画面
 		case scene_fish:
 			fish.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
+			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 			break;
 
 		// 素材あつめ画面
 		case scene_material:
 			material.call(item_count, up_key, down_key, key_frame, scene_id, material_count, go_material_count);
+			::DxLib::DrawGraph(0, 568, button2, TRUE);
+			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 			break;
 
 		// 閉じる画面
@@ -92,6 +100,42 @@ public:
 		char tmp_key[256]{};
 		// 全てのキーの入力状態を得る
 		DxLib::GetHitKeyStateAll(tmp_key);
+
+		int pos_x{}, pos_y{};
+		const std::size_t num{ static_cast<std::size_t>(GetTouchInputNum()) };
+		for (std::size_t i{}; i < num; ++i) {
+			// タッチされている箇所の座標を取得
+			GetTouchInput(static_cast<int>(i), &pos_x, &pos_y, nullptr, nullptr);
+			if (pos_x>=176 && pos_y>=584 && pos_x < 336 && pos_y < 744) {
+				tmp_key[KEY_INPUT_UP] = 1;
+			}
+			else if (pos_x >= 176 && pos_y >= 904 && pos_x < 336 && pos_y < 1024) {
+				tmp_key[KEY_INPUT_DOWN] = 1;
+			}
+			else if (pos_x >= 16 && pos_y >= 744 && pos_x < 176 && pos_y < 904) {
+				tmp_key[KEY_INPUT_LEFT] = 1;
+			}
+			else if (pos_x >= 336 && pos_y >= 744 && pos_x < 496 && pos_y < 904) {
+				tmp_key[KEY_INPUT_RIGHT] = 1;
+			}
+			else if (pos_x >= 1584 && pos_y >= 584 && pos_x < 1744 && pos_y < 744) {
+				tmp_key[KEY_INPUT_T] = 1;
+				tmp_key[KEY_INPUT_E] = 1;
+			}
+			else if (pos_x >= 1584 && pos_y >= 904 && pos_x < 1744 && pos_y < 1024) {
+				tmp_key[KEY_INPUT_R] = 1;
+				tmp_key[KEY_INPUT_LEFT] = 1;
+			}
+			else if (pos_x >= 1424 && pos_y >= 744 && pos_x < 1584 && pos_y < 904) {
+				tmp_key[KEY_INPUT_R] = 1;
+				tmp_key[KEY_INPUT_LEFT] = 1;
+			}
+			else if (pos_x >= 1744 && pos_y >= 744 && pos_x < 1904 && pos_y < 904) {
+				tmp_key[KEY_INPUT_RETURN] = 1;
+				tmp_key[KEY_INPUT_SPACE] = 1;
+			}
+		}
+
 		for (std::size_t i{}; i < 256; ++i) {
 			// 押されたらtrue
 			down_key[i] = (tmp_key[i] != 0 && key_frame[i] == 0);
@@ -115,6 +159,8 @@ private:
 	Fish fish{};
 	Material material{};
 	std::array<int, item_num> item_count{ {} };
+	int button1{ -1 };
+	int button2{ -1 };
 
 private:
 	Map map;
