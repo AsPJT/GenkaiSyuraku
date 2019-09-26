@@ -1,4 +1,5 @@
-﻿#include "MainFrame.hpp"
+﻿//#define GENKAI_SYURAKU_TOUCH
+#include "MainFrame.hpp"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ログ出力を行わない

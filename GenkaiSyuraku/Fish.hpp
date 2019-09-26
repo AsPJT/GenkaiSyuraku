@@ -29,7 +29,6 @@ enum : ::std::uint_fast8_t {
 enum : ::std::uint_fast8_t {
 	fisher_scene_empty,
 	fisher_scene_hit,
-	fisher_scene_get,
 	fisher_scene_go,
 	fisher_scene_num
 };
@@ -97,21 +96,19 @@ private:
 	const int range_w{ 900 };
 	const int range_h{ 1080 };
 
-	int back{ -1 };
-	int wave{ -1 };
+	int font_timer{ ::DxLib::CreateFontToHandle(nullptr, 100, 0, DX_FONTTYPE_NORMAL) };
 
-	int bottle{ -1 };
-	int rare{ -1 };
-	int super_rare{ -1 };
-
-	int font_timer{ -1 };
-
-	int image_find_fish{ -1 };
-	int image_uki{ -1 };
-	int image_ocean_sky{ -1 };
-	int image_ocean_cloud{ -1 };
-	int image_ocean_island{ -1 };
-	int image_result{ -1 };
+	const int back{ ::DxLib::LoadGraph(u8"image/ocean.png") };
+	const int wave{ ::DxLib::LoadGraph(u8"image/wave.png") };
+	const int bottle{ ::DxLib::LoadGraph(u8"image/bottle.png") };
+	const int rare{ ::DxLib::LoadGraph(u8"image/rare.png") };
+	const int super_rare{ ::DxLib::LoadGraph(u8"image/super_rare.png") };
+	const int image_find_fish{ ::DxLib::LoadGraph(u8"image/find_fish.png") };
+	const int image_uki{ ::DxLib::LoadGraph(u8"image/uki.png") };
+	const int image_ocean_sky{ ::DxLib::LoadGraph(u8"image/ocean_sky.png") };
+	const int image_ocean_cloud{ ::DxLib::LoadGraph(u8"image/ocean_cloud.png") };
+	const int image_ocean_island{ ::DxLib::LoadGraph(u8"image/ocean_island.png") };
+	const int image_result{ ::DxLib::LoadGraph(u8"image/result2.png") };
 
 	float shake_value{};
 
@@ -156,7 +153,7 @@ private:
 	::std::vector<FishStatus> fish_swim{};
 
 	// 魚の生成確率
-	::std::uint_fast8_t spawnFish(const ::std::int_fast32_t fish_count_) const {
+	constexpr ::std::uint_fast8_t spawnFish(const ::std::int_fast32_t fish_count_) const noexcept {
 		if (fish_count_ < 110) return fish_small;
 		if (fish_count_ < 170) return fish_medium;
 		if (fish_count_ < 220) return fish_large;
@@ -166,7 +163,7 @@ private:
 	}
 
 	// 釣りのトータルスコア評価
-	::std::uint_fast8_t scoreFish(const ::std::int_fast32_t fish_count_) const {
+	constexpr ::std::uint_fast8_t scoreFish(const ::std::int_fast32_t fish_count_) const noexcept {
 		if (fish_count_ <= 0) return 0;
 		if (fish_count_ < 80) return 1;
 		if (fish_count_ < 180) return 2;
@@ -195,34 +192,19 @@ public:
 
 	Fish() {
 
-		font_timer = ::DxLib::CreateFontToHandle(nullptr, 100, 0, DX_FONTTYPE_NORMAL);
-
 		// 画像格納
 		for (::std::size_t i{}; i < 4; ++i) {
 			fish_start_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_start" + ::std::to_string(i) + u8".png").c_str());
 		}
-		bottle = ::DxLib::LoadGraph(u8"image/bottle.png");
-		rare = ::DxLib::LoadGraph(u8"image/rare.png");
-		super_rare = ::DxLib::LoadGraph(u8"image/super_rare.png");
-		image_find_fish = ::DxLib::LoadGraph(u8"image/find_fish.png");
-		image_result = ::DxLib::LoadGraph(u8"image/result2.png");
-		back = ::DxLib::LoadGraph(u8"image/ocean.png");
-		image_uki = ::DxLib::LoadGraph(u8"image/uki.png");
-		wave = ::DxLib::LoadGraph(u8"image/wave.png");
 		fisher_image[fisher_scene_empty] = ::DxLib::LoadGraph(u8"image/fisher1.png");
 		fisher_image[fisher_scene_hit] = ::DxLib::LoadGraph(u8"image/fisher2.png");
 		fisher_image[fisher_scene_go] = ::DxLib::LoadGraph(u8"image/fisher3.png");
 
-		image_ocean_sky = ::DxLib::LoadGraph(u8"image/ocean_sky.png");
-		image_ocean_cloud = ::DxLib::LoadGraph(u8"image/ocean_cloud.png");
-		image_ocean_island = ::DxLib::LoadGraph(u8"image/ocean_island.png");
 		for (::std::size_t i{}; i < 6; ++i) {
 			message_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_message" + ::std::to_string(i) + u8".png").c_str());
 		}
 		for (::std::size_t i{}; i < fish_image.size(); ++i) {
 			fish_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish" + ::std::to_string(i + 1) + u8".png").c_str());
-		}
-		for (::std::size_t i{}; i < fish_shadow_image.size(); ++i) {
 			fish_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_shadow" + ::std::to_string(i + 1) + u8".png").c_str());
 			result_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/result_shadow" + ::std::to_string(i + 1) + u8".png").c_str());
 			fish_30shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_30shadow" + ::std::to_string(i + 1) + u8".png").c_str());
@@ -269,7 +251,7 @@ public:
 			if (fish_get[i].status == fish_status_down_fly) {
 				fish_get[i].y += 20;
 				fish_get[i].r += fish_get[i].add_r;
-				if (fish_get[i].y > 750 - fish_get.size() * 5) {
+				if (fish_get[i].y > 750 - static_cast<::std::int_fast32_t>(fish_get.size() * 5)) {
 					fish_get[i].status = fish_status_stay;
 					shake_value += fish_shake[fish_get[i].fish_type];
 				}
@@ -345,11 +327,8 @@ public:
 		(is_hit) ?
 			::DxLib::DrawLine(uki_x, uki_y, 898, 637 + shake_y, 0x00000000) :
 			::DxLib::DrawLine(uki_x, uki_y, 957, 527 + shake_y, 0x00000000);
-		//898,637
 		::DxLib::DrawGraph(850, 400 + shake_y, wave, TRUE);
-
 		::DxLib::DrawGraph(460, uki_y - 2, image_uki, TRUE);
-
 		//DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
 
 

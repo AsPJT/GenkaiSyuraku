@@ -37,8 +37,6 @@ public:
 
 	// 初期化処理
 	bool init() {
-		button1 = ::DxLib::LoadGraph(u8"image/button1.png");
-		button2 = ::DxLib::LoadGraph(u8"image/button2.png");
 		title.init();
 		map.init();
 		return true;
@@ -59,27 +57,35 @@ public:
 		// タイトル画面
 		case scene_title:
 			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level);
+#ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
+#endif
 			break;
 
 		// マップ画面
 		case scene_map:
 			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level);
+#ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
+#endif
 			break;
 
 		// 釣り画面
 		case scene_fish:
 			fish.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
+#ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
+#endif
 			break;
 
 		// 素材あつめ画面
 		case scene_material:
 			material.call(item_count, up_key, down_key, key_frame, scene_id, material_count, go_material_count);
+#ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
+#endif
 			break;
 
 		// 閉じる画面
@@ -101,6 +107,7 @@ public:
 		// 全てのキーの入力状態を得る
 		DxLib::GetHitKeyStateAll(tmp_key);
 
+#ifdef GENKAI_SYURAKU_TOUCH
 		int pos_x{}, pos_y{};
 		const std::size_t num{ static_cast<std::size_t>(GetTouchInputNum()) };
 		for (std::size_t i{}; i < num; ++i) {
@@ -135,6 +142,7 @@ public:
 				tmp_key[KEY_INPUT_SPACE] = 1;
 			}
 		}
+#endif
 
 		for (std::size_t i{}; i < 256; ++i) {
 			// 押されたらtrue
@@ -159,8 +167,10 @@ private:
 	Fish fish{};
 	Material material{};
 	std::array<int, item_num> item_count{ {} };
-	int button1{ -1 };
-	int button2{ -1 };
+#ifdef GENKAI_SYURAKU_TOUCH
+	int button1{ ::DxLib::LoadGraph(u8"image/button1.png") };
+	int button2{ ::DxLib::LoadGraph(u8"image/button2.png") };
+#endif
 
 private:
 	Map map;
