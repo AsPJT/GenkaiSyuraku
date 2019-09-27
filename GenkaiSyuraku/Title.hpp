@@ -24,7 +24,7 @@ public:
 		continue_image[1] = LoadGraph("image/continue2.png", TRUE);
 		end_image[0] = LoadGraph("image/end.png", TRUE);
 		end_image[1] = LoadGraph("image/end2.png", TRUE);
-		bgm = LoadSoundMem("music/genkaivillage.wav");
+		bgm = LoadSoundMem("music/genkaivillage.ogg");
 	}
 
 	void call(bool up_key[], std::uint_fast8_t& scene_id, int yorozuya_level, int sakanaya_level, int farm_level) {

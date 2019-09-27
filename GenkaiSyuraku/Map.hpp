@@ -102,8 +102,8 @@ public:
 		LoadDivGraph("image/girl1.png", 4, 1, 4, mob[9].sizeX, mob[9].sizeY, mob[9].image);
 		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX, mob[10].sizeY, mob[10].image);
 		
-		bgm = LoadSoundMem("music/genkaivillage.wav");
-		bgm2 = LoadSoundMem("music/goukavillage.wav");
+		bgm = LoadSoundMem("music/genkaivillage.ogg");
+		bgm2 = LoadSoundMem("music/goukavillage.ogg");
 
 		//Font
 		FontHandle_mini = CreateFontToHandle(NULL, 20, 2, DX_FONTTYPE_EDGE);
@@ -125,7 +125,7 @@ public:
 		}
 	}
 
-	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, int& yorozuya_level, int& sakanaya_level, int& farm_level) {
+	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, int& yorozuya_level, int& sakanaya_level, int& farm_level, int& talk_id) {
 		returnflag = 0;
 		//歩行フラグ
 		if (player.x % player.size == 0 && player.y % player.size == 0 && talk == 0 && menu == 0) {       //座標が32で割り切れたら入力可能
@@ -797,6 +797,7 @@ public:
 		go_material_before = go_material_count;
 
 		//printfDx("%d %d %d\n", talk, menu, buy);
+		talk_id = talk;
 	}
 
 	void Draw(int yorozuya_level, int sakanaya_level, int farm_level, std::array<int, item_num>& item_count) {

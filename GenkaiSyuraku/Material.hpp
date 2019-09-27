@@ -183,10 +183,13 @@ public:
 
 	Material() {
 		first_frame = true;
+		char a[2];
+		a[1] = 0;
 
 		// 画像格納
 		for (::std::size_t i{}; i < 4; ++i) {
-			material_start_image[i] = ::DxLib::LoadGraph(::std::string("image/material_start" + ::std::to_string(i) + ".png").c_str());
+			a[0] = static_cast<char>(i + 48);
+			material_start_image[i] = ::DxLib::LoadGraph(::std::string("image/material_start" + ::std::string(a) + ".png").c_str());
 		}
 		materialer_image[materialer_scene_empty] = ::DxLib::LoadGraph("image/materialer1.png");
 		materialer_image[materialer_scene_hit] = ::DxLib::LoadGraph("image/materialer2.png");
@@ -195,18 +198,20 @@ public:
 		broomer_image[materialer_scene_hit] = ::DxLib::LoadGraph("image/broomer2.png");
 		broomer_image[materialer_scene_go] = ::DxLib::LoadGraph("image/broomer3.png");
 		for (::std::size_t i{}; i < 6; ++i) {
-			message_image[i] = ::DxLib::LoadGraph(::std::string("image/fish_message" + ::std::to_string(i) + ".png").c_str());
+			a[0] = static_cast<char>(i + 48);
+			message_image[i] = ::DxLib::LoadGraph(::std::string("image/fish_message" + ::std::string(a) + ".png").c_str());
 		}
 		for (::std::size_t i{}; i < material_image.size(); ++i) {
-			material_image[i] = ::DxLib::LoadGraph(::std::string("image/material" + ::std::to_string(i + 1) + ".png").c_str());
-			material_30shadow_image[i] = ::DxLib::LoadGraph(::std::string("image/material_30shadow" + ::std::to_string(i + 1) + ".png").c_str());
+			a[0] = static_cast<char>(i + 49);
+			material_image[i] = ::DxLib::LoadGraph(::std::string("image/material" + ::std::string(a) + ".png").c_str());
+			material_30shadow_image[i] = ::DxLib::LoadGraph(::std::string("image/material_30shadow" + ::std::string(a) + ".png").c_str());
 		}
 		for (::std::size_t i{}; i < field.size(); ++i)
 			for (::std::size_t j{}; j < field[i].size(); ++j)
 				field[i][j] = material_num;
 	}
 
-	void call(::std::array<int, item_num>& item_count, bool up_key[], bool down_key[], ::std::int_fast32_t key_frame[], ::std::uint_fast8_t& scene_id, ::std::uint_fast32_t& materialed_count, ::std::uint_fast32_t& go_material_count) {
+	void call(::std::array<int, item_num>& item_count, bool up_key[], bool down_key[], ::std::int_fast32_t key_frame[], ::std::uint_fast8_t& scene_id, ::std::uint_fast32_t& materialed_count, ::std::uint_fast32_t& go_material_count, bool is_select_, int select_x_, int select_y_) {
 		if (first_frame) {
 			if (item_count[item_broom] > 0) {
 				--item_count[item_broom];
@@ -259,6 +264,11 @@ public:
 				++material_swim[i].frame;
 			}
 		
+		if (is_select_) {
+			select_x = select_x_;
+			select_y = select_y_;
+		}
+
 		if (material_scene == material_scene_material)
 			for (int select_all_y{ select_y - height + 1 }; select_all_y <= select_y; ++select_all_y)
 				for (int select_all_x{ select_x - width + 1 }; select_all_x <= select_x; ++select_all_x)
@@ -275,7 +285,7 @@ public:
 							::std::uniform_real_distribution<double> dist_r(0.01, 0.2);
 							::DxLib::DrawGraph(1500, 200, image_find_material, TRUE);
 
-							if (down_key[KEY_INPUT_SPACE] && timer > 0 && materialer_timer == 0) {
+							if ((down_key[KEY_INPUT_SPACE] || is_select_) && timer > 0 && materialer_timer == 0) {
 								is_materialer = true;
 								const bool is_timer{ material_swim[i].material_type == material_timer };
 								if (!is_timer) {

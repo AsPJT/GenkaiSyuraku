@@ -10,7 +10,7 @@
 
 // 画面遷移
 enum :std::uint_fast8_t {
-	
+
 	// 空
 	scene_empty,
 
@@ -36,9 +36,17 @@ class MainFrame {
 public:
 
 	// 初期化処理
-	bool init() {
+	bool init(const int load_font) {
+		::DxLib::ProcessMessage();
 		title.init();
+		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■■■□", ::DxLib::GetColor(255, 255, 255), load_font);
+		::DxLib::ProcessMessage();
 		map.init();
+		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■■■■", ::DxLib::GetColor(255, 255, 255), load_font);
+		::DxLib::ProcessMessage();
+		//
+		// 描画先グラフィック領域の指定
+		::DxLib::SetDrawScreen(DX_SCREEN_BACK);
 		return true;
 	}
 
@@ -49,29 +57,30 @@ public:
 
 		switch (scene_id) {
 
-		// 空
+			// 空
 		case scene_empty:
 
 			break;
 
-		// タイトル画面
+			// タイトル画面
 		case scene_title:
 			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level);
-#ifdef GENKAI_SYURAKU_TOUCH
-			::DxLib::DrawGraph(1408, 568, button1, TRUE);
-#endif
-			break;
-
-		// マップ画面
-		case scene_map:
-			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level);
 #ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 #endif
 			break;
 
-		// 釣り画面
+			// マップ画面
+		case scene_map:
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level, talk_id);
+#ifdef GENKAI_SYURAKU_TOUCH
+			if (talk_id == 0) ::DxLib::DrawGraph(0, 568, button2, TRUE);
+			::DxLib::DrawGraph(1408, 568, button1, TRUE);
+#endif
+			break;
+
+			// 釣り画面
 		case scene_fish:
 			fish.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
 #ifdef GENKAI_SYURAKU_TOUCH
@@ -79,16 +88,16 @@ public:
 #endif
 			break;
 
-		// 素材あつめ画面
+			// 素材あつめ画面
 		case scene_material:
-			material.call(item_count, up_key, down_key, key_frame, scene_id, material_count, go_material_count);
+			material.call(item_count, up_key, down_key, key_frame, scene_id, material_count, go_material_count, is_select, select_x, select_y);
 #ifdef GENKAI_SYURAKU_TOUCH
-			::DxLib::DrawGraph(0, 568, button2, TRUE);
+			//::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
 #endif
 			break;
 
-		// 閉じる画面
+			// 閉じる画面
 		case scene_close:
 			return false;
 		}
@@ -108,24 +117,41 @@ public:
 		DxLib::GetHitKeyStateAll(tmp_key);
 
 #ifdef GENKAI_SYURAKU_TOUCH
+		is_select = false;
 		int pos_x{}, pos_y{};
 		const std::size_t num{ static_cast<std::size_t>(GetTouchInputNum()) };
 		for (std::size_t i{}; i < num; ++i) {
 			// タッチされている箇所の座標を取得
 			GetTouchInput(static_cast<int>(i), &pos_x, &pos_y, nullptr, nullptr);
-			if (pos_x>=176 && pos_y>=584 && pos_x < 336 && pos_y < 744) {
+			if (pos_x >= 161 && pos_y >= 221 && pos_x < 161 + 128 * 6 && pos_y < 221 + 128 * 6) {
+				is_select = true;
+				select_x = (pos_x - 161) / 128;
+				select_y = (pos_y - 221) / 128;
+			}
+
+			if(scene_id!=scene_material)
+			if (pos_x >= 176 && pos_y >= 584 && pos_x < 336 && pos_y < 744) tmp_key[KEY_INPUT_UP] = 1;
+			else if (pos_x >= 16 && pos_y >= 584 && pos_x < 176 && pos_y < 744) {
 				tmp_key[KEY_INPUT_UP] = 1;
-			}
-			else if (pos_x >= 176 && pos_y >= 904 && pos_x < 336 && pos_y < 1024) {
-				tmp_key[KEY_INPUT_DOWN] = 1;
-			}
-			else if (pos_x >= 16 && pos_y >= 744 && pos_x < 176 && pos_y < 904) {
 				tmp_key[KEY_INPUT_LEFT] = 1;
 			}
-			else if (pos_x >= 336 && pos_y >= 744 && pos_x < 496 && pos_y < 904) {
+			else if (pos_x >= 336 && pos_y >= 584 && pos_x < 496 && pos_y < 744) {
+				tmp_key[KEY_INPUT_UP] = 1;
 				tmp_key[KEY_INPUT_RIGHT] = 1;
 			}
-			else if (pos_x >= 1584 && pos_y >= 584 && pos_x < 1744 && pos_y < 744) {
+			else if (pos_x >= 176 && pos_y >= 904 && pos_x < 336 && pos_y < 1024) tmp_key[KEY_INPUT_DOWN] = 1;
+			else if (pos_x >= 16 && pos_y >= 904 && pos_x < 176 && pos_y < 1024) {
+				tmp_key[KEY_INPUT_DOWN] = 1;
+				tmp_key[KEY_INPUT_LEFT] = 1;
+			}
+			else if (pos_x >= 336 && pos_y >= 904 && pos_x < 496 && pos_y < 1024) {
+				tmp_key[KEY_INPUT_DOWN] = 1;
+				tmp_key[KEY_INPUT_RIGHT] = 1;
+			}
+			else if (pos_x >= 16 && pos_y >= 744 && pos_x < 176 && pos_y < 904) tmp_key[KEY_INPUT_LEFT] = 1;
+			else if (pos_x >= 336 && pos_y >= 744 && pos_x < 496 && pos_y < 904) tmp_key[KEY_INPUT_RIGHT] = 1;
+			
+			if (pos_x >= 1584 && pos_y >= 584 && pos_x < 1744 && pos_y < 744) {
 				tmp_key[KEY_INPUT_T] = 1;
 				tmp_key[KEY_INPUT_E] = 1;
 			}
@@ -154,7 +180,7 @@ public:
 			if (tmp_key[i] != 0) ++key_frame[i];
 			// 押されていなければ0にする
 			else key_frame[i] = 0;
-			
+
 
 		}
 	}
@@ -171,6 +197,10 @@ private:
 	int button1{ ::DxLib::LoadGraph(u8"image/button1.png") };
 	int button2{ ::DxLib::LoadGraph(u8"image/button2.png") };
 #endif
+	int talk_id{};
+	bool is_select{};
+	int select_x{};
+	int select_y{};
 
 private:
 	Map map;

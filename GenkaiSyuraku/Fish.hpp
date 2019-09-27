@@ -193,21 +193,26 @@ public:
 	Fish() {
 
 		// 画像格納
+		char a[2];
+		a[1] = 0;
 		for (::std::size_t i{}; i < 4; ++i) {
-			fish_start_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_start" + ::std::to_string(i) + u8".png").c_str());
+			a[0] = static_cast<char>(i + 48);
+			fish_start_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_start" + ::std::string(a) + u8".png").c_str());
 		}
 		fisher_image[fisher_scene_empty] = ::DxLib::LoadGraph(u8"image/fisher1.png");
 		fisher_image[fisher_scene_hit] = ::DxLib::LoadGraph(u8"image/fisher2.png");
 		fisher_image[fisher_scene_go] = ::DxLib::LoadGraph(u8"image/fisher3.png");
 
 		for (::std::size_t i{}; i < 6; ++i) {
-			message_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_message" + ::std::to_string(i) + u8".png").c_str());
+			a[0] = static_cast<char>(i + 48);
+			message_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_message" + ::std::string(a) + u8".png").c_str());
 		}
 		for (::std::size_t i{}; i < fish_image.size(); ++i) {
-			fish_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish" + ::std::to_string(i + 1) + u8".png").c_str());
-			fish_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_shadow" + ::std::to_string(i + 1) + u8".png").c_str());
-			result_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/result_shadow" + ::std::to_string(i + 1) + u8".png").c_str());
-			fish_30shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_30shadow" + ::std::to_string(i + 1) + u8".png").c_str());
+			a[0] = static_cast<char>(i + 49);
+			fish_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish" + ::std::string(a) + u8".png").c_str());
+			fish_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_shadow" + ::std::string(a) + u8".png").c_str());
+			result_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/result_shadow" + ::std::string(a) + u8".png").c_str());
+			fish_30shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_30shadow" + ::std::string(a) + u8".png").c_str());
 		}
 
 		::std::mt19937 engine(seed_gen());
