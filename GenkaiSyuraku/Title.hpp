@@ -1,14 +1,13 @@
 ﻿#pragma once
-#include <DxLib.h>
 
 class Title {
 public:
 	void init() {
 		title_backimage[0] = LoadGraph("image/map.png", TRUE);
 		title_backimage[1] = LoadGraph("image/map2.png", TRUE);
-		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
-		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
-		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
+		fish_shop_image[0] = LoadGraph("image/fish_shop1.png", TRUE);
+		fish_shop_image[1] = LoadGraph("image/fish_shop2.png", TRUE);
+		fish_shop_image[2] = LoadGraph("image/fish_shop3.png", TRUE);
 		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
 		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
 		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
@@ -27,8 +26,9 @@ public:
 		bgm = LoadSoundMem("music/genkaivillage.wav");
 	}
 
-	void call(bool up_key[], std::uint_fast8_t& scene_id, int yorozuya_level, int sakanaya_level, int farm_level) {
-		if (sakanaya_level == 3) title_level = 1;
+	void call(bool up_key[], std::uint_fast8_t& scene_id, std::uint_fast8_t yorozuya_level, std::uint_fast8_t fish_shop_level, 
+		std::uint_fast8_t farm_level, std::uint_fast8_t square_level, std::uint_fast8_t field_level) {
+		if (fish_shop_level == 3) title_level = 1;
 		if (farm_level == 3) map_level = 1;
 
 		if (ret == 0) background_x--;
@@ -52,7 +52,7 @@ public:
 		//背景
 		DrawGraph(background_x, 0, title_backimage[map_level], TRUE);
 		DrawGraph(background_x, 0, yorozuya_image[yorozuya_level-1], TRUE);
-		DrawGraph(background_x, 0, sakanaya_image[sakanaya_level-1], TRUE);
+		DrawGraph(background_x, 0, fish_shop_image[fish_shop_level-1], TRUE);
 		DrawGraph(background_x, 0, farm_image[farm_level-1], TRUE);
 
 
@@ -83,7 +83,7 @@ private:
 	int map_level = 0;
 	int title_level = 0;
 	int title_backimage[2];
-	int sakanaya_image[3];
+	int fish_shop_image[3];
 	int yorozuya_image[3];
 	int farm_image[4];
 	int title_image[2];

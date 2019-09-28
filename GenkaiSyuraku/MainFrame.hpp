@@ -56,12 +56,13 @@ public:
 
 		// タイトル画面
 		case scene_title:
-			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level);
+			title.call(up_key, scene_id, yorozuya_level, fish_shop_level, farm_level, square_level, field_level);
 			break;
 
 		// マップ画面
 		case scene_map:
-			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level);
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, 
+				yorozuya_level, fish_shop_level, farm_level, square_level, field_level);
 			break;
 
 		// 釣り画面
@@ -121,9 +122,11 @@ private:
 	Title title;
 
 	//集落レベル
-	int yorozuya_level = 0;
-	int sakanaya_level = 1;
-	int farm_level = 1;
+	std::uint_fast32_t yorozuya_level = 0;
+	std::uint_fast32_t fish_shop_level = 1;
+	std::uint_fast32_t farm_level = 1;
+	std::uint_fast32_t square_level = 0; //tower=2,3,4 castle=5,6,7 statue=8,9,10 big_farm=11
+	std::uint_fast32_t field_level = 0;
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};

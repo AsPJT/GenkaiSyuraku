@@ -47,38 +47,38 @@ class Map {
 public:
 	void init() {
 		map_image = LoadGraph("image/map.png", TRUE);
-		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
-		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
-		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
+		fish_shop_image[0] = LoadGraph("image/fish_shop1.png", TRUE);
+		fish_shop_image[1] = LoadGraph("image/fish_shop2.png", TRUE);
+		fish_shop_image[2] = LoadGraph("image/fish_shop3.png", TRUE);
 		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
 		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
 		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
-		hiroba_image[0] = LoadGraph("image/hiroba.png", TRUE);
-		hiroba_image[1] = LoadGraph("image/tower1.png", TRUE);
-		hiroba_image[2] = LoadGraph("image/tower2.png", TRUE);
-		hiroba_image[3] = LoadGraph("image/tower3.png", TRUE);
-		hiroba_image[4] = LoadGraph("image/castle1.png", TRUE);
-		hiroba_image[5] = LoadGraph("image/castle2.png", TRUE);
-		hiroba_image[6] = LoadGraph("image/castle3.png", TRUE);
-		hiroba_image[7] = LoadGraph("image/statue1.png", TRUE);
-		hiroba_image[8] = LoadGraph("image/statue2.png", TRUE);
-		hiroba_image[9] = LoadGraph("image/statue3.png", TRUE);
-		hiroba_image[10] = LoadGraph("image/farm4.png", TRUE);
+		square_image[0] = LoadGraph("image/square.png", TRUE);
+		square_image[1] = LoadGraph("image/tower1.png", TRUE);
+		square_image[2] = LoadGraph("image/tower2.png", TRUE);
+		square_image[3] = LoadGraph("image/tower3.png", TRUE);
+		square_image[4] = LoadGraph("image/castle1.png", TRUE);
+		square_image[5] = LoadGraph("image/castle2.png", TRUE);
+		square_image[6] = LoadGraph("image/castle3.png", TRUE);
+		square_image[7] = LoadGraph("image/statue1.png", TRUE);
+		square_image[8] = LoadGraph("image/statue2.png", TRUE);
+		square_image[9] = LoadGraph("image/statue3.png", TRUE);
+		square_image[10] = LoadGraph("image/farm4.png", TRUE);
 		farm_image[0] = LoadGraph("image/farm1.png", TRUE);
 		farm_image[1] = LoadGraph("image/farm2.png", TRUE);
 		farm_image[2] = LoadGraph("image/farm3.png", TRUE);
 
+		field_image = LoadGraph("image/field.png", TRUE);
 		tomato_image[0] = LoadGraph("image/tomato1.png", TRUE);
 		tomato_image[1] = LoadGraph("image/tomato2.png", TRUE);
 		tomato_image[2] = LoadGraph("image/tomato3.png", TRUE);
-		kyabetsu_image[0] = LoadGraph("image/kyabetsu1.png", TRUE);
-		kyabetsu_image[1] = LoadGraph("image/kyabetsu2.png", TRUE);
-		kyabetsu_image[2] = LoadGraph("image/kyabetsu3.png", TRUE);
-		morokoshi_image[0] = LoadGraph("image/morokoshi1.png", TRUE);
-		morokoshi_image[1] = LoadGraph("image/morokoshi2.png", TRUE);
-		morokoshi_image[2] = LoadGraph("image/morokoshi3.png", TRUE);
+		cabbage_image[0] = LoadGraph("image/cabbage1.png", TRUE);
+		cabbage_image[1] = LoadGraph("image/cabbage2.png", TRUE);
+		cabbage_image[2] = LoadGraph("image/cabbage3.png", TRUE);
+		corn_image[0] = LoadGraph("image/corn1.png", TRUE);
+		corn_image[1] = LoadGraph("image/corn2.png", TRUE);
+		corn_image[2] = LoadGraph("image/corn3.png", TRUE);
 
-		hatake_image = LoadGraph("image/hatake.png", TRUE);
 		icon_image = LoadGraph("image/ex_icon.png", TRUE);
 		fish_icon_image = LoadGraph("image/fish_icon.png", TRUE);
 		area_icon_image = LoadGraph("image/area_icon.png", TRUE);
@@ -118,14 +118,16 @@ public:
 		//畑の位置
 		for (j = 0; j < 2; j++) {
 			for (i = 0; i < 5; i++) {
-				hatake[i + j * 5].x = 640 + chip_size * i;
-				hatake[i + j * 5].y = 800 + chip_size * j;
-				hatake[i + j * 5].img = hatake_image;
+				field[i + j * 5].x = 640 + chip_size * i;
+				field[i + j * 5].y = 800 + chip_size * j;
+				field[i + j * 5].img = field_image;
 			}
 		}
 	}
 
-	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, int& yorozuya_level, int& sakanaya_level, int& farm_level) {
+	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, 
+		std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, std::uint_fast32_t& yorozuya_level, 
+		std::uint_fast32_t& fish_shop_level, std::uint_fast32_t& farm_level, std::uint_fast32_t& square_level, std::uint_fast32_t& field_level) {
 		returnflag = 0;
 		//歩行フラグ
 		if (player.x % player.size == 0 && player.y % player.size == 0 && talk == 0 && menu == 0) {       //座標が32で割り切れたら入力可能
@@ -266,24 +268,24 @@ public:
 				if (select6 == 0) {
 					if (item_count[item_tomato_seed] > 0) {
 						talk = 52;
-						hatake[hatake_select].img = tomato_image[0];
-						hatake[hatake_select].level = 0;
+						field[field_select].img = tomato_image[0];
+						field[field_select].level = 0;
 						item_count[item_tomato_seed]--;
 					}
 				}
 				else if (select6 == 1) {
 					if (item_count[item_cabbage_seed] > 0) {
 						talk = 52;
-						hatake[hatake_select].img = kyabetsu_image[0];
-						hatake[hatake_select].level = 0;
+						field[field_select].img = cabbage_image[0];
+						field[field_select].level = 0;
 						item_count[item_cabbage_seed]--;
 					}
 				}
 				else if (select6 == 2) {
 					if (item_count[item_corn_seed] > 0) {
 						talk = 52;
-						hatake[hatake_select].img = morokoshi_image[0];
-						hatake[hatake_select].level = 0;
+						field[field_select].img = corn_image[0];
+						field[field_select].level = 0;
 						item_count[item_corn_seed]--;
 					}
 				}
@@ -294,7 +296,7 @@ public:
 			break;
 		case 7:
 			//資材選択
-			if (hiroba_level == 1) {
+			if (square_level == 1) {
 				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
 				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
 				if (select7 > 3) select7 = 0, selector7_y -= 200;
@@ -302,13 +304,13 @@ public:
 				//決定
 				if (up_key[KEY_INPUT_RETURN]) {
 					returnflag = 1;
-					if (select7 == 0 && item_count[item_wood] >= 10) hiroba_level = 2, item_count[item_wood] -= 10, menu = 0;
-					else if (select7 == 1 && item_count[item_stone] >= 20) hiroba_level = 5, item_count[item_stone] -=20, menu = 0;
-					else if (select7 == 2 && item_count[item_stone] >= 10) hiroba_level = 8, item_count[item_stone] -= 10, menu = 0;
+					if (select7 == 0 && item_count[item_wood] >= 10) square_level = 2, item_count[item_wood] -= 10, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 20) square_level = 5, item_count[item_stone] -=20, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 10) square_level = 8, item_count[item_stone] -= 10, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
-			else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
+			else if (square_level == 2 || square_level == 5 || square_level == 8) {
 				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
 				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
 				if (select7 > 3) select7 = 0, selector7_y -= 200;
@@ -316,13 +318,13 @@ public:
 				//決定
 				if (up_key[KEY_INPUT_RETURN]) {
 					returnflag = 1;
-					if (select7 == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && hiroba_level == 2) hiroba_level = 3, item_count[item_wood] -= 10, item_count[item_stone] -= 20, menu = 0;
-					else if (select7 == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && hiroba_level == 5) hiroba_level = 6, item_count[item_stone] -= 20, item_count[item_ore] -= 10, menu = 0;
-					else if (select7 == 2 && item_count[item_stone] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8) hiroba_level = 9, item_count[item_stone] -= 10, item_count[item_ore] -= 10, menu = 0;
+					if (select7 == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && square_level == 2) square_level = 3, item_count[item_wood] -= 10, item_count[item_stone] -= 20, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && square_level == 5) square_level = 6, item_count[item_stone] -= 20, item_count[item_ore] -= 10, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 10 && item_count[item_ore] >= 10 && square_level == 8) square_level = 9, item_count[item_stone] -= 10, item_count[item_ore] -= 10, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
-			else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
+			else if (square_level == 3 || square_level == 6 || square_level == 9) {
 				if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) select7--, selector7_y -= 50;
 				else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) select7++, selector7_y += 50;
 				if (select7 > 3) select7 = 0, selector7_y -= 200;
@@ -330,9 +332,9 @@ public:
 				//決定
 				if (up_key[KEY_INPUT_RETURN]) {
 					returnflag = 1;
-					if (select7 == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && hiroba_level == 3) hiroba_level = 4, item_count[item_wood] -= 10, item_count[item_stone] -= 30, menu = 0;
-					else if (select7 == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && hiroba_level == 6) hiroba_level = 7, item_count[item_stone] -= 30, item_count[item_ore] -= 30, menu = 0;
-					else if (select7 == 2 && item_count[item_stone] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9) hiroba_level = 10, item_count[item_stone] -= 20, item_count[item_ore] -= 20, menu = 0;
+					if (select7 == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && square_level == 3) square_level = 4, item_count[item_wood] -= 10, item_count[item_stone] -= 30, menu = 0;
+					else if (select7 == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && square_level == 6) square_level = 7, item_count[item_stone] -= 30, item_count[item_ore] -= 30, menu = 0;
+					else if (select7 == 2 && item_count[item_stone] >= 20 && item_count[item_ore] >= 20 && square_level == 9) square_level = 10, item_count[item_stone] -= 20, item_count[item_ore] -= 20, menu = 0;
 					else if (select7 == 3) menu = 0;
 				}
 			}
@@ -364,10 +366,10 @@ public:
 							else mob[i].img = mob[i].image[0];
 							if (talk == 0) {
 								if (i == 0) {//jii
-									if (hiroba_level >= 1) talk = 10;
-									//else if (sakanaya_level == 2) talk = 2;
-									else if (sakanaya_level == 1) talk = 1;
-									//if (hiroba_level == 7) talk = 14;
+									if (square_level >= 1) talk = 10;
+									//else if (fish_shop_level == 2) talk = 2;
+									else if (fish_shop_level == 1) talk = 1;
+									//if (square_level == 7) talk = 14;
 									//if (farm_level == 2) talk = 8;
 									//else if (farm_level == 1) talk = 7;
 									//else
@@ -378,13 +380,13 @@ public:
 									else talk = 6;
 								}
 								else if (i == 2) {//man1
-									if (hiroba_level == 10) talk = 17;
+									if (square_level == 10) talk = 17;
 								}
 								else if (i == 3) {//man2
-									if (sakanaya_level == 3) talk = 18;
+									if (fish_shop_level == 3) talk = 18;
 								}
 								else if (i == 4) {//man3
-									if (sakanaya_level >= 2) talk = 19;
+									if (fish_shop_level >= 2) talk = 19;
 								}
 								else if (i == 5) {//foreign1 farm_level == 3
 									talk = 9;
@@ -398,12 +400,12 @@ public:
 								else if (i == 8) {//alien tower_level == 3
 									talk = 12;
 								}
-								else if (i == 9) {//girl1 sakanaya_level == 3
+								else if (i == 9) {//girl1 fish_shop_level == 3
 									talk = 3;
 								}
 								else if (i == 10) {//girl2 tower or statue level == 1 or 2
-									if(hiroba_level == 2 || hiroba_level == 3) talk = 11;
-									else if (hiroba_level == 5 || hiroba_level == 6) talk = 15;
+									if(square_level == 2 || square_level == 3) talk = 11;
+									else if (square_level == 5 || square_level == 6) talk = 15;
 								}
 							}
 							break;
@@ -419,30 +421,30 @@ public:
 					}
 				}
 				//畑の種植or収穫
-				else if (hatake_level > 0) {
-					hatake_find = 10;
+				else if (field_level > 0) {
+					field_find = 10;
 					for (j = 0; j < 10; j++) {
-						if (player.x + player.sizeX - 32 > hatake[j].x &&
-							player.x < hatake[j].x + hatake[j].size - 32 &&
-							player.y + player.sizeY / 2 > hatake[j].y - 96 &&
-							player.y < hatake[j].y + hatake[j].size / 2 - 128) {
-							hatake_find = j;
+						if (player.x + player.sizeX - 32 > field[j].x &&
+							player.x < field[j].x + field[j].size - 32 &&
+							player.y + player.sizeY / 2 > field[j].y - 96 &&
+							player.y < field[j].y + field[j].size / 2 - 128) {
+							field_find = j;
 							//近づいた状態で話しかける
-							if ((up_key[KEY_INPUT_RETURN] && returnflag == 0) && hatake[j].img == hatake_image) {//種植
+							if ((up_key[KEY_INPUT_RETURN] && returnflag == 0) && field[j].img == field_image) {//種植
 								talk = 50;
-								hatake_select = j;
+								field_select = j;
 								break;
 							}
-							else if ((up_key[KEY_INPUT_RETURN] && returnflag == 0) && hatake[j].level == 2) {//収穫
-								hatake_select = j;
+							else if ((up_key[KEY_INPUT_RETURN] && returnflag == 0) && field[j].level == 2) {//収穫
+								field_select = j;
 								talk = 53;
-								if (hatake[j].img == tomato_image[2]) {
+								if (field[j].img == tomato_image[2]) {
 									item_count[item_tomato]++;
 								}
-								else if (hatake[j].img == kyabetsu_image[2]) {
+								else if (field[j].img == cabbage_image[2]) {
 									item_count[item_cabbage]++;
 								}
-								else if (hatake[j].img == morokoshi_image[2]) {
+								else if (field[j].img == corn_image[2]) {
 									item_count[item_corn]++;
 								}
 								break;
@@ -494,8 +496,8 @@ public:
 			case 53:
 				//畑
 				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
-					hatake[hatake_select].img = hatake_image;
-					hatake[hatake_select].level = 0;
+					field[field_select].img = field_image;
+					field[field_select].level = 0;
 					talk = 0;
 				}
 				break;
@@ -579,12 +581,12 @@ public:
 			}
 		}
 		//畑の当たり判定
-		if (hatake_level > 0) {
-			for (i = 0; i < hatake_num; i++) {
-				if (player.x + player.sizeX > hatake[i].x &&
-					player.x < hatake[i].x + hatake[i].size &&
-					player.y + player.sizeY / 4 > hatake[i].y - 128 &&
-					player.y < hatake[i].y + hatake[i].size / 4 - 128) {
+		if (field_level > 0) {
+			for (i = 0; i < field_num; i++) {
+				if (player.x + player.sizeX > field[i].x &&
+					player.x < field[i].x + field[i].size &&
+					player.y + player.sizeY / 4 > field[i].y - 128 &&
+					player.y < field[i].y + field[i].size / 4 - 128) {
 					player.px = player.bpx, player.x = player.bx, player.py = player.bpy, player.y = player.by;
 				}
 			}
@@ -616,15 +618,15 @@ public:
 			if (go_fish_count != go_fish_before) sakana_total += fished_count;
 			if (go_material_count != go_material_before) material_total += material_count;
 			for (j = 0; j < 10; j++) {
-				if (hatake_level > 0) {
-					if (hatake[j].img != hatake_image) hatake[j].level++;
-					if (hatake[j].level > 2) hatake[j].level = 2;
+				if (field_level > 0) {
+					if (field[j].img != field_image) field[j].level++;
+					if (field[j].level > 2) field[j].level = 2;
 				}
 			}
 			//集落レベルの管理, mobの再配置
 			if (sakana_total >= 120 && material_total >= 120) {
 				farm_level = 3;
-				sakanaya_level = 3;
+				fish_shop_level = 3;
 				yorozuya_level = 1;
 				//ミニゲーム男
 				//mob[3].x = mob[3].size * 37;
@@ -654,7 +656,7 @@ public:
 			}
 			else if (sakana_total >= 70 && material_total >= 70) {
 				farm_level = 2;
-				sakanaya_level = 3;
+				fish_shop_level = 3;
 				yorozuya_level = 1;
 				//ミニゲーム男
 				//mob[3].x = mob[3].size * 37;
@@ -683,10 +685,10 @@ public:
 				mob[1].img = mob[1].image[0];
 			}
 			else if (sakana_total >= 70) {
-				sakanaya_level = 3;
+				fish_shop_level = 3;
 				farm_level = 1;
 				yorozuya_level = 1;
-				hatake_level = 1;
+				field_level = 1;
 
 				//ミニゲーム男
 				//mob[3].x = mob[3].size * 37;
@@ -712,10 +714,10 @@ public:
 
 			}
 			else if (sakana_total >= 20) {
-				sakanaya_level = 2;
+				fish_shop_level = 2;
 				yorozuya_level = 1;
-				hatake_level = 1;
-				if(hiroba_level < 2) hiroba_level = 1;
+				field_level = 1;
+				if(square_level < 2) square_level = 1;
 
 				//建築男
 				mob[4].x = mob[4].size * 27;
@@ -745,17 +747,17 @@ public:
 		
 
 		//畑の成長
-		if (hatake_level > 0) {
+		if (field_level > 0) {
 			for (i = 0; i < 10; i++) {
 				for (j = 0; j < 2; j++) {
-					if (hatake[i].img == tomato_image[j] && j + 1 == hatake[i].level) {
-						hatake[i].img = tomato_image[j + 1];
+					if (field[i].img == tomato_image[j] && j + 1 == field[i].level) {
+						field[i].img = tomato_image[j + 1];
 					}
-					else if (hatake[i].img == kyabetsu_image[j] && j + 1 == hatake[i].level) {
-						hatake[i].img = kyabetsu_image[j + 1];
+					else if (field[i].img == cabbage_image[j] && j + 1 == field[i].level) {
+						field[i].img = cabbage_image[j + 1];
 					}
-					else if (hatake[i].img == morokoshi_image[j] && j + 1 == hatake[i].level) {
-						hatake[i].img = morokoshi_image[j + 1];
+					else if (field[i].img == corn_image[j] && j + 1 == field[i].level) {
+						field[i].img = corn_image[j + 1];
 					}
 				}
 			}
@@ -763,12 +765,12 @@ public:
 		
         //BGM再生
 		if (bgm_flag == 0) {
-			if(hiroba_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
+			if(square_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
 			else PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
 			bgm_flag = 1;
 		}
 		
-		Draw(yorozuya_level, sakanaya_level, farm_level, item_count);
+		Draw(yorozuya_level, fish_shop_level, farm_level, square_level, field_level, item_count);
 
 		//selectorの初期化
 		if (talk == 0 && menu == 0) {
@@ -799,12 +801,13 @@ public:
 		//printfDx("%d %d %d\n", talk, menu, buy);
 	}
 
-	void Draw(int yorozuya_level, int sakanaya_level, int farm_level, std::array<int, item_num>& item_count) {
+	void Draw(std::uint_fast32_t yorozuya_level, std::uint_fast32_t fish_shop_level, std::uint_fast32_t farm_level, std::uint_fast32_t square_level, 
+		std::uint_fast32_t field_level, std::array<int, item_num>& item_count) {
 		//背景を描画
 		DrawGraph(background_x, 0, map_image, TRUE);
-		if (hiroba_level > 0) DrawGraph(background_x, 0, hiroba_image[hiroba_level - 1], TRUE);
+		if (square_level > 0) DrawGraph(background_x, 0, square_image[square_level - 1], TRUE);
 		if(yorozuya_level > 0) DrawGraph(background_x, 0, yorozuya_image[yorozuya_level - 1], TRUE);
-		if (sakanaya_level > 0) DrawGraph(background_x, 0, sakanaya_image[sakanaya_level - 1], TRUE);
+		if (fish_shop_level > 0) DrawGraph(background_x, 0, fish_shop_image[fish_shop_level - 1], TRUE);
 		if (farm_level > 0) DrawGraph(background_x, 0, farm_image[farm_level - 1], TRUE);
 
 		//つりエリアのアイコン表示
@@ -820,24 +823,24 @@ public:
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y <= player.y)
 				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);//jiを描画
-		if (hatake_level > 0) {
-			for (i = 0; i < hatake_num; i++)
-				if (hatake[i].y + hatake[i].size / 2 <= player.y + player.sizeY)
-					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width) DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);//hatake
+		if (field_level > 0) {
+			for (i = 0; i < field_num; i++)
+				if (field[i].y + field[i].size / 2 <= player.y + player.sizeY)
+					if (field[i].x > player.x - map_width && field[i].x < player.x + map_width) DrawGraph(field[i].x + background_x, field[i].y, field[i].img, TRUE);//field
 		}
 		DrawGraph(player.px, player.py, player.img, TRUE);   //プレイヤーを描画
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y > player.y)
 				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);  //jiを描画
-		if (hatake_level > 0) {
-			for (i = 0; i < hatake_num; i++)
-				if (hatake[i].y + hatake[i].size / 2 > player.y + player.sizeY)
-					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width)  DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);  //hatake
+		if (field_level > 0) {
+			for (i = 0; i < field_num; i++)
+				if (field[i].y + field[i].size / 2 > player.y + player.sizeY)
+					if (field[i].x > player.x - map_width && field[i].x < player.x + map_width)  DrawGraph(field[i].x + background_x, field[i].y, field[i].img, TRUE);  //field
 		}
 
 		//畑に近づいたときのアイコン
-		if (hatake_find != 10) {
-			DrawRotaGraph(hatake[hatake_find].x + background_x + 64, hatake[hatake_find].y + 96, 0.3, 0, find_image, TRUE, FALSE);
+		if (field_find != 10) {
+			DrawRotaGraph(field[field_find].x + background_x + 64, field[field_find].y + 96, 0.3, 0, find_image, TRUE, FALSE);
 		}
 
 		if (talk >= 1) DrawGraph(0, 0, textwindow_image, TRUE);
@@ -940,11 +943,11 @@ public:
 			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
 		case 53:
-			if (hatake[hatake_select].img == tomato_image[2])
+			if (field[field_select].img == tomato_image[2])
 				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"トマトを収穫しました。");
-			else if (hatake[hatake_select].img == kyabetsu_image[2])
+			else if (field[field_select].img == cabbage_image[2])
 				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"キャベツを収穫しました。");
-			else if (hatake[hatake_select].img == morokoshi_image[2])
+			else if (field[field_select].img == corn_image[2])
 				DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, u8"とうもろこしを収穫しました。");
 			DrawFormatStringToHandle(275, 730, GetColor(255, 255, 255), FontHandle, u8"畑");
 			break;
@@ -1066,7 +1069,7 @@ public:
 			break;
 		case 7:
 			//資材選択
-			if (hiroba_level == 1) {
+			if (square_level == 1) {
 				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
 				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
 				DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：木材10個");
@@ -1074,25 +1077,25 @@ public:
 				DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材10個");
 				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
 			}
-			else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
+			else if (square_level == 2 || square_level == 5 || square_level == 8) {
 				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
 				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
-				if(hiroba_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材20個 木材10個");
+				if(square_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材20個 木材10個");
 				else  DrawFormatStringToHandle(330, 815, GetColor(128, 128, 128), FontHandle_mini, u8"タワー：石材20個 木材10個");
-				if (hiroba_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材20個 鉱石10個");
+				if (square_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材20個 鉱石10個");
 				else DrawFormatStringToHandle(330, 865, GetColor(128, 128, 128), FontHandle_mini, u8"城：石材20個 鉱石10個");
-				if (hiroba_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材10個 鉱石10個");
+				if (square_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材10個 鉱石10個");
 				else DrawFormatStringToHandle(330, 915, GetColor(128, 128, 128), FontHandle_mini, u8"像：石材10個 鉱石10個");
 				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
 			}
-			else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
+			else if (square_level == 3 || square_level == 6 || square_level == 9) {
 				DrawBox(200, 800, 1780, 1000, GetColor(255, 255, 255), TRUE);
 				DrawRotaGraph(300, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
-				if (hiroba_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材30個 木材10個");
+				if (square_level == 2) DrawFormatStringToHandle(330, 815, GetColor(0, 0, 0), FontHandle_mini, u8"タワー：石材30個 木材10個");
 				else  DrawFormatStringToHandle(330, 815, GetColor(128, 128, 128), FontHandle_mini, u8"タワー：石材30個 木材10個");
-				if (hiroba_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材30個 鉱石30個");
+				if (square_level == 5) DrawFormatStringToHandle(330, 865, GetColor(0, 0, 0), FontHandle_mini, u8"城：石材30個 鉱石30個");
 				else DrawFormatStringToHandle(330, 865, GetColor(128, 128, 128), FontHandle_mini, u8"城：石材30個 鉱石30個");
-				if (hiroba_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材20個 鉱石20個");
+				if (square_level == 8) DrawFormatStringToHandle(330, 915, GetColor(0, 0, 0), FontHandle_mini, u8"像：石材20個 鉱石20個");
 				else DrawFormatStringToHandle(330, 915, GetColor(128, 128, 128), FontHandle_mini, u8"像：石材20個 鉱石20個");
 				DrawFormatStringToHandle(330, 965, GetColor(0, 0, 0), FontHandle_mini, u8"とじる");
 			}
@@ -1106,13 +1109,13 @@ public:
 private:
 	Mob mob[11];
 	Player player;
-	Hatake hatake[10];
+	Hatake field[10];
 
 	std::uint_fast32_t go_fish_before = 0;
 	std::uint_fast32_t go_material_before = 0;
 	int i, j;
 	int mob_num = 11;
-	int hatake_num = 10;
+	int field_num = 10;
 	int FontHandle;
 	int FontHandle_mini;
 	int FontHandle_big;
@@ -1130,30 +1133,29 @@ private:
 	int select6 = 0;
 	int select7 = 0;
 	int item_select = 0;
-	int hatake_select = 0;
+	int field_select = 0;
 
 	//level
-	int hiroba_level = 0; //tower=2,3,4 castle=5,6,7 statue=8,9,10 big_farm=11
-	int hatake_level = 0;
+	
 
 	//flag
 	int bgm, bgm2, bgm_flag = 0;
 	int talk = 0;
 	int menu = 0;
 	int returnflag = 0;
-	int hatake_find = 10;
+	int field_find = 10;
 	int buy = 0;
 
 	//image
 	int map_image;
-	int sakanaya_image[3];
+	int fish_shop_image[3];
 	int yorozuya_image[3];
-	int hiroba_image[11];
+	int square_image[11];
 	int farm_image[3];
 	int tomato_image[3];
-	int kyabetsu_image[3];
-	int morokoshi_image[3];
-	int hatake_image;
+	int cabbage_image[3];
+	int corn_image[3];
+	int field_image;
 	int area_icon_image;
 	int fish_icon_image;
 	int icon_image;
@@ -1182,9 +1184,10 @@ private:
 
 };
 
+//message
+//speaker
+//UI統一化
+//flag管理　なんか考える
 
-//広場解放移行のストーリー
-//建築システム
-//細かい位置ずれの修正
-//アイテム名「リュウグウノツカイ」と小魚以外のアイテム説明の文字化け
-//materialで取ったものがアイテムに加算されていない
+
+//プレイヤーの初期位置はinitでやる
