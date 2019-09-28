@@ -97,7 +97,7 @@ private:
 	const int image_materialer_hand{ ::DxLib::LoadGraph("image/materialer_hand.png") };
 	const int image_select_range{ ::DxLib::LoadGraph("image/select_range.png") };
 	const int image_find_material{ ::DxLib::LoadGraph("image/find_fish.png") };
-	const int image_ocean_sky{ ::DxLib::LoadGraph("image/material_sky.png") };
+	const int image_ocean_sky{ ::DxLib::LoadGraph("image/material_sky.jpg") };
 	const int image_result{ ::DxLib::LoadGraph("image/result3.png") };
 
 	::std::array<int, 6> message_image{ -1 };
@@ -191,21 +191,25 @@ public:
 			a[0] = static_cast<char>(i + 48);
 			material_start_image[i] = ::DxLib::LoadGraph(::std::string("image/material_start" + ::std::string(a) + ".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 		materialer_image[materialer_scene_empty] = ::DxLib::LoadGraph("image/materialer1.png");
 		materialer_image[materialer_scene_hit] = ::DxLib::LoadGraph("image/materialer2.png");
 		materialer_image[materialer_scene_go] = ::DxLib::LoadGraph("image/materialer3.png");
 		broomer_image[materialer_scene_empty] = ::DxLib::LoadGraph("image/broomer1.png");
 		broomer_image[materialer_scene_hit] = ::DxLib::LoadGraph("image/broomer2.png");
 		broomer_image[materialer_scene_go] = ::DxLib::LoadGraph("image/broomer3.png");
+		::DxLib::ProcessMessage();
 		for (::std::size_t i{}; i < 6; ++i) {
 			a[0] = static_cast<char>(i + 48);
 			message_image[i] = ::DxLib::LoadGraph(::std::string("image/fish_message" + ::std::string(a) + ".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 		for (::std::size_t i{}; i < material_image.size(); ++i) {
 			a[0] = static_cast<char>(i + 49);
 			material_image[i] = ::DxLib::LoadGraph(::std::string("image/material" + ::std::string(a) + ".png").c_str());
 			material_30shadow_image[i] = ::DxLib::LoadGraph(::std::string("image/material_30shadow" + ::std::string(a) + ".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 		for (::std::size_t i{}; i < field.size(); ++i)
 			for (::std::size_t j{}; j < field[i].size(); ++j)
 				field[i][j] = material_num;
@@ -217,7 +221,7 @@ public:
 				--item_count[item_broom];
 				width = height = 2;
 			}
-			else width = height = 1;
+			else width = height = 6;
 		}
 		::std::mt19937 engine(seed_gen());
 

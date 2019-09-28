@@ -1,4 +1,4 @@
-﻿#define GENKAI_SYURAKU_TOUCH
+﻿//#define GENKAI_SYURAKU_TOUCH
 #include "MainFrame.hpp"
 
 #ifdef __ANDROID__
@@ -32,15 +32,15 @@ int android_main(void) {
 		// ロード中表示
 		const int load_font{ ::DxLib::CreateFontToHandle(nullptr, 100, 0, DX_FONTTYPE_NORMAL) };
 
-		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■□□□□", ::DxLib::GetColor(255, 255, 255), load_font);
+		::DxLib::DrawStringToHandle(650, 800, u8"Now Loading...\n■□□□□", ::DxLib::GetColor(255, 255, 255), load_font);
 		::DxLib::LoadGraphScreen(0, 0, u8"image/title1.png", FALSE);
 
-		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■□□□", ::DxLib::GetColor(255, 255, 255), load_font);
+		::DxLib::DrawStringToHandle(650, 800, u8"Now Loading...\n■■□□□", ::DxLib::GetColor(255, 255, 255), load_font);
 		::DxLib::ProcessMessage();
 
 		// メインフレームを定義
 		::MainFrame mainFrame;
-		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■■□□", ::DxLib::GetColor(255, 255, 255), load_font);
+		::DxLib::DrawStringToHandle(650, 800, u8"Now Loading...\n■■■□□", ::DxLib::GetColor(255, 255, 255), load_font);
 		::DxLib::ProcessMessage();
 
 		//ゲームを初期化

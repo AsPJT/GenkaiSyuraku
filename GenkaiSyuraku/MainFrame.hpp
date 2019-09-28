@@ -38,11 +38,11 @@ public:
 	// 初期化処理
 	bool init(const int load_font) {
 		::DxLib::ProcessMessage();
-		title.init();
-		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■■■□", ::DxLib::GetColor(255, 255, 255), load_font);
+		title.init(bgm, map_image);
+		::DxLib::DrawStringToHandle(650, 800, u8"Now Loading...\n■■■■□", ::DxLib::GetColor(255, 255, 255), load_font);
 		::DxLib::ProcessMessage();
-		map.init();
-		::DxLib::DrawStringToHandle(600, 800, u8"Now Loading...\n■■■■■", ::DxLib::GetColor(255, 255, 255), load_font);
+		map.init(bgm, map_image);
+		::DxLib::DrawStringToHandle(650, 800, u8"Now Loading...\n■■■■■", ::DxLib::GetColor(255, 255, 255), load_font);
 		::DxLib::ProcessMessage();
 		//
 		// 描画先グラフィック領域の指定
@@ -101,7 +101,7 @@ public:
 		case scene_close:
 			return false;
 		}
-		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1);
+		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1 && key_frame[KEY_INPUT_ESCAPE] == 0);
 	}
 
 	// キーが押されているフレーム数を格納する
@@ -194,13 +194,16 @@ private:
 	Material material{};
 	std::array<int, item_num> item_count{ {} };
 #ifdef GENKAI_SYURAKU_TOUCH
-	int button1{ ::DxLib::LoadGraph(u8"image/button1.png") };
-	int button2{ ::DxLib::LoadGraph(u8"image/button2.png") };
+	const int button1{ ::DxLib::LoadGraph(u8"image/button1.png") };
+	const int button2{ ::DxLib::LoadGraph(u8"image/button2.png") };
 #endif
 	int talk_id{};
 	bool is_select{};
 	int select_x{};
 	int select_y{};
+
+	const int bgm{ ::DxLib::LoadSoundMem("music/genkaivillage.ogg") };
+	const int map_image{ ::DxLib::LoadGraph("image/map.jpg", FALSE) };
 
 private:
 	Map map;

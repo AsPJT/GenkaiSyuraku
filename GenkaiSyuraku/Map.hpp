@@ -45,8 +45,8 @@ public:
 
 class Map {
 public:
-	void init() {
-		map_image = LoadGraph("image/map.png", TRUE);
+	void init(const int bgm_, const int map_) {
+		map_image = map_;
 		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
 		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
 		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
@@ -56,17 +56,18 @@ public:
 		hiroba_image[0] = LoadGraph("image/hiroba.png", TRUE);
 		hiroba_image[1] = LoadGraph("image/tower1.png", TRUE);
 		hiroba_image[2] = LoadGraph("image/tower2.png", TRUE);
-		hiroba_image[3] = LoadGraph("image/tower3.png", TRUE);
+		hiroba_image[3] = LoadGraph("image/tower3.jpg", FALSE);
 		hiroba_image[4] = LoadGraph("image/castle1.png", TRUE);
 		hiroba_image[5] = LoadGraph("image/castle2.png", TRUE);
-		hiroba_image[6] = LoadGraph("image/castle3.png", TRUE);
+		hiroba_image[6] = LoadGraph("image/castle3.jpg", FALSE);
 		hiroba_image[7] = LoadGraph("image/statue1.png", TRUE);
 		hiroba_image[8] = LoadGraph("image/statue2.png", TRUE);
-		hiroba_image[9] = LoadGraph("image/statue3.png", TRUE);
+		hiroba_image[9] = LoadGraph("image/statue3.jpg", FALSE);
 		hiroba_image[10] = LoadGraph("image/farm4.png", TRUE);
 		farm_image[0] = LoadGraph("image/farm1.png", TRUE);
 		farm_image[1] = LoadGraph("image/farm2.png", TRUE);
 		farm_image[2] = LoadGraph("image/farm3.png", TRUE);
+		::DxLib::ProcessMessage();
 
 		tomato_image[0] = LoadGraph("image/tomato1.png", TRUE);
 		tomato_image[1] = LoadGraph("image/tomato2.png", TRUE);
@@ -77,6 +78,7 @@ public:
 		morokoshi_image[0] = LoadGraph("image/morokoshi1.png", TRUE);
 		morokoshi_image[1] = LoadGraph("image/morokoshi2.png", TRUE);
 		morokoshi_image[2] = LoadGraph("image/morokoshi3.png", TRUE);
+		::DxLib::ProcessMessage();
 
 		hatake_image = LoadGraph("image/hatake.png", TRUE);
 		icon_image = LoadGraph("image/ex_icon.png", TRUE);
@@ -88,6 +90,7 @@ public:
 		textwindow_image = LoadGraph("image/textwindow.png", TRUE);
 		window_image = LoadGraph("image/window.png", TRUE);
 		find_image = LoadGraph("image/find_fish.png", TRUE);
+		::DxLib::ProcessMessage();
 
 		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//画像を分割してimage配列に保存
 		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);
@@ -101,14 +104,17 @@ public:
 		LoadDivGraph("image/alien.png", 4, 1, 4, mob[8].sizeX, mob[8].sizeY, mob[8].image);
 		LoadDivGraph("image/girl1.png", 4, 1, 4, mob[9].sizeX, mob[9].sizeY, mob[9].image);
 		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX, mob[10].sizeY, mob[10].image);
-		
-		bgm = LoadSoundMem("music/genkaivillage.ogg");
+		::DxLib::ProcessMessage();
+
+		bgm = bgm_;
 		bgm2 = LoadSoundMem("music/goukavillage.ogg");
+		::DxLib::ProcessMessage();
 
 		//Font
-		FontHandle_mini = CreateFontToHandle(NULL, 20, 2, DX_FONTTYPE_EDGE);
-		FontHandle = CreateFontToHandle(NULL, 50, 2, DX_FONTTYPE_EDGE);
-		FontHandle_big = CreateFontToHandle(NULL, 70, 2, DX_FONTTYPE_EDGE);
+		FontHandle_mini = CreateFontToHandle(nullptr, 20, 2, DX_FONTTYPE_EDGE);
+		FontHandle = CreateFontToHandle(nullptr, 50, 2, DX_FONTTYPE_EDGE);
+		FontHandle_big = CreateFontToHandle(nullptr, 70, 2, DX_FONTTYPE_EDGE);
+		::DxLib::ProcessMessage();
 
 		//おじいの初期位置
 		mob[0].x = mob[0].size * 91;

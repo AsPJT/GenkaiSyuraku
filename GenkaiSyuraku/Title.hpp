@@ -3,19 +3,21 @@
 
 class Title {
 public:
-	void init() {
-		title_backimage[0] = LoadGraph("image/map.png", TRUE);
-		title_backimage[1] = LoadGraph("image/map2.png", TRUE);
+	void init(const int bgm_, const int map_) {
+		title_backimage[0] = map_;
+		title_backimage[1] = LoadGraph("image/map2.jpg", FALSE);
 		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
 		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
 		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
 		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
 		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
 		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
+		::DxLib::ProcessMessage();
 		farm_image[0] = LoadGraph("image/farm1.png", TRUE);
 		farm_image[1] = LoadGraph("image/farm2.png", TRUE);
 		farm_image[2] = LoadGraph("image/farm3.png", TRUE);
 		farm_image[3] = LoadGraph("image/farm4.png", TRUE);
+		::DxLib::ProcessMessage();
 		title_image[0] = LoadGraph("image/title1.png", TRUE);
 		title_image[1] = LoadGraph("image/title2.png", TRUE);
 		start_image[0] = LoadGraph("image/start.png", TRUE);
@@ -24,7 +26,7 @@ public:
 		continue_image[1] = LoadGraph("image/continue2.png", TRUE);
 		end_image[0] = LoadGraph("image/end.png", TRUE);
 		end_image[1] = LoadGraph("image/end2.png", TRUE);
-		bgm = LoadSoundMem("music/genkaivillage.ogg");
+		bgm = bgm_;
 	}
 
 	void call(bool up_key[], std::uint_fast8_t& scene_id, int yorozuya_level, int sakanaya_level, int farm_level) {

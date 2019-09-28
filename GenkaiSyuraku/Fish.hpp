@@ -199,14 +199,17 @@ public:
 			a[0] = static_cast<char>(i + 48);
 			fish_start_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_start" + ::std::string(a) + u8".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 		fisher_image[fisher_scene_empty] = ::DxLib::LoadGraph(u8"image/fisher1.png");
 		fisher_image[fisher_scene_hit] = ::DxLib::LoadGraph(u8"image/fisher2.png");
 		fisher_image[fisher_scene_go] = ::DxLib::LoadGraph(u8"image/fisher3.png");
+		::DxLib::ProcessMessage();
 
 		for (::std::size_t i{}; i < 6; ++i) {
 			a[0] = static_cast<char>(i + 48);
 			message_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_message" + ::std::string(a) + u8".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 		for (::std::size_t i{}; i < fish_image.size(); ++i) {
 			a[0] = static_cast<char>(i + 49);
 			fish_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish" + ::std::string(a) + u8".png").c_str());
@@ -214,6 +217,7 @@ public:
 			result_shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/result_shadow" + ::std::string(a) + u8".png").c_str());
 			fish_30shadow_image[i] = ::DxLib::LoadGraph(::std::string(u8"image/fish_30shadow" + ::std::string(a) + u8".png").c_str());
 		}
+		::DxLib::ProcessMessage();
 
 		::std::mt19937 engine(seed_gen());
 		::std::uniform_int_distribution<::std::size_t> dist(1, 3);
