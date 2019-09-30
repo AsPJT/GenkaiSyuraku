@@ -64,7 +64,7 @@ public:
 
 			// タイトル画面
 		case scene_title:
-			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level);
+			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level);
 #ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
@@ -73,7 +73,8 @@ public:
 
 			// マップ画面
 		case scene_map:
-			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, yorozuya_level, sakanaya_level, farm_level, talk_id);
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, 
+				yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, talk_id);
 #ifdef GENKAI_SYURAKU_TOUCH
 			if (talk_id == 0) ::DxLib::DrawGraph(0, 568, button2, TRUE);
 			::DxLib::DrawGraph(1408, 568, button1, TRUE);
@@ -210,9 +211,11 @@ private:
 	Title title;
 
 	//集落レベル
-	int yorozuya_level = 0;
-	int sakanaya_level = 1;
-	int farm_level = 1;
+	std::uint_fast8_t yorozuya_level = 0;
+	std::uint_fast8_t sakanaya_level = 1;
+	std::uint_fast8_t farm_level = 0;
+	std::uint_fast8_t hiroba_level = 0; //tower=2,3,4 castle=5,6,7 statue=8,9,10
+	std::uint_fast8_t hatake_level = 0;
 
 	std::uint_fast32_t fished_count{};
 	std::uint_fast32_t go_fish_count{};
