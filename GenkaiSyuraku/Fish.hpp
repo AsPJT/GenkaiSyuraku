@@ -96,7 +96,7 @@ private:
 	const int range_w{ 900 };
 	const int range_h{ 1080 };
 
-	int font_timer{ ::DxLib::CreateFontToHandle(nullptr, 100, 0, DX_FONTTYPE_NORMAL) };
+	int font_timer{ ::DxLib::CreateFontToHandle(nullptr, 100 / frame_size, 0, DX_FONTTYPE_NORMAL) };
 
 	const int back{ ::DxLib::LoadGraph(u8"image/ocean.png") };
 	const int wave{ ::DxLib::LoadGraph(u8"image/wave.png") };
@@ -107,7 +107,8 @@ private:
 	const int image_uki{ ::DxLib::LoadGraph(u8"image/uki.png") };
 	const int image_ocean_sky{ ::DxLib::LoadGraph(u8"image/ocean_sky.png") };
 	const int image_ocean_cloud{ ::DxLib::LoadGraph(u8"image/ocean_cloud.png") };
-	const int image_ocean_island{ ::DxLib::LoadGraph(u8"image/ocean_island.png") };
+	const int image_ocean{ ::DxLib::LoadGraph(u8"image/ocean.png") };
+	const int image_island{ ::DxLib::LoadGraph(u8"image/island.png") };
 	const int image_result{ ::DxLib::LoadGraph(u8"image/result2.png") };
 
 	float shake_value{};
@@ -243,7 +244,7 @@ public:
 		if (shake_value < 0.0f) shake_value = 0.0f;
 		if (++shake_count >= 8) shake_count = 0;
 
-		int shake_y{ static_cast<int>(shake_value * fish_sin[shake_count])};
+		int shake_y{ static_cast<int>(shake_value * fish_sin[shake_count]) };
 		if (fish_scene != fish_scene_end && ++cloud_move_time >= cloud_move_time_max) {
 			++cloud_x;
 			cloud_move_time = 0;
@@ -251,7 +252,9 @@ public:
 
 		// 背景を描画
 		::DxLib::DrawGraph(0, 0, image_ocean_sky, FALSE);
-		::DxLib::DrawGraph(-cloud_x, 0, image_ocean_cloud, TRUE);
+		::DxLib::DrawGraph(-cloud_x / frame_size, 0, image_ocean_cloud, TRUE);
+		// 島
+		::DxLib::DrawGraph(0, 0, image_island, TRUE);
 
 		// 釣った魚を描画
 		total_score = 0;
@@ -265,59 +268,59 @@ public:
 					shake_value += fish_shake[fish_get[i].fish_type];
 				}
 			}
-			::DxLib::DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y + shake_y, 1.0, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
+			::DxLib::DrawRotaGraph((int)fish_get[i].x / frame_size, ((int)fish_get[i].y + shake_y) / frame_size, 1.0, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
 		}
 		uki_y = 872;
 		bool is_hit{ false };
 		bool is_fisher{ false };
 		// 泳ぐ魚の制御
 		if (fish_scene == fish_scene_fish)
-		for (::std::size_t i{}; i < fish_swim.size(); ++i) {
+			for (::std::size_t i{}; i < fish_swim.size(); ++i) {
 
-			++fish_swim[i].start_frame;
-			fish_swim[i].x = static_cast<::std::int_fast32_t>(static_cast<double>(fish_swim[i].x) * 0.95 + static_cast<double>(uki_x) * 0.05);
-			fish_swim[i].y = static_cast<::std::int_fast32_t>(static_cast<double>(fish_swim[i].y) * 0.95 + (static_cast<double>(uki_y) + 50.0) * 0.05);
+				++fish_swim[i].start_frame;
+				fish_swim[i].x = static_cast<::std::int_fast32_t>(static_cast<double>(fish_swim[i].x) * 0.95 + static_cast<double>(uki_x) * 0.05);
+				fish_swim[i].y = static_cast<::std::int_fast32_t>(static_cast<double>(fish_swim[i].y) * 0.95 + (static_cast<double>(uki_y) + 50.0) * 0.05);
 
-			::std::int_fast32_t fish_dis{ (fish_swim[i].x - uki_x) * (fish_swim[i].x - uki_x) + (fish_swim[i].y - (uki_y + 50)) * (fish_swim[i].y - (uki_y + 50)) };
-			if (fish_dis < 1500) {
-				uki_y = 890;
-				++fish_swim[i].frame;
-				is_hit = true;
-				::std::uniform_real_distribution<double> dist_r(0.01, 0.2);
-				// 魚がかかっている時
-				::DxLib::DrawGraph(500, 600, image_find_fish, TRUE);
-				if (fish_swim[i].fish_type == fish_sunfish || fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
-					::DxLib::DrawGraph(460, 600, image_find_fish, TRUE);
+				::std::int_fast32_t fish_dis{ (fish_swim[i].x - uki_x) * (fish_swim[i].x - uki_x) + (fish_swim[i].y - (uki_y + 50)) * (fish_swim[i].y - (uki_y + 50)) };
+				if (fish_dis < 1500) {
+					uki_y = 890;
+					++fish_swim[i].frame;
+					is_hit = true;
+					::std::uniform_real_distribution<double> dist_r(0.01, 0.2);
+					// 魚がかかっている時
+					::DxLib::DrawGraph(500 / frame_size, 600 / frame_size, image_find_fish, TRUE);
+					if (fish_swim[i].fish_type == fish_sunfish || fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
+						::DxLib::DrawGraph(460 / frame_size, 600 / frame_size, image_find_fish, TRUE);
+					}
+					if (fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
+						::DxLib::DrawGraph(420 / frame_size, 600 / frame_size, image_find_fish, TRUE);
+						::DxLib::DrawGraph(0, 0, super_rare, TRUE);
+					}
+					if (fish_swim[i].fish_type == fish_sunfish) {
+						::DxLib::DrawGraph(0, 0, rare, TRUE);
+					}
+
+					if (fish_swim[i].frame >= fish_frame[fish_swim[i].fish_type]) {
+						fish_swim.erase(fish_swim.begin() + i);
+						--i;
+						continue;
+					}
+					if (i >= fish_swim.size()) break;
+					if (down_key[KEY_INPUT_SPACE] && timer > 0 && fisher_timer == 0) {
+						is_fisher = true;
+						fish_get.emplace_back(fish_swim[i]);
+						fish_get.back().status = fish_status_up_fly;
+						fish_get.back().add_r = dist_r(engine);
+						fish_swim.erase(fish_swim.begin() + i);
+
+						++fish_count[fish_get.back().fish_type];
+
+						--i;
+						continue;
+					}
+
 				}
-				if (fish_swim[i].fish_type == fish_whale_shark || fish_swim[i].fish_type == fish_regalecus_glesne) {
-					::DxLib::DrawGraph(420, 600, image_find_fish, TRUE);
-					::DxLib::DrawGraph(0, 0, super_rare, TRUE);
-				}
-				if (fish_swim[i].fish_type == fish_sunfish) {
-					::DxLib::DrawGraph(0, 0, rare, TRUE);
-				}
-
-				if (fish_swim[i].frame >= fish_frame[fish_swim[i].fish_type]) {
-					fish_swim.erase(fish_swim.begin() + i);
-					--i;
-					continue;
-				}
-				if (i >= fish_swim.size()) break;
-				if (down_key[KEY_INPUT_SPACE] && timer > 0 && fisher_timer == 0) {
-					is_fisher = true;
-					fish_get.emplace_back(fish_swim[i]);
-					fish_get.back().status = fish_status_up_fly;
-					fish_get.back().add_r = dist_r(engine);
-					fish_swim.erase(fish_swim.begin() + i);
-
-					++fish_count[fish_get.back().fish_type];
-
-					--i;
-					continue;
-				}
-
 			}
-		}
 		if (is_fisher) fisher_timer = 30;
 
 		::std::uint_fast8_t fisher_status{ fisher_scene_empty };
@@ -328,33 +331,34 @@ public:
 			fisher_status = fisher_scene_go;
 		}
 
-		// 海と島
-		::DxLib::DrawGraph(0, 0, image_ocean_island, TRUE);
+		// 海
+		::DxLib::DrawGraph(0, 0, image_ocean, TRUE);
 
-		::DxLib::DrawGraph(850, 400 + shake_y, fisher_image[fisher_status], TRUE);
-		(fisher_timer > 0)? ::DxLib::DrawLine(uki_x, uki_y, 1250, 498 + shake_y, 0x00000000) :
-		(is_hit) ?
-			::DxLib::DrawLine(uki_x, uki_y, 898, 637 + shake_y, 0x00000000) :
-			::DxLib::DrawLine(uki_x, uki_y, 957, 527 + shake_y, 0x00000000);
-		::DxLib::DrawGraph(850, 400 + shake_y, wave, TRUE);
-		::DxLib::DrawGraph(460, uki_y - 2, image_uki, TRUE);
+		::DxLib::DrawGraph(850 / frame_size, (400 + shake_y) / frame_size, fisher_image[fisher_status], TRUE);
+		(fisher_timer > 0) ? ::DxLib::DrawLine(uki_x / frame_size, uki_y / frame_size, 1250 / frame_size, (498 + shake_y) / frame_size, 0x00000000) :
+			(is_hit) ?
+			::DxLib::DrawLine(uki_x / frame_size, uki_y / frame_size, 898 / frame_size, (637 + shake_y) / frame_size, 0x00000000) :
+			::DxLib::DrawLine(uki_x / frame_size, uki_y / frame_size, 957 / frame_size, (527 + shake_y) / frame_size, 0x00000000);
+		::DxLib::DrawGraph(850 / frame_size, (400 + shake_y) / frame_size, wave, TRUE);
+		::DxLib::DrawGraph(460 / frame_size, (uki_y - 2) / frame_size, image_uki, TRUE);
 		//DxLib::DrawBox(range_x, range_y, range_w, range_h, 0xffffffff, FALSE);
 
 
 		// 泳ぐ魚の制御
-		for (::std::size_t i{}; i < fish_swim.size(); ++i) {
-			if (fish_swim[i].start_frame < fish_start_frame[fish_swim[i].fish_type]) {
-				::DxLib::DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
+		if (fish_scene == fish_scene_fish)
+			for (::std::size_t i{}; i < fish_swim.size(); ++i) {
+				if (fish_swim[i].start_frame < fish_start_frame[fish_swim[i].fish_type]) {
+					::DxLib::DrawRotaGraph((int)fish_swim[i].x / frame_size, (int)fish_swim[i].y / frame_size, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
+				}
+				else if (fish_swim[i].frame >= fish_half_frame[fish_swim[i].fish_type]) {
+					::DxLib::DrawRotaGraph((int)fish_swim[i].x / frame_size, (int)fish_swim[i].y / frame_size, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
+				}
+				else DrawRotaGraph((int)fish_swim[i].x / frame_size, (int)fish_swim[i].y / frame_size, 1.0f, 0.0, fish_shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
 			}
-			else if (fish_swim[i].frame >= fish_half_frame[fish_swim[i].fish_type]) {
-				::DxLib::DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_30shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
-			}
-			else DrawRotaGraph((int)fish_swim[i].x, (int)fish_swim[i].y, 1.0f, 0.0, fish_shadow_image[fish_size[fish_swim[i].fish_type]], TRUE);
-		}
 
 		::std::uniform_int_distribution<::std::size_t> dist(1, 100);
 		if (fish_scene == fish_scene_fish)
-		if (dist(engine) > 92 && fish_swim.size() < 10) this->addFish();
+			if (dist(engine) > 92 && fish_swim.size() < 10) this->addFish();
 
 
 		// 釣った魚を描画
@@ -368,20 +372,20 @@ public:
 					fish_get[i].y = 0;
 					fish_get[i].status = fish_status_down_fly;
 				}
-				::DxLib::DrawRotaGraph((int)fish_get[i].x, (int)fish_get[i].y + shake_y, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
+				::DxLib::DrawRotaGraph((int)fish_get[i].x / frame_size, ((int)fish_get[i].y + shake_y) / frame_size, 1.0f, fish_get[i].r, fish_image[fish_get[i].fish_type], TRUE);
 			}
 		}
 
 		if (fish_scene == fish_scene_fish && fish_get.size() > 0) {
-			DrawCircle(200, 200, 80, 0xffffffff);
-			::DxLib::DrawRotaGraph(200, 200, 0.5f, 0.0f, fish_image[fish_get.back().fish_type], TRUE);
+			DrawCircle(200 / frame_size, 200 / frame_size, 80 / frame_size, 0xffffffff);
+			::DxLib::DrawRotaGraph(200 / frame_size, 200 / frame_size, 0.5f, 0.0f, fish_image[fish_get.back().fish_type], TRUE);
 		}
-		
+
 		switch (fish_scene)
 		{
 		case fish_scene_start:
 			--fish_scene_start_timer;
-			::DxLib::DrawGraph(0, 0, fish_start_image[fish_scene_start_timer/100], TRUE);
+			::DxLib::DrawGraph(0, 0, fish_start_image[fish_scene_start_timer / 100], TRUE);
 			if (fish_scene_start_timer <= 0) fish_scene = fish_scene_fish;
 			break;
 		case fish_scene_fish:
@@ -389,12 +393,12 @@ public:
 			break;
 		case fish_scene_end:
 			::DxLib::DrawGraph(0, 0, image_result, TRUE);
-			DrawFormatStringToHandle(700, 380, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_small]);
-			DrawFormatStringToHandle(700, 580, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_medium]);
-			DrawFormatStringToHandle(700, 780, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_large]);
-			DrawFormatStringToHandle(1400, 380, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_sunfish]);
-			DrawFormatStringToHandle(1400, 580, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_whale_shark]);
-			DrawFormatStringToHandle(1400, 780, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_regalecus_glesne]);
+			DrawFormatStringToHandle(700 / frame_size, 380 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_small]);
+			DrawFormatStringToHandle(700 / frame_size, 580 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_medium]);
+			DrawFormatStringToHandle(700 / frame_size, 780 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_large]);
+			DrawFormatStringToHandle(1400 / frame_size, 380 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_sunfish]);
+			DrawFormatStringToHandle(1400 / frame_size, 580 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_whale_shark]);
+			DrawFormatStringToHandle(1400 / frame_size, 780 / frame_size, GetColor(0, 0, 0), font_timer, u8"%d匹", fish_count[fish_regalecus_glesne]);
 			for (::std::size_t i{}; i < fish_num; ++i) {
 				if (fish_count[i] == 0) ::DxLib::DrawGraph(0, 0, result_shadow_image[i], TRUE);
 			}
@@ -403,9 +407,9 @@ public:
 		}
 
 		if (fish_scene == fish_scene_fish) {
-			DrawBox(650, 600, 700, 700, 0xffffffff, TRUE);
-			DrawBox(650, 600+ fisher_timer * 100 / 30, 700, 700, 0xff33aa33, TRUE);
-			::DxLib::DrawGraph(610, 552, bottle, TRUE);
+			DrawBox(650 / frame_size, 600 / frame_size, 700 / frame_size, 700 / frame_size, 0xffffffff, TRUE);
+			DrawBox(650 / frame_size, (600 + fisher_timer * 100 / 30) / frame_size, 700 / frame_size, 700 / frame_size, 0xff33aa33, TRUE);
+			::DxLib::DrawGraph(610 / frame_size, 552 / frame_size, bottle, TRUE);
 		}
 		// 強制リザルト画面
 		if (up_key[KEY_INPUT_T]) timer = 0;
