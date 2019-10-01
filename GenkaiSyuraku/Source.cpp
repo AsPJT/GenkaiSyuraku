@@ -12,7 +12,7 @@ int android_main(void) {
 #else
 	int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #endif
-
+		
 		// ログ出力を行わない
 		::DxLib::SetOutApplicationLogValidFlag(FALSE);
 		
@@ -22,6 +22,7 @@ int android_main(void) {
 		// ウインドウモードにする
 #ifndef __ANDROID__
 		::DxLib::ChangeWindowMode(TRUE);
+		::DxLib::SetWindowIconID(22);
 #endif
 
 		// 画面の解像度を指定する
