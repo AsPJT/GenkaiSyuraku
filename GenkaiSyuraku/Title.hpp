@@ -61,22 +61,22 @@ public:
 			if (select == 2) scene_id = 5;
 		}
 		//背景の描画
-		DrawGraph(background_x, 0, map_image, TRUE);
+		DrawGraph(background_x / frame_size, 0, map_image, TRUE);
 
 		//施設の描画
-		if (hiroba_level == 0 && farm_level != 4) DrawGraph(background_x, 0, hiroba_image[hiroba_level], TRUE);
-		else if (farm_level != 4) DrawGraph(background_x, 0, hiroba_image[hiroba_level - 1], TRUE);
-		if (farm_level == 0) DrawGraph(background_x, 0, farm_image[farm_level], TRUE);
-		else DrawGraph(background_x, 0, farm_image[farm_level - 1], TRUE);
-		if (yorozuya_level == 0) DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
-		else DrawGraph(background_x, 0, yorozuya_image[yorozuya_level - 1], TRUE);
-		if (sakanaya_level == 0) DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
-		else DrawGraph(background_x, 0, sakanaya_image[sakanaya_level - 1], TRUE);
+		if (hiroba_level == 0 && farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level], TRUE);
+		else if (farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level - 1], TRUE);
+		if (farm_level == 0) DrawGraph(background_x / frame_size, 0, farm_image[farm_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, farm_image[farm_level - 1], TRUE);
+		if (yorozuya_level == 0) DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level - 1], TRUE);
+		if (sakanaya_level == 0) DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level - 1], TRUE);
 
 
 		//タイトル
-		if(title_level == 0) DrawGraph(0, -200, title_image[title_level], TRUE);
-		else DrawGraph(0, -50, title_image[title_level], TRUE);
+		if(title_level == 0) DrawGraph(0, -200 / frame_size, title_image[title_level], TRUE);
+		else DrawGraph(0, -50 / frame_size, title_image[title_level], TRUE);
 			   		 
 		//その他表示
 		DrawGraph(0, 0, start_image[0], TRUE);

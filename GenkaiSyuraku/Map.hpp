@@ -92,18 +92,18 @@ public:
 		find_image = LoadGraph("image/find_fish.png", TRUE);
 		::DxLib::ProcessMessage();
 
-		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX, player.sizeY, player.image);//画像を分割してimage配列に保存
-		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX, mob[0].sizeY, mob[0].image);
-		LoadDivGraph("image/ba.png", 4, 1, 4, mob[1].sizeX, mob[1].sizeY, mob[1].image);
-		LoadDivGraph("image/man1.png", 4, 1, 4, mob[2].sizeX, mob[2].sizeY, mob[2].image);
-		LoadDivGraph("image/man2.png", 4, 1, 4, mob[3].sizeX, mob[3].sizeY, mob[3].image);
-		LoadDivGraph("image/man3.png", 4, 1, 4, mob[4].sizeX, mob[4].sizeY, mob[4].image);
-		LoadDivGraph("image/foreign1.png", 4, 1, 4, mob[5].sizeX, mob[5].sizeY, mob[5].image);
-		LoadDivGraph("image/foreign2.png", 4, 1, 4, mob[6].sizeX, mob[6].sizeY, mob[6].image);
-		LoadDivGraph("image/foreign3.png", 4, 1, 4, mob[7].sizeX, mob[7].sizeY, mob[7].image);
-		LoadDivGraph("image/alien.png", 4, 1, 4, mob[8].sizeX, mob[8].sizeY, mob[8].image);
-		LoadDivGraph("image/girl1.png", 4, 1, 4, mob[9].sizeX, mob[9].sizeY, mob[9].image);
-		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX, mob[10].sizeY, mob[10].image);
+		LoadDivGraph("image/player.png", 24, 6, 4, player.sizeX / frame_size, player.sizeY / frame_size, player.image);//画像を分割してimage配列に保存
+		LoadDivGraph("image/ji.png", 4, 1, 4, mob[0].sizeX / frame_size, mob[0].sizeY / frame_size, mob[0].image);
+		LoadDivGraph("image/ba.png", 4, 1, 4, mob[1].sizeX / frame_size, mob[1].sizeY / frame_size, mob[1].image);
+		LoadDivGraph("image/man1.png", 4, 1, 4, mob[2].sizeX / frame_size, mob[2].sizeY / frame_size, mob[2].image);
+		LoadDivGraph("image/man2.png", 4, 1, 4, mob[3].sizeX / frame_size, mob[3].sizeY / frame_size, mob[3].image);
+		LoadDivGraph("image/man3.png", 4, 1, 4, mob[4].sizeX / frame_size, mob[4].sizeY / frame_size, mob[4].image);
+		LoadDivGraph("image/foreign1.png", 4, 1, 4, mob[5].sizeX / frame_size, mob[5].sizeY / frame_size, mob[5].image);
+		LoadDivGraph("image/foreign2.png", 4, 1, 4, mob[6].sizeX / frame_size, mob[6].sizeY / frame_size, mob[6].image);
+		LoadDivGraph("image/foreign3.png", 4, 1, 4, mob[7].sizeX / frame_size, mob[7].sizeY / frame_size, mob[7].image);
+		LoadDivGraph("image/alien.png", 4, 1, 4, mob[8].sizeX / frame_size, mob[8].sizeY / frame_size, mob[8].image);
+		LoadDivGraph("image/girl1.png", 4, 1, 4, mob[9].sizeX / frame_size, mob[9].sizeY / frame_size, mob[9].image);
+		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX / frame_size, mob[10].sizeY / frame_size, mob[10].image);
 		::DxLib::ProcessMessage();
 
 		bgm = bgm_;
@@ -111,9 +111,9 @@ public:
 		::DxLib::ProcessMessage();
 
 		//Font
-		FontHandle_mini = CreateFontToHandle(nullptr, 20, 2, DX_FONTTYPE_EDGE);
-		FontHandle = CreateFontToHandle(nullptr, 50, 2, DX_FONTTYPE_EDGE);
-		FontHandle_big = CreateFontToHandle(nullptr, 70, 2, DX_FONTTYPE_EDGE);
+		FontHandle_mini = CreateFontToHandle(nullptr, 20 / frame_size, 2, (frame_size == 1) ? DX_FONTTYPE_EDGE : DX_FONTTYPE_NORMAL);
+		FontHandle = CreateFontToHandle(nullptr, 50 / frame_size, 2, (frame_size == 1) ? DX_FONTTYPE_EDGE : DX_FONTTYPE_NORMAL);
+		FontHandle_big = CreateFontToHandle(nullptr, 70 / frame_size, 2, (frame_size == 1) ? DX_FONTTYPE_EDGE : DX_FONTTYPE_NORMAL);
 		::DxLib::ProcessMessage();
 
 		//村人の初期画像(正面)，y座標
@@ -773,56 +773,56 @@ public:
 	void Draw(std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level, std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level, 
 		std::uint_fast8_t hatake_level, std::array<int, item_num>& item_count) {
 		//背景の描画
-		DrawGraph(background_x, 0, map_image, TRUE);
+		DrawGraph(background_x / frame_size, 0, map_image, TRUE);
 
 		//施設の描画
-		if (hiroba_level == 0 && farm_level != 4) DrawGraph(background_x, 0, hiroba_image[hiroba_level], TRUE);
-		else if(farm_level != 4) DrawGraph(background_x, 0, hiroba_image[hiroba_level - 1], TRUE);
-		if (farm_level == 0) DrawGraph(background_x, 0, farm_image[farm_level], TRUE);
-		else DrawGraph(background_x, 0, farm_image[farm_level - 1], TRUE);
-		if(yorozuya_level == 0) DrawGraph(background_x, 0, yorozuya_image[yorozuya_level], TRUE);
-		else DrawGraph(background_x, 0, yorozuya_image[yorozuya_level - 1], TRUE);
-		if (sakanaya_level == 0) DrawGraph(background_x, 0, sakanaya_image[sakanaya_level], TRUE);
-		else DrawGraph(background_x, 0, sakanaya_image[sakanaya_level - 1], TRUE);
+		if (hiroba_level == 0 && farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level], TRUE);
+		else if(farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level - 1], TRUE);
+		if (farm_level == 0) DrawGraph(background_x / frame_size, 0, farm_image[farm_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, farm_image[farm_level - 1], TRUE);
+		if(yorozuya_level == 0) DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level - 1], TRUE);
+		if (sakanaya_level == 0) DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level], TRUE);
+		else DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level - 1], TRUE);
 
 		//つりエリアのアイコン表示
 		if (player.x > tsuri_area) {
 			DrawGraph(0, 0, area_icon_image, TRUE);
-			DrawGraph(tsuri_area + background_x - 400, -250, fish_icon_image, TRUE);
-			DrawFormatStringToHandle(1050, 200, GetColor(0, 0, 0), FontHandle, u8"Enterキーで釣りエリアへ");
+			DrawGraph((tsuri_area + background_x - 400) / frame_size, -250 / frame_size, fish_icon_image, TRUE);
+			DrawFormatStringToHandle(1050 / frame_size, 200 / frame_size, GetColor(0, 0, 0), FontHandle, u8"Enterキーで釣りエリアへ");
 		}
 		//おじいのアイコンを描画
-		DrawGraph(mob[0].x + background_x - 64, mob[0].y - 200, icon_image, TRUE);
+		DrawGraph((mob[0].x + background_x - 64) / frame_size, (mob[0].y - 200) / frame_size, icon_image, TRUE);
 
 		//後方のものから表示
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y <= player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);//mobを描画
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width) DrawGraph((mob[i].x + background_x) / frame_size, mob[i].y / frame_size, mob[i].img, TRUE);//mobを描画
 		if (hatake_level > 0) {
 			for (i = 0; i < hatake_num; i++)
 				if (hatake[i].y + hatake[i].size / 2 <= player.y + player.sizeY)
-					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width) DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);//畑を描画
+					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width) DrawGraph((hatake[i].x + background_x) / frame_size, hatake[i].y / frame_size, hatake[i].img, TRUE);//畑を描画
 		}
-		DrawGraph(player.px, player.py, player.img, TRUE);   //プレイヤーを描画
+		DrawGraph(player.px / frame_size, player.py / frame_size, player.img, TRUE);   //プレイヤーを描画
 		for (i = 0; i < mob_num; i++)
 			if (mob[i].y > player.y)
-				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph(mob[i].x + background_x, mob[i].y, mob[i].img, TRUE);  //mobを描画
+				if (mob[i].x > player.x - map_width && mob[i].x < player.x + map_width)  DrawGraph((mob[i].x + background_x) / frame_size, mob[i].y / frame_size, mob[i].img, TRUE);  //mobを描画
 		if (hatake_level > 0) {
 			for (i = 0; i < hatake_num; i++)
 				if (hatake[i].y + hatake[i].size / 2 > player.y + player.sizeY)
-					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width)  DrawGraph(hatake[i].x + background_x, hatake[i].y, hatake[i].img, TRUE);  //畑を描画
+					if (hatake[i].x > player.x - map_width && hatake[i].x < player.x + map_width)  DrawGraph((hatake[i].x + background_x) / frame_size, hatake[i].y / frame_size, hatake[i].img, TRUE);  //畑を描画
 		}
 
 		//畑に近づいたときのアイコン
 		if (hatake_find != 10) {
-			DrawRotaGraph(hatake[hatake_find].x + background_x + 64, hatake[hatake_find].y + 96, 0.3, 0, find_image, TRUE, FALSE);
+			DrawRotaGraph((hatake[hatake_find].x + background_x + 64) / frame_size, (hatake[hatake_find].y + 96) / frame_size, 0.3, 0, find_image, TRUE, FALSE);
 		}
 
 		//会話
 		if (talk >= 1) {
 			DrawGraph(0, 0, textwindow_image, TRUE);
-			DrawFormatStringToHandle(130, 815, GetColor(255, 255, 255), FontHandle, talk_list[talk].c_str());
-			DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, person_list[person].c_str());
+			DrawFormatStringToHandle(130 / frame_size, 815 / frame_size, GetColor(255, 255, 255), FontHandle, talk_list[talk].c_str());
+			DrawFormatStringToHandle(190 / frame_size, 730 / frame_size, GetColor(255, 255, 255), FontHandle, person_list[person].c_str());
 		}
 
 		//メニューの描画
@@ -831,141 +831,141 @@ public:
 		case 1:
 			//メインメニュー
 			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(170, selector_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			DrawGraph(170 / frame_size, selector_y / frame_size, selector_image, TRUE);
+			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 			break;
 		case 2:
 			//アイテム選択
 			DrawGraph(0, 0, menu_image, TRUE);
-			DrawGraph(520, selector2_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			DrawGraph(520 / frame_size, selector2_y / frame_size, selector_image, TRUE);
+			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
+			DrawFormatStringToHandle(600 / frame_size, 180 / frame_size, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1].c_str());
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size].c_str());
 
-			DrawFormatStringToHandle(1200, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 5]);
-			DrawFormatStringToHandle(1200, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 4]);
-			DrawFormatStringToHandle(1200, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 3]);
-			DrawFormatStringToHandle(1200, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 2]);
-			DrawFormatStringToHandle(1200, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 1]);
-			DrawFormatStringToHandle(1200, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size]);
+			DrawFormatStringToHandle(1200 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 5]);
+			DrawFormatStringToHandle(1200 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 4]);
+			DrawFormatStringToHandle(1200 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 3]);
+			DrawFormatStringToHandle(1200 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 2]);
+			DrawFormatStringToHandle(1200 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size - 1]);
+			DrawFormatStringToHandle(1200 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select2 + menu_size]);
 
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1.0].c_str());
+			DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1.0].c_str());
 
 			break;
 		case 3:
 			//よろず屋
 			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(170, selector3_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			DrawGraph(170 / frame_size, selector3_y / frame_size, selector_image, TRUE);
+			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 			break;
 		case 4:
 			//買う
 			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(520, selector4_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			DrawGraph(520 / frame_size, selector4_y / frame_size, selector_image, TRUE);
+			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　売値　　　所持数");
+			DrawFormatStringToHandle(600 / frame_size, 180 / frame_size, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　売値　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, u8"とじる");
+			DrawFormatStringToHandle(600 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_tomato_seed].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_cabbage_seed].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_corn_seed].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[item_broom].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, u8"とじる");
 
-			DrawFormatStringToHandle(1500, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_tomato_seed]);
-			DrawFormatStringToHandle(1500, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_cabbage_seed]);
-			DrawFormatStringToHandle(1500, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_corn_seed]);
-			DrawFormatStringToHandle(1500, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_broom]);
+			DrawFormatStringToHandle(1500 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_tomato_seed]);
+			DrawFormatStringToHandle(1500 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_cabbage_seed]);
+			DrawFormatStringToHandle(1500 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_corn_seed]);
+			DrawFormatStringToHandle(1500 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[item_broom]);
 
-			DrawFormatStringToHandle(1100, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_tomato_seed]);
-			DrawFormatStringToHandle(1100, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_cabbage_seed]);
-			DrawFormatStringToHandle(1100, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_corn_seed]);
-			DrawFormatStringToHandle(1100, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_broom]);
+			DrawFormatStringToHandle(1100 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_tomato_seed]);
+			DrawFormatStringToHandle(1100 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_cabbage_seed]);
+			DrawFormatStringToHandle(1100 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_corn_seed]);
+			DrawFormatStringToHandle(1100 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_buy[item_broom]);
 
-			if (select4 == 0) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed].c_str());
-			else if (select4 == 1) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed].c_str());
-			else if (select4 == 2) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed].c_str());
-			else if (select4 == 3) DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom].c_str());
+			if (select4 == 0) DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_tomato_seed].c_str());
+			else if (select4 == 1) DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_cabbage_seed].c_str());
+			else if (select4 == 2) DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_corn_seed].c_str());
+			else if (select4 == 3) DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[item_broom].c_str());
 
 			break;
 		case 5:
 			//売る
 			DrawGraph(0, 0, menu2_image, TRUE);
-			DrawGraph(520, selector5_y, selector_image, TRUE);
-			DrawFormatStringToHandle(250, 160, GetColor(0, 0, 0), FontHandle, "%d", player.money);
+			DrawGraph(520 / frame_size, selector5_y / frame_size, selector_image, TRUE);
+			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 
-			DrawFormatStringToHandle(600, 180, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　買値　　　所持数");
+			DrawFormatStringToHandle(600 / frame_size, 180 / frame_size, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　買値　　　所持数");
 
-			DrawFormatStringToHandle(600, 250, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5].c_str());
-			DrawFormatStringToHandle(600, 320, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4].c_str());
-			DrawFormatStringToHandle(600, 390, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3].c_str());
-			DrawFormatStringToHandle(600, 460, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2].c_str());
-			DrawFormatStringToHandle(600, 530, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1].c_str());
-			DrawFormatStringToHandle(600, 600, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 5].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 4].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 3].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 2].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size - 1].c_str());
+			DrawFormatStringToHandle(600 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select5 + menu_size].c_str());
 
-			DrawFormatStringToHandle(1500, 250, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 5]);
-			DrawFormatStringToHandle(1500, 320, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 4]);
-			DrawFormatStringToHandle(1500, 390, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 3]);
-			DrawFormatStringToHandle(1500, 460, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 2]);
-			DrawFormatStringToHandle(1500, 530, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 1]);
-			DrawFormatStringToHandle(1500, 600, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size]);
+			DrawFormatStringToHandle(1500 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 5]);
+			DrawFormatStringToHandle(1500 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 4]);
+			DrawFormatStringToHandle(1500 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 3]);
+			DrawFormatStringToHandle(1500 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 2]);
+			DrawFormatStringToHandle(1500 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size - 1]);
+			DrawFormatStringToHandle(1500 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle, "%d個", item_count[select5 + menu_size]);
 
-			DrawFormatStringToHandle(1100, 250, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 5]);
-			DrawFormatStringToHandle(1100, 320, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 4]);
-			DrawFormatStringToHandle(1100, 390, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 3]);
-			DrawFormatStringToHandle(1100, 460, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 2]);
-			DrawFormatStringToHandle(1100, 530, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 1]);
-			DrawFormatStringToHandle(1100, 600, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size]);
+			DrawFormatStringToHandle(1100 / frame_size, 250 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 5]);
+			DrawFormatStringToHandle(1100 / frame_size, 320 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 4]);
+			DrawFormatStringToHandle(1100 / frame_size, 390 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 3]);
+			DrawFormatStringToHandle(1100 / frame_size, 460 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 2]);
+			DrawFormatStringToHandle(1100 / frame_size, 530 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size - 1]);
+			DrawFormatStringToHandle(1100 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle, "%dG", item_sell[select5 + menu_size]);
 
-			DrawFormatStringToHandle(550, 850, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1].c_str());
+			DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[select5 + 1].c_str());
 			break;
 		case 6:
 			//畑
 			DrawGraph(0, 0, window_image, TRUE);
-			DrawRotaGraph(1450, selector6_y, 0.5, 0, selector_image, TRUE, FALSE);
-			DrawFormatStringToHandle(1470, 600, GetColor(0, 0, 0), FontHandle_mini, u8"トマトの種 ×%d", item_count[item_tomato_seed]);
-			DrawFormatStringToHandle(1470, 650, GetColor(0, 0, 0), FontHandle_mini, u8"キャベツの種 ×%d", item_count[item_cabbage_seed]);
-			DrawFormatStringToHandle(1470, 700, GetColor(0, 0, 0), FontHandle_mini, u8"とうもろこしの種 ×%d", item_count[item_corn_seed]);
-			DrawFormatStringToHandle(1470, 750, GetColor(0, 0, 0), FontHandle_mini, u8"やめる");
+			DrawRotaGraph(1450 / frame_size, selector6_y / frame_size, 0.5, 0, selector_image, TRUE, FALSE);
+			DrawFormatStringToHandle(1470 / frame_size, 600 / frame_size, GetColor(0, 0, 0), FontHandle_mini, u8"トマトの種 ×%d", item_count[item_tomato_seed]);
+			DrawFormatStringToHandle(1470 / frame_size, 650 / frame_size, GetColor(0, 0, 0), FontHandle_mini, u8"キャベツの種 ×%d", item_count[item_cabbage_seed]);
+			DrawFormatStringToHandle(1470 / frame_size, 700 / frame_size, GetColor(0, 0, 0), FontHandle_mini, u8"とうもろこしの種 ×%d", item_count[item_corn_seed]);
+			DrawFormatStringToHandle(1470 / frame_size, 750 / frame_size, GetColor(0, 0, 0), FontHandle_mini, u8"やめる");
 			break;
 		case 7:
 			//資材選択
 			if (hiroba_level != 4 && hiroba_level != 7 && hiroba_level != 10 && kenchiku == 0) {
 				DrawGraph(0, 0, textwindow_image, TRUE);
-				DrawFormatStringToHandle(190, 730, GetColor(255, 255, 255), FontHandle, person_list[person].c_str());
-				DrawRotaGraph(600, selector7_y, 0.5, 0, selector_image, TRUE, FALSE);
-				DrawFormatStringToHandle(620, 950, GetColor(255, 255, 255), FontHandle, u8"とじる");
-				DrawFormatStringToHandle(1400, 785, GetColor(255, 255, 255), FontHandle, u8"所持数");
-				DrawFormatStringToHandle(1400, 840, GetColor(255, 255, 255), FontHandle, u8"木材:%d個", item_count[item_wood]);
-				DrawFormatStringToHandle(1400, 895, GetColor(255, 255, 255), FontHandle, u8"石材:%d個", item_count[item_stone]);
-				DrawFormatStringToHandle(1400, 950, GetColor(255, 255, 255), FontHandle, u8"鉱石:%d個", item_count[item_ore]);
+				DrawFormatStringToHandle(190 / frame_size, 730 / frame_size, GetColor(255, 255, 255), FontHandle, person_list[person].c_str());
+				DrawRotaGraph(600 / frame_size, selector7_y / frame_size, 0.5, 0, selector_image, TRUE, FALSE);
+				DrawFormatStringToHandle(620 / frame_size, 950 / frame_size, GetColor(255, 255, 255), FontHandle, u8"とじる");
+				DrawFormatStringToHandle(1400 / frame_size, 785 / frame_size, GetColor(255, 255, 255), FontHandle, u8"所持数");
+				DrawFormatStringToHandle(1400 / frame_size, 840 / frame_size, GetColor(255, 255, 255), FontHandle, u8"木材:%d個", item_count[item_wood]);
+				DrawFormatStringToHandle(1400 / frame_size, 895 / frame_size, GetColor(255, 255, 255), FontHandle, u8"石材:%d個", item_count[item_stone]);
+				DrawFormatStringToHandle(1400 / frame_size, 950 / frame_size, GetColor(255, 255, 255), FontHandle, u8"鉱石:%d個", item_count[item_ore]);
 				if (hiroba_level == 1) {
-					DrawFormatStringToHandle(620, 785, GetColor(255, 255, 255), FontHandle, u8"タワー:木材10個");
-					DrawFormatStringToHandle(620, 840, GetColor(255, 255, 255), FontHandle, u8"城:石材20個");
-					DrawFormatStringToHandle(620, 895, GetColor(255, 255, 255), FontHandle, u8"像:石材10個");
+					DrawFormatStringToHandle(620 / frame_size, 785 / frame_size, GetColor(255, 255, 255), FontHandle, u8"タワー:木材10個");
+					DrawFormatStringToHandle(620 / frame_size, 840 / frame_size, GetColor(255, 255, 255), FontHandle, u8"城:石材20個");
+					DrawFormatStringToHandle(620 / frame_size, 895 / frame_size, GetColor(255, 255, 255), FontHandle, u8"像:石材10個");
 				}
 				else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
-					if (hiroba_level == 2) DrawFormatStringToHandle(620, 785, GetColor(255, 255, 255), FontHandle, u8"タワー:石材20個 木材10個");
-					else DrawFormatStringToHandle(620, 785, GetColor(64, 64, 64), FontHandle, u8"タワー:石材20個 木材10個");
-					if (hiroba_level == 5) DrawFormatStringToHandle(620, 840, GetColor(255, 255, 255), FontHandle, u8"城:石材20個 鉱石10個");
-					else DrawFormatStringToHandle(620, 840, GetColor(64, 64, 64), FontHandle, u8"城:石材20個 鉱石10個");
-					if (hiroba_level == 8) DrawFormatStringToHandle(620, 895, GetColor(255, 255, 255), FontHandle, u8"像:石材10個 鉱石10個");
-					else DrawFormatStringToHandle(620, 895, GetColor(64, 64, 64), FontHandle, u8"像:石材10個 鉱石10個");
+					if (hiroba_level == 2) DrawFormatStringToHandle(620 / frame_size, 785 / frame_size, GetColor(255, 255, 255), FontHandle, u8"タワー:石材20個 木材10個");
+					else DrawFormatStringToHandle(620 / frame_size, 785 / frame_size, GetColor(64, 64, 64), FontHandle, u8"タワー:石材20個 木材10個");
+					if (hiroba_level == 5) DrawFormatStringToHandle(620 / frame_size, 840 / frame_size, GetColor(255, 255, 255), FontHandle, u8"城:石材20個 鉱石10個");
+					else DrawFormatStringToHandle(620 / frame_size, 840 / frame_size, GetColor(64, 64, 64), FontHandle, u8"城:石材20個 鉱石10個");
+					if (hiroba_level == 8) DrawFormatStringToHandle(620 / frame_size, 895 / frame_size, GetColor(255, 255, 255), FontHandle, u8"像:石材10個 鉱石10個");
+					else DrawFormatStringToHandle(620 / frame_size, 895 / frame_size, GetColor(64, 64, 64), FontHandle, u8"像:石材10個 鉱石10個");
 				}
 				else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
-					if (hiroba_level == 3) DrawFormatStringToHandle(620, 785, GetColor(255, 255, 255), FontHandle, u8"タワー:石材30個 木材10個");
-					else DrawFormatStringToHandle(620, 785, GetColor(64, 64, 64), FontHandle, u8"タワー:石材30個 木材10個");
-					if (hiroba_level == 6) DrawFormatStringToHandle(620, 840, GetColor(255, 255, 255), FontHandle, u8"城:石材30個 鉱石30個");
-					else DrawFormatStringToHandle(620, 840, GetColor(64, 64, 64), FontHandle, u8"城:石材30個 鉱石30個");
-					if (hiroba_level == 9) DrawFormatStringToHandle(620, 895, GetColor(255, 255, 255), FontHandle, u8"像:石材20個 鉱石20個");
-					else DrawFormatStringToHandle(620, 895, GetColor(64, 64, 64), FontHandle, u8"像:石材20個 鉱石20個");
+					if (hiroba_level == 3) DrawFormatStringToHandle(620 / frame_size, 785 / frame_size, GetColor(255, 255, 255), FontHandle, u8"タワー:石材30個 木材10個");
+					else DrawFormatStringToHandle(620 / frame_size, 785 / frame_size, GetColor(64, 64, 64), FontHandle, u8"タワー:石材30個 木材10個");
+					if (hiroba_level == 6) DrawFormatStringToHandle(620 / frame_size, 840 / frame_size, GetColor(255, 255, 255), FontHandle, u8"城:石材30個 鉱石30個");
+					else DrawFormatStringToHandle(620 / frame_size, 840 / frame_size, GetColor(64, 64, 64), FontHandle, u8"城:石材30個 鉱石30個");
+					if (hiroba_level == 9) DrawFormatStringToHandle(620 / frame_size, 895 / frame_size, GetColor(255, 255, 255), FontHandle, u8"像:石材20個 鉱石20個");
+					else DrawFormatStringToHandle(620 / frame_size, 895 / frame_size, GetColor(64, 64, 64), FontHandle, u8"像:石材20個 鉱石20個");
 				}
 				break;
 			}
