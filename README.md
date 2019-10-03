@@ -1,6 +1,6 @@
 # ゲームのダウンロード
 
-[![icon](https://lh3.googleusercontent.com/w15VhYvXBjtxk6h117KqbYXtObPy6Ll_ENwKKIDg83BkIGbA5pyOstcM4GUYPLFFcr2L=s180-rw)](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
+[![icon](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/icon114.png)](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
 
 ### [**Windows (Google Drive)**](https://drive.google.com/drive/folders/1N2r9BZgOluvoGjJA4ew49TY_3PqrmvVH?usp=sharing)
 
