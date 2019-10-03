@@ -79,6 +79,7 @@ private:
 
 	int shake_count{};
 	int timer{ 60 * 15 };
+	int timer_push{ 30 };
 
 	const int cloud_move_time_max{ 6 };
 	int cloud_move_time{};
@@ -237,7 +238,7 @@ public:
 
 	}
 
-	void call(::std::array<int, item_num>& item_count, bool up_key[], bool down_key[], ::std::uint_fast8_t& scene_id, ::std::uint_fast32_t& fished_count, ::std::uint_fast32_t& go_fish_count) {
+	void call(::std::array<int, item_num>& item_count, bool up_key[], bool down_key[], ::std::int_fast32_t key_frame[], ::std::uint_fast8_t& scene_id, ::std::uint_fast32_t& fished_count, ::std::uint_fast32_t& go_fish_count) {
 		::std::mt19937 engine(seed_gen());
 
 		shake_value -= 0.5f;
@@ -415,16 +416,19 @@ public:
 		if (up_key[KEY_INPUT_T]) timer = 0;
 
 		if (fish_scene == fish_scene_fish && timer > 0) --timer;
+		if (fish_scene == fish_scene_fish && timer > 0 && key_frame[KEY_INPUT_LSHIFT] > 0) --timer;
 		if (timer == 0) {
-			if (up_key[KEY_INPUT_RETURN]) timer = -1;
+			if (timer_push > 0) --timer_push;
+			if (up_key[KEY_INPUT_RETURN] && timer_push == 0) timer = -1;
 			fish_scene = fish_scene_end;
 		}
-		else if (timer <= -1 || up_key[KEY_INPUT_R]) {
+		if (timer <= -1 || up_key[KEY_INPUT_R]) {
 			if (timer <= -1) {
 				scene_id = 2; // マップ
 				++go_fish_count;
 			}
 			timer = 60 * 15;
+			timer_push = 30;
 			fished_count = static_cast<::std::uint_fast32_t>(fish_get.size());
 
 			item_count[item_fish_small] += fish_count[fish_small];

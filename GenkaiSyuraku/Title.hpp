@@ -38,7 +38,7 @@ public:
 		bgm = bgm_;
 	}
 
-	void call(bool up_key[], std::uint_fast8_t& scene_id, std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level, 
+	void call(bool up_key[], std::uint_fast8_t& scene_id, std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level,
 		std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level, std::uint_fast8_t hatake_level) {
 		if (sakanaya_level == 3 && hiroba_level >= 2 && farm_level >= 2) title_level = 1;
 
@@ -48,15 +48,15 @@ public:
 		else if (background_x == 0) ret = 0;
 
 		//メニュー選択
-		if (up_key[KEY_INPUT_UP] ) select--;
-		else if (up_key[KEY_INPUT_DOWN] ) select++;
+		if (up_key[KEY_INPUT_UP]) select--;
+		else if (up_key[KEY_INPUT_DOWN]) select++;
 		if (select > 2) select = 0;
 		if (select < 0) select = 2;
 
 		//メニュー決定
-		if (up_key[KEY_INPUT_RETURN] ) {
+		if (up_key[KEY_INPUT_RETURN]) {
 			StopSoundMem(bgm);
-			if (select == 0) scene_id = 2;
+			if (select == 0) scene_id = 6;
 			if (select == 1) scene_id = 2;
 			if (select == 2) scene_id = 5;
 		}
@@ -75,19 +75,19 @@ public:
 
 
 		//タイトル
-		if(title_level == 0) DrawGraph(0, -200 / frame_size, title_image[title_level], TRUE);
+		if (title_level == 0) DrawGraph(0, -200 / frame_size, title_image[title_level], TRUE);
 		else DrawGraph(0, -50 / frame_size, title_image[title_level], TRUE);
-			   		 
+
 		//その他表示
 		DrawGraph(0, 0, start_image[0], TRUE);
 		DrawGraph(0, 0, continue_image[0], TRUE);
 		DrawGraph(0, 0, end_image[0], TRUE);
 
 		//選択
-		if(select == 0)	DrawGraph(0, 0, start_image[1], TRUE);
+		if (select == 0)	DrawGraph(0, 0, start_image[1], TRUE);
 		else if (select == 1) DrawGraph(0, 0, continue_image[1], TRUE);
 		else DrawGraph(0, 0, end_image[1], TRUE);
-			
+
 		if (bgm_flag == 0) {
 			PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);//バックグラウンド再生
 			bgm_flag = 1;

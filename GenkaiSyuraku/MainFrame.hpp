@@ -2,6 +2,9 @@
 #include <DxLib.h>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
+//#include <iostream>
+//#include <string>
 #include "Item.hpp"
 #include "Title.hpp"
 #include "Map.hpp"
@@ -27,7 +30,9 @@ enum :std::uint_fast8_t {
 	scene_material,
 
 	// 閉じる画面
-	scene_close
+	scene_close,
+
+	scene_title_init
 
 };
 
@@ -37,6 +42,7 @@ public:
 
 	// 初期化処理
 	bool init(const int load_font) {
+		this->ReadFile();
 		::DxLib::ProcessMessage();
 		title.init(bgm, map_image);
 		::DxLib::DrawStringToHandle(title_frame_x, title_frame_y, u8"\n■■■■□", 0xffffffff, load_font);
@@ -68,7 +74,7 @@ public:
 
 			// マップ画面
 		case scene_map:
-			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count, 
+			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count,
 				yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, talk_id);
 #ifdef GENKAI_SYURAKU_TOUCH
 			if (talk_id == 0) ::DxLib::DrawGraph(0, button2_frame_y, button2, TRUE);
@@ -78,7 +84,7 @@ public:
 
 			// 釣り画面
 		case scene_fish:
-			fish.call(item_count, up_key, down_key, scene_id, fished_count, go_fish_count);
+			fish.call(item_count, up_key, down_key, key_frame, scene_id, fished_count, go_fish_count);
 #ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(button1_frame_x, button1_frame_y, button1, TRUE);
 #endif
@@ -95,6 +101,24 @@ public:
 			// 閉じる画面
 		case scene_close:
 			return false;
+
+		case scene_title_init:
+			yorozuya_level = 0;
+			sakanaya_level = 1;
+			farm_level = 0;
+			hiroba_level = 0;
+			hatake_level = 0;
+
+			fished_count = 0;
+			go_fish_count = 0;
+			material_count = 0;
+			go_material_count = 0;
+
+			for (std::size_t i{}; i < item_count.size(); ++i)
+				item_count[i] = 0;
+
+			scene_id = scene_map;
+			return true;
 		}
 		return (DxLib::ScreenFlip() != -1 && DxLib::ClearDrawScreen() != -1 && DxLib::ProcessMessage() != -1 && key_frame[KEY_INPUT_ESCAPE] == 0);
 	}
@@ -147,16 +171,16 @@ public:
 				else if (pos_x >= 336 / frame_size && pos_y >= 744 / frame_size && pos_x < 496 / frame_size && pos_y < 904 / frame_size) tmp_key[KEY_INPUT_RIGHT] = 1;
 
 			if (pos_x >= 1584 / frame_size && pos_y >= 584 / frame_size && pos_x < 1744 / frame_size && pos_y < 744 / frame_size) {
-				tmp_key[KEY_INPUT_T] = 1;
+				tmp_key[KEY_INPUT_R] = 1;
 				tmp_key[KEY_INPUT_E] = 1;
 			}
 			else if (pos_x >= 1584 / frame_size && pos_y >= 904 / frame_size && pos_x < 1744 / frame_size && pos_y < 1024 / frame_size) {
-				tmp_key[KEY_INPUT_R] = 1;
-				tmp_key[KEY_INPUT_LEFT] = 1;
+				tmp_key[KEY_INPUT_T] = 1;
+				//tmp_key[KEY_INPUT_LEFT] = 1;
 			}
 			else if (pos_x >= 1424 / frame_size && pos_y >= 744 / frame_size && pos_x < 1584 / frame_size && pos_y < 904 / frame_size) {
-				tmp_key[KEY_INPUT_R] = 1;
-				tmp_key[KEY_INPUT_LEFT] = 1;
+				tmp_key[KEY_INPUT_LSHIFT] = 1;
+				//tmp_key[KEY_INPUT_LEFT] = 1;
 			}
 			else if (pos_x >= 1744 / frame_size && pos_y >= 744 / frame_size && pos_x < 1904 / frame_size && pos_y < 904 / frame_size) {
 				tmp_key[KEY_INPUT_RETURN] = 1;
@@ -182,8 +206,10 @@ public:
 
 	// 終了時処理
 	void end() {
+		this->WriteFile();
 		DxLib::DxLib_End();
 	}
+
 private:
 	Fish fish{};
 	Material material{};
@@ -199,6 +225,133 @@ private:
 
 	const int bgm{ ::DxLib::LoadSoundMem("music/genkaivillage.ogg") };
 	const int map_image{ ::DxLib::LoadGraph("image/map.jpg", FALSE) };
+
+	void parse32(char str[], std::size_t num, std::uint_fast32_t item_) const {
+		str[num + 3] = static_cast<char>(static_cast<unsigned char>(item_ & 255));
+		item_ >>= 8;
+		str[num + 2] = static_cast<char>(static_cast<unsigned char>(item_ & 255));
+		item_ >>= 8;
+		str[num + 1] = static_cast<char>(static_cast<unsigned char>(item_ & 255));
+		item_ >>= 8;
+		str[num] = static_cast<char>(static_cast<unsigned char>(item_ & 255));
+	}
+
+	std::uint_fast32_t compose(const char* str, std::size_t num) const {
+		std::uint_fast32_t item_{};
+		item_ = static_cast<std::uint_fast32_t>(static_cast<unsigned char>(str[num]));
+		item_ <<= 8;
+		item_ += static_cast<std::uint_fast32_t>(static_cast<unsigned char>(str[num + 1]));
+		item_ <<= 8;
+		item_ += static_cast<std::uint_fast32_t>(static_cast<unsigned char>(str[num + 2]));
+		item_ <<= 8;
+		item_ += static_cast<std::uint_fast32_t>(static_cast<unsigned char>(str[num + 3]));
+		return item_;
+	}
+
+	bool WriteFile() const {
+#ifdef __ANDROID__
+		char file_path[256]{};
+		::DxLib::GetInternalDataPath(file_path, sizeof(file_path));
+		//std::ofstream ofs(std::string(std::string(file_path) + u8"/save.txt").c_str(), std::ios::binary);
+
+		FILE* ofs;
+		ofs = fopen(std::string(std::string(file_path) + u8"/save.txt").c_str(), "wb");
+		if (ofs == nullptr) return false;
+
+#else
+		//FILE* ofs;
+		//ofs = fopen(u8"save/save.txt", "wb");
+		//if (ofs == nullptr) return false;
+		std::ofstream ofs(u8"save/save.txt", std::ios::binary);
+		if (ofs.fail()) return false;
+#endif
+		char str[256]{};
+
+		// 0-4
+		str[0] = static_cast<char>(static_cast<unsigned char>(yorozuya_level));
+		str[1] = static_cast<char>(static_cast<unsigned char>(sakanaya_level));
+		str[2] = static_cast<char>(static_cast<unsigned char>(farm_level));
+		str[3] = static_cast<char>(static_cast<unsigned char>(hiroba_level));
+		str[4] = static_cast<char>(static_cast<unsigned char>(hatake_level));
+
+		// 12-15
+		parse32(str, 12, fished_count);
+		// 16
+		parse32(str, 16, go_fish_count);
+		// 20
+		parse32(str, 20, material_count);
+		// 24
+		parse32(str, 24, go_material_count);
+
+		// 60
+		for (std::size_t i{}; i < item_count.size(); ++i)
+			parse32(str, 60 + i * 4, static_cast<std::uint_fast32_t>(item_count[i]));
+
+#ifdef __ANDROID__
+		for (std::size_t i{}; i < 256; ++i)
+			fprintf(ofs, "%c", str[i]);
+		fclose(ofs);
+#else
+		ofs.write(str, 256);
+#endif
+		return true;
+	}
+
+	bool ReadFile() {
+#ifdef __ANDROID__
+		char file_path[256]{};
+		::DxLib::GetInternalDataPath(file_path, sizeof(file_path));
+		//std::ifstream ifs(std::string(std::string(file_path) + u8"/save.txt").c_str());
+		char str[256]{};
+
+		FILE* fp;
+		if ((fp = fopen(std::string(std::string(file_path) + u8"/save.txt").c_str(), "rb")) == nullptr) return false;
+		fread(str, sizeof(char), 256, fp);
+		fclose(fp);
+
+#else
+		//char str[256]{};
+		//FILE* fp;
+		//if ((fp = fopen(u8"save/save.txt", "rb")) == nullptr) return false;
+		//fread(str, sizeof(char), 256, fp);
+		//fclose(fp);
+		std::ifstream ifs(u8"save/save.txt");
+		if (ifs.fail()) return false;
+		std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+		if (str.size() < 256) return false;
+#endif
+		if (str[1] == 0) str[1] = 1;
+
+#ifdef __ANDROID__
+		// 0-4
+		yorozuya_level = static_cast<std::uint_fast8_t>(static_cast<unsigned char>(str[0]));
+		sakanaya_level = static_cast<std::uint_fast8_t>(static_cast<unsigned char>(str[1]));
+		farm_level = static_cast<std::uint_fast8_t>(static_cast<unsigned char>(str[2]));
+		hiroba_level = static_cast<std::uint_fast8_t>(static_cast<unsigned char>(str[3]));
+		hatake_level = static_cast<std::uint_fast8_t>(static_cast<unsigned char>(str[4]));
+
+		// 12
+		fished_count = compose(str, 12);
+		go_fish_count = compose(str, 16);
+		material_count = compose(str, 20);
+		go_material_count = compose(str, 24);
+
+		// 60
+		for (std::size_t i{}; i < item_count.size(); ++i)
+			item_count[i] = static_cast<int>(compose(str, 60 + i * 4));
+#else
+		// 12
+		fished_count = compose(str.c_str(), 12);
+		go_fish_count = compose(str.c_str(), 16);
+		material_count = compose(str.c_str(), 20);
+		go_material_count = compose(str.c_str(), 24);
+
+		// 60
+		for (std::size_t i{}; i < item_count.size(); ++i)
+			item_count[i] = static_cast<int>(compose(str.c_str(), 60 + i * 4));
+#endif
+		return true;
+	}
 
 private:
 	Map map;

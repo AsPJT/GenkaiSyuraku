@@ -133,11 +133,11 @@ public:
 		}
 	}
 
-	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, 
-		std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, std::uint_fast8_t& yorozuya_level, 
+	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count,
+		std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, std::uint_fast8_t& yorozuya_level,
 		std::uint_fast8_t& sakanaya_level, std::uint_fast8_t& farm_level, std::uint_fast8_t& hiroba_level, std::uint_fast8_t& hatake_level, int& talk_id) {
 		returnflag = 0;
-	
+
 		//メニュー画面(よろず屋なども含む)
 		switch (menu)
 		{
@@ -173,7 +173,7 @@ public:
 			else if (key[KEY_INPUT_LEFT] || key[KEY_INPUT_A]) menu = 1;
 			else if (up_key[KEY_INPUT_UP] || up_key[KEY_INPUT_W]) {
 				select2--;
-				if(menu_size < 6) selector2_y -= 70, menu_size++;
+				if (menu_size < 6) selector2_y -= 70, menu_size++;
 			}
 			else if (up_key[KEY_INPUT_DOWN] || up_key[KEY_INPUT_S]) {
 				select2++;
@@ -216,7 +216,7 @@ public:
 				else if (select4 == 2 && player.money >= item_buy[item_corn_seed]) item_count[item_corn_seed]++, player.money -= item_buy[item_corn_seed], buy++;
 				else if (select4 == 3 && player.money >= item_buy[item_broom]) item_count[item_broom]++, player.money -= item_buy[item_broom], buy++;
 				else if (select4 == 4) menu = 3;
-				
+
 				if (buy > 10) buy == 10;
 			}
 			break;
@@ -301,7 +301,7 @@ public:
 				if (up_key[KEY_INPUT_RETURN]) {
 					returnflag = 1;
 					if (select7 == 0 && item_count[item_wood] >= 10) item_count[item_wood] -= 10, menu = 0, kenchiku = 2;
-					else if (select7 == 1 && item_count[item_stone] >= 20) item_count[item_stone] -=20, menu = 0, kenchiku = 5;
+					else if (select7 == 1 && item_count[item_stone] >= 20) item_count[item_stone] -= 20, menu = 0, kenchiku = 5;
 					else if (select7 == 2 && item_count[item_stone] >= 10) item_count[item_stone] -= 10, menu = 0, kenchiku = 8;
 					else if (select7 == 3) menu = 0;
 				}
@@ -368,13 +368,13 @@ public:
 								}
 								else if (i == 1) {//baa
 									person = person_yorozu;
-									if(yorozuya_level == 3) talk = 6;
+									if (yorozuya_level == 3) talk = 6;
 									else if (yorozuya_level == 2) talk = 5;
 									else talk = 4;
 								}
 								else if (i == 2) {//man1
 									person = person_man;
-									if(farm_level == 2) talk = 8;
+									if (farm_level == 2) talk = 8;
 									else if (farm_level == 1) talk = 7;
 								}
 								else if (i == 3) {//man2
@@ -408,7 +408,7 @@ public:
 								}
 								else if (i == 10) {//girl2 tower or statue level == 1 or 2
 									person = person_child;
-									if(hiroba_level == 2 || hiroba_level == 3) talk = 11;
+									if (hiroba_level == 2 || hiroba_level == 3) talk = 11;
 									else if (hiroba_level == 8 || hiroba_level == 9) talk = 15;
 								}
 							}
@@ -504,7 +504,7 @@ public:
 		//歩行フラグ
 		if (player.x % player.size == 0 && player.y % player.size == 0) {       //座標が32で割り切れたら入力可能
 			player.walking_flag = 1;                  //歩くフラグを立てる。
-			if(talk != 0 || menu != 0) player.walking_flag = 0;
+			if (talk != 0 || menu != 0) player.walking_flag = 0;
 			if ((key[KEY_INPUT_UP] && key[KEY_INPUT_LEFT]) || (key[KEY_INPUT_W] && key[KEY_INPUT_A]))
 				player.muki = 1;
 			else if (key[KEY_INPUT_LEFT] && key[KEY_INPUT_DOWN] || (key[KEY_INPUT_A] && key[KEY_INPUT_S]))
@@ -528,53 +528,53 @@ public:
 		//移動処理
 		if (player.walking_flag == 1) {       //歩くフラグが立っていたら
 			if (player.muki == 0)             //上向きならy座標を減らす
-				player.y-= player.speed, player.img_num = 19;
+				player.y -= player.speed, player.img_num = 19;
 			else if (player.muki == 1)
-				player.x-= player.speed, player.y-= player.speed, player.img_num = 16;
+				player.x -= player.speed, player.y -= player.speed, player.img_num = 16;
 			else if (player.muki == 2)        //左向きならx座標を減らす
-				player.x-= player.speed, player.img_num = 7;
+				player.x -= player.speed, player.img_num = 7;
 			else if (player.muki == 3)
-				player.x-= player.speed, player.y+= player.speed, player.img_num = 4;
+				player.x -= player.speed, player.y += player.speed, player.img_num = 4;
 			else if (player.muki == 4)        //下向きならy座標を増やす
-				player.y+= player.speed, player.img_num = 1;
+				player.y += player.speed, player.img_num = 1;
 			else if (player.muki == 5)
-				player.x+= player.speed, player.y+= player.speed, player.img_num = 10;
+				player.x += player.speed, player.y += player.speed, player.img_num = 10;
 			else if (player.muki == 6)        //右向きならx座標を増やす
-				player.x+= player.speed, player.img_num = 13;
+				player.x += player.speed, player.img_num = 13;
 			else if (player.muki == 7)
-				player.x+= player.speed, player.y-= player.speed, player.img_num = 22;
-		
+				player.x += player.speed, player.y -= player.speed, player.img_num = 22;
+
 			if (player.x <= map_width / 2 - player.sizeX || player.x >= map_width + map_width / 2 - player.sizeX) {   //プレイヤーのみ動かす
 				if (player.muki == 0)
-					player.py-= player.speed;
+					player.py -= player.speed;
 				else if (player.muki == 1)
-					player.px-= player.speed, player.py-= player.speed;
+					player.px -= player.speed, player.py -= player.speed;
 				else if (player.muki == 2)
-					player.px-= player.speed;
+					player.px -= player.speed;
 				else if (player.muki == 3)
-					player.px-= player.speed, player.py+= player.speed;
+					player.px -= player.speed, player.py += player.speed;
 				else if (player.muki == 4)
-					player.py+= player.speed;
+					player.py += player.speed;
 				else if (player.muki == 5)
-					player.px+= player.speed, player.py+= player.speed;
+					player.px += player.speed, player.py += player.speed;
 				else if (player.muki == 6)
-					player.px+= player.speed;
+					player.px += player.speed;
 				else if (player.muki == 7)
-					player.px+= player.speed, player.py-= player.speed;
+					player.px += player.speed, player.py -= player.speed;
 			}
 			else {  //背景を追従させる(プレイヤーのx座標固定)
 				if (player.muki == 0)
-					player.py-= player.speed;
+					player.py -= player.speed;
 				else if (player.muki == 1)
-					player.py-= player.speed;
+					player.py -= player.speed;
 				else if (player.muki == 3)
-					player.py+= player.speed;
+					player.py += player.speed;
 				else if (player.muki == 4)
-					player.py+= player.speed;
+					player.py += player.speed;
 				else if (player.muki == 5)
-					player.py+= player.speed;
+					player.py += player.speed;
 				else if (player.muki == 7)
-					player.py-= player.speed;
+					player.py -= player.speed;
 			}
 		}
 
@@ -585,10 +585,10 @@ public:
 
 		//進入禁止エリアの指定
 		if (player.x < 0) player.x = player.bx, player.px = player.bpx;
-		else if (player.x > player.size*110 && player.px > player.size * 48) player.x = player.bx, player.px = player.bpx;
+		else if (player.x > player.size * 110 && player.px > player.size * 48) player.x = player.bx, player.px = player.bpx;
 		if (player.y < player.size * 13) player.y = player.by, player.py = player.bpy;
-		else if (player.y > player.size*26) player.y = player.by, player.py = player.bpy;
-		
+		else if (player.y > player.size * 26) player.y = player.by, player.py = player.bpy;
+
 		//Mobとの当たり判定
 		for (i = 0; i < mob_num; i++) {
 			if (player.x + player.sizeX - 32 > mob[i].x &&
@@ -629,7 +629,7 @@ public:
 		else if (player.walking_ani % 4 == 1) player.img = player.image[player.img_num];
 		else if (player.walking_ani % 4 == 2) player.img = player.image[player.img_num + 1];
 		else if (player.walking_ani % 4 == 3) player.img = player.image[player.img_num];
-		
+
 		//モード推移後のフラグ処理
 		if (go_fish_count != go_fish_before || go_material_count != go_material_before) {
 			if (go_fish_count != go_fish_before) sakana_total += fished_count;
@@ -651,7 +651,7 @@ public:
 			}
 
 			//集落レベルの管理
-			if(kenchiku != 0) hiroba_level = kenchiku;
+			if (kenchiku != 0) hiroba_level = kenchiku;
 			kenchiku = 0;
 
 			if ((item_count[item_straw] >= 150 || farm_level == 4) && hiroba_level != 4 && hiroba_level != 7 && hiroba_level != 10)
@@ -662,22 +662,22 @@ public:
 				farm_level = 2;
 			else if (item_count[item_straw] >= 20 || farm_level == 1)
 				farm_level = 1;
-			
-			if (sakana_total >= 70)
+
+			if (sakana_total >= 70 || sakanaya_level == 3)
 				sakanaya_level = 3;
 			else if (sakana_total >= 20) {
 				sakanaya_level = 2;
 				yorozuya_level = 1;
 				hatake_level = 1;
-				if(hiroba_level < 2) hiroba_level = 1;
+				if (hiroba_level < 2) hiroba_level = 1;
 			}
 
-			if (buy >= 10 && go_material_count >= 3 && go_fish_count >= 3)
+			if ((buy >= 10 && go_material_count >= 3 && go_fish_count >= 3) || yorozuya_level == 3)
 				yorozuya_level = 3;
 			else if (buy >= 1)
 				yorozuya_level = 2;
 		}
-		
+
 		//集落レベルに応じた村人の配置
 		if (sakanaya_level >= 2)
 			mob[9].x = mob[9].size * 91;  //こども1
@@ -706,7 +706,7 @@ public:
 					mob[10].x = mob[10].size * 47;  //こども2
 			}
 		}
-		
+
 		if (farm_level >= 3)
 			mob[5].x = mob[5].size * 60;  //外国人1
 		else if (farm_level >= 2)
@@ -730,14 +730,14 @@ public:
 				}
 			}
 		}
-		
-        //BGM再生
+
+		//BGM再生
 		if (bgm_flag == 0) {
-			if(hiroba_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
+			if (hiroba_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
 			else PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
 			bgm_flag = 1;
 		}
-		
+
 		Draw(yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, item_count);
 
 		//selectorの初期化
@@ -770,17 +770,17 @@ public:
 		talk_id = talk;
 	}
 
-	void Draw(std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level, std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level, 
+	void Draw(std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level, std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level,
 		std::uint_fast8_t hatake_level, std::array<int, item_num>& item_count) {
 		//背景の描画
 		DrawGraph(background_x / frame_size, 0, map_image, TRUE);
 
 		//施設の描画
 		if (hiroba_level == 0 && farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level], TRUE);
-		else if(farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level - 1], TRUE);
+		else if (farm_level != 4) DrawGraph(background_x / frame_size, 0, hiroba_image[hiroba_level - 1], TRUE);
 		if (farm_level == 0) DrawGraph(background_x / frame_size, 0, farm_image[farm_level], TRUE);
 		else DrawGraph(background_x / frame_size, 0, farm_image[farm_level - 1], TRUE);
-		if(yorozuya_level == 0) DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level], TRUE);
+		if (yorozuya_level == 0) DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level], TRUE);
 		else DrawGraph(background_x / frame_size, 0, yorozuya_image[yorozuya_level - 1], TRUE);
 		if (sakanaya_level == 0) DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level], TRUE);
 		else DrawGraph(background_x / frame_size, 0, sakanaya_image[sakanaya_level - 1], TRUE);
@@ -999,7 +999,7 @@ private:
 		person_num
 	};
 
-	std::array<std::string, person_num> person_list {
+	std::array<std::string, person_num> person_list{
 	   u8"　祖父　",
 	   u8" こども ",
 	   u8"よろず屋",
@@ -1009,7 +1009,7 @@ private:
 	   u8"　 畑 　"
 	};
 
-	std::array<std::string, 28> talk_list {
+	std::array<std::string, 28> talk_list{
 	   u8"",
 	   u8"釣りをしてこの集落を復興させてくれ！", //祖父
 	   u8"今日も釣りをしてくれて感謝じゃ！", //祖父
@@ -1089,7 +1089,7 @@ private:
 	int fish_icon_image;
 	int icon_image;
 	int menu_image;
-    int selector_image;
+	int selector_image;
 	int textwindow_image;
 	int window_image;
 	int find_image;
