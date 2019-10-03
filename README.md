@@ -1,3 +1,11 @@
+# ゲームのダウンロード
+
+[![icon](https://lh3.googleusercontent.com/w15VhYvXBjtxk6h117KqbYXtObPy6Ll_ENwKKIDg83BkIGbA5pyOstcM4GUYPLFFcr2L=s180-rw)](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
+
+### [**Android (Google Play)**](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
+
+---
+
 # 限界集落 (GenkaiSyuraku)
 ![Title](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/title.png)
 
