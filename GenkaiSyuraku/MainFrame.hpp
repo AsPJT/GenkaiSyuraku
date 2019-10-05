@@ -65,7 +65,7 @@ public:
 
 			// タイトル画面
 		case scene_title:
-			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level);
+			title.call(up_key, scene_id, yorozuya_level, sakanaya_level, farm_level, hiroba_level);
 #ifdef GENKAI_SYURAKU_TOUCH
 			::DxLib::DrawGraph(0, button2_frame_y, button2, TRUE);
 			::DxLib::DrawGraph(button1_frame_x, button1_frame_y, button1, TRUE);

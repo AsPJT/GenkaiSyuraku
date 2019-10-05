@@ -39,7 +39,7 @@ public:
 	}
 
 	void call(bool up_key[], std::uint_fast8_t& scene_id, std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level,
-		std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level, std::uint_fast8_t hatake_level) {
+		std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level) {
 		if (sakanaya_level == 3 || (hiroba_level % 3 == 1 && hiroba_level >= 2) || farm_level == 4) title_level = 1;
 
 		if (ret == 0) background_x--;
@@ -97,7 +97,8 @@ public:
 private:
 	int background_x = 0, ret = 0;
 	int select = 0;
-	int bgm, bgm_flag = 0;
+	int bgm = 0;
+	int bgm_flag = 0;
 	int title_level = 0;
 	int map_image = 0;
 	int sakanaya_image[3] = {};

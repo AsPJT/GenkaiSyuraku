@@ -36,10 +36,9 @@ public:
 class Hatake {
 public:
 	int size = 128;
-	int x, y;
-	int img;
-	int seeds;
-	int level;
+	int x = 0, y = 0;
+	int img = 0;
+	int level = 0;
 
 };
 
@@ -232,7 +231,7 @@ public:
 					item_count[item_broom]++, player.money -= item_buy[item_broom], buy++;
 				else if (select2 == 4) menu = 3;
 				
-				if (buy > 10) buy == 10;
+				if (buy > 10) buy = 10;
 			}
 			break;
 		case 5:
@@ -845,7 +844,7 @@ public:
 			DrawGraph(520 / frame_size, selector2_y / frame_size, selector_image, TRUE);
 			DrawFormatStringToHandle(250 / frame_size, 160 / frame_size, GetColor(0, 0, 0), FontHandle, "%d", player.money);
 			DrawFormatStringToHandle(600 / frame_size, 180 / frame_size, GetColor(0, 0, 0), FontHandle, u8"アイテム名　　　　　　所持数");
-			DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1.0].c_str());
+			DrawFormatStringToHandle(550 / frame_size, 850 / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_string[select2 + 1].c_str());
 
 			for (i = 0; i < 6; i++) {
 				DrawFormatStringToHandle(600 / frame_size, (600 - i * 70) / frame_size, GetColor(0, 0, 0), FontHandle, "%s", item_name[select2 + menu_size - i].c_str());
@@ -1019,12 +1018,12 @@ private:
 
 	std::uint_fast32_t go_fish_before = 0;
 	std::uint_fast32_t go_material_before = 0;
-	int i, j;
+	int i = 0, j = 0;
 	int mob_num = 11;
 	int hatake_num = 10;
-	int FontHandle;
-	int FontHandle_mini;
-	int FontHandle_big;
+	int FontHandle = 0;
+	int FontHandle_mini = 0;
+	int FontHandle_big = 0;
 	int sakana_total = 0;
 	int material_total = 0;
 	int menu_size = 4;
@@ -1037,34 +1036,34 @@ private:
 	int hatake_select = 0;
 
 	//flag
-	int bgm, bgm2, bgm_flag = 0;
+	int bgm = 0, bgm2 = 0, bgm_flag = 0;
 	int talk = 0;
 	int person = 0;
 	int menu = 0;
 	int returnflag = 0;
 	int hatake_find = 10;
 	int buy = 0;
-	int kenchiku = 0;
+	std::uint_fast8_t kenchiku = 0;
 
 	//image
-	int map_image;
-	int sakanaya_image[3];
-	int yorozuya_image[3];
-	int hiroba_image[10];
-	int farm_image[4];
-	int tomato_image[3];
-	int kyabetsu_image[3];
-	int morokoshi_image[3];
-	int hatake_image;
-	int area_icon_image;
-	int fish_icon_image;
-	int icon_image;
-	int menu_image;
-    int selector_image;
-	int textwindow_image;
-	int window_image;
-	int find_image;
-	int menu2_image;
+	int map_image = 0;
+	int sakanaya_image[3] = {};
+	int yorozuya_image[3] = {};
+	int hiroba_image[10] = {};
+	int farm_image[4] = {};
+	int tomato_image[3] = {};
+	int kyabetsu_image[3] = {};
+	int morokoshi_image[3] = {};
+	int hatake_image = 0;
+	int area_icon_image = 0;
+	int fish_icon_image = 0;
+	int icon_image = 0;
+	int menu_image = 0;
+    int selector_image = 0;
+	int textwindow_image = 0;
+	int window_image = 0;
+	int find_image = 0;
+	int menu2_image = 0;
 
 	//座標
 	int background_x = 0;
