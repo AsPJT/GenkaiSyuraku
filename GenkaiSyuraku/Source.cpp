@@ -6,7 +6,10 @@ constexpr int title_frame_y{ 800 / frame_size };
 constexpr int button1_frame_x{ 1408 / frame_size };
 constexpr int button1_frame_y{ 568 / frame_size };
 constexpr int button2_frame_y{ 568 / frame_size };
+
 #include "MainFrame.hpp"
+#include <memory>
+#include <new>
 
 #ifdef __ANDROID__
 int android_main(void) {
@@ -50,18 +53,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	::DxLib::ProcessMessage();
 
 	// メインフレームを定義
-	::MainFrame mainFrame;
+	::std::unique_ptr<::MainFrame> mainFrame(new(::std::nothrow) ::MainFrame);
+	if (!mainFrame) return -1;
+
 	::DxLib::DrawStringToHandle(title_frame_x, title_frame_y, u8"\n■■■□□", 0xffffffff, load_font);
 	::DxLib::ProcessMessage();
 
 	//ゲームを初期化
-	mainFrame.init(load_font);
+	mainFrame->init(load_font);
 
 	// ゲームループ
-	while (mainFrame.loop());
+	while (mainFrame->loop());
 
 	// ゲームの終了処理
-	mainFrame.end();
+	mainFrame->end();
 
 	return 0;
 }

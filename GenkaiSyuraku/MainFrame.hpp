@@ -44,10 +44,10 @@ public:
 	bool init(const int load_font) {
 		this->ReadFile();
 		::DxLib::ProcessMessage();
-		title.init(bgm, map_image);
+		title.init(bgm, map_image, s0, s1, s2, y0, y1, y2, t0, t1, t2, c0, c1, c2, st0, st1, st2, f0, f1, f2, f3, hiroba_image);
 		::DxLib::DrawStringToHandle(title_frame_x, title_frame_y, u8"\n■■■■□", 0xffffffff, load_font);
 		::DxLib::ProcessMessage();
-		map.init(bgm, map_image);
+		map.init(bgm, map_image, s0, s1, s2, y0, y1, y2, t0, t1, t2, c0, c1, c2, st0, st1, st2, f0, f1, f2, f3, hiroba_image);
 		::DxLib::DrawStringToHandle(title_frame_x, title_frame_y, u8"\n■■■■■", 0xffffffff, load_font);
 		::DxLib::ProcessMessage();
 		//
@@ -115,7 +115,7 @@ public:
 			go_material_count = 0;
 
 			for (std::size_t i{}; i < item_count.size(); ++i)
-				item_count[i] = 0;
+				item_count[i] = 200;
 
 			scene_id = scene_map;
 			return true;
@@ -225,6 +225,27 @@ private:
 
 	const int bgm{ ::DxLib::LoadSoundMem("music/genkaivillage.ogg") };
 	const int map_image{ ::DxLib::LoadGraph("image/map.jpg", FALSE) };
+
+	const int s0{ ::DxLib::LoadGraph("image/sakanaya1.png", TRUE) };
+	const int s1{ ::DxLib::LoadGraph("image/sakanaya2.png", TRUE) };
+	const int s2{ ::DxLib::LoadGraph("image/sakanaya3.png", TRUE) };
+	const int y0{ ::DxLib::LoadGraph("image/yorozuya1.png", TRUE) };
+	const int y1{ ::DxLib::LoadGraph("image/yorozuya2.png", TRUE) };
+	const int y2{ ::DxLib::LoadGraph("image/yorozuya3.png", TRUE) };
+	const int t0{ ::DxLib::LoadGraph("image/tower1.png", TRUE) };
+	const int t1{ ::DxLib::LoadGraph("image/tower2.png", TRUE) };
+	const int t2{ ::DxLib::LoadGraph("image/tower3.jpg", FALSE) };
+	const int c0{ ::DxLib::LoadGraph("image/castle1.png", TRUE) };
+	const int c1{ ::DxLib::LoadGraph("image/castle2.png", TRUE) };
+	const int c2{ ::DxLib::LoadGraph("image/castle3.jpg", FALSE) };
+	const int st0{ ::DxLib::LoadGraph("image/statue1.png", TRUE) };
+	const int st1{ ::DxLib::LoadGraph("image/statue2.png", TRUE) };
+	const int st2{ ::DxLib::LoadGraph("image/statue3.jpg", FALSE) };
+	const int f0{ ::DxLib::LoadGraph("image/farm1.png", TRUE) };
+	const int f1{ ::DxLib::LoadGraph("image/farm2.png", TRUE) };
+	const int f2{ ::DxLib::LoadGraph("image/farm3.png", TRUE) };
+	const int f3{ ::DxLib::LoadGraph("image/farm4.jpg", FALSE) };
+	const int hiroba_image{ ::DxLib::LoadGraph("image/hiroba.png", TRUE) };
 
 	void parse32(char str[], std::size_t num, std::uint_fast32_t item_) const {
 		str[num + 3] = static_cast<char>(static_cast<unsigned char>(item_ & 255));

@@ -44,28 +44,34 @@ public:
 
 class Map {
 public:
-	void init(const int bgm_, const int map_) {
+	void init(const int bgm_, const int map_,
+		const int s0, const int s1, const int s2,
+		const int y0, const int y1, const int y2,
+		const int t0, const int t1, const int t2,
+		const int c0, const int c1, const int c2,
+		const int st0, const int st1, const int st2,
+		const int f0, const int f1, const int f2, const int f3, const int hiroba_image_) {
 		map_image = map_;
-		sakanaya_image[0] = LoadGraph("image/sakanaya1.png", TRUE);
-		sakanaya_image[1] = LoadGraph("image/sakanaya2.png", TRUE);
-		sakanaya_image[2] = LoadGraph("image/sakanaya3.png", TRUE);
-		yorozuya_image[0] = LoadGraph("image/yorozuya1.png", TRUE);
-		yorozuya_image[1] = LoadGraph("image/yorozuya2.png", TRUE);
-		yorozuya_image[2] = LoadGraph("image/yorozuya3.png", TRUE);
-		hiroba_image[0] = LoadGraph("image/hiroba.png", TRUE);
-		hiroba_image[1] = LoadGraph("image/tower1.png", TRUE);
-		hiroba_image[2] = LoadGraph("image/tower2.png", TRUE);
-		hiroba_image[3] = LoadGraph("image/tower3.jpg", FALSE);
-		hiroba_image[4] = LoadGraph("image/castle1.png", TRUE);
-		hiroba_image[5] = LoadGraph("image/castle2.png", TRUE);
-		hiroba_image[6] = LoadGraph("image/castle3.jpg", FALSE);
-		hiroba_image[7] = LoadGraph("image/statue1.png", TRUE);
-		hiroba_image[8] = LoadGraph("image/statue2.png", TRUE);
-		hiroba_image[9] = LoadGraph("image/statue3.jpg", FALSE);
-		farm_image[0] = LoadGraph("image/farm1.png", TRUE);
-		farm_image[1] = LoadGraph("image/farm2.png", TRUE);
-		farm_image[2] = LoadGraph("image/farm3.png", TRUE);
-		farm_image[3] = LoadGraph("image/farm4.png", FALSE);
+		sakanaya_image[0] = s0;
+		sakanaya_image[1] = s1;
+		sakanaya_image[2] = s2;
+		yorozuya_image[0] = y0;
+		yorozuya_image[1] = y1;
+		yorozuya_image[2] = y2;
+		hiroba_image[0] = hiroba_image_;
+		hiroba_image[1] = t0;
+		hiroba_image[2] = t1;
+		hiroba_image[3] = t2;
+		hiroba_image[4] = c0;
+		hiroba_image[5] = c1;
+		hiroba_image[6] = c2;
+		hiroba_image[7] = st0;
+		hiroba_image[8] = st1;
+		hiroba_image[9] = st2;
+		farm_image[0] = f0;
+		farm_image[1] = f1;
+		farm_image[2] = f2;
+		farm_image[3] = f3;
 		::DxLib::ProcessMessage();
 
 		tomato_image[0] = LoadGraph("image/tomato1.png", TRUE);
