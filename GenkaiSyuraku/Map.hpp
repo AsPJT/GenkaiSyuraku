@@ -353,6 +353,7 @@ public:
 		default:
 			break;
 		}
+
 		if (menu == 0) {
 			switch (talk)
 			{
@@ -529,7 +530,7 @@ public:
 		}
 
 		//歩行フラグ
-		if (player.x % player.size == 0 && player.y % player.size == 0) {       //座標が32で割り切れたら入力可能
+		if (player.x % player.size == 0 && player.y % player.size == 0 && menu == 0 && talk == 0) {
 			player.walking_flag = 1;                  //歩くフラグを立てる。
 			if(talk != 0 || menu != 0) player.walking_flag = 0;
 			if ((key[KEY_INPUT_UP] && key[KEY_INPUT_LEFT]) || (key[KEY_INPUT_W] && key[KEY_INPUT_A]))
@@ -918,7 +919,7 @@ public:
 			break;
 		case 7:
 			//資材選択
-			if (hiroba_level != 4 && hiroba_level != 7 && hiroba_level != 10 && kenchiku == 0) {
+			if (hiroba_level != 4 && hiroba_level != 7 && hiroba_level != 10 && farm_level != 4 && kenchiku == 0) {
 				DrawGraph(0, 0, textwindow_image, TRUE);
 				DrawFormatStringToHandle(190 / frame_size, 730 / frame_size, GetColor(255, 255, 255), FontHandle, person_list[person].c_str());
 				DrawRotaGraph(600 / frame_size, selector_y / frame_size, 0.5, 0, selector_image, TRUE, FALSE);
@@ -953,6 +954,8 @@ public:
 		default:
 			break;
 		}
+
+		//DrawFormatStringToHandle(0 / frame_size, 0 / frame_size, GetColor(0, 0, 0), FontHandle, "%d %d %d %d %d %d\n", player.x, mob[1].x, talk, menu, returnflag, player.muki);
 
 	}
 
