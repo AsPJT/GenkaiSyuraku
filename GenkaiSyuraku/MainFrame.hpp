@@ -75,7 +75,7 @@ public:
 			// マップ画面
 		case scene_map:
 			map.call(item_count, up_key, key_frame, scene_id, fished_count, go_fish_count, material_count, go_material_count,
-				yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, talk_id);
+				yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, talk_id, reset);
 #ifdef GENKAI_SYURAKU_TOUCH
 			if (talk_id == 0) ::DxLib::DrawGraph(0, button2_frame_y, button2, TRUE);
 			::DxLib::DrawGraph(button1_frame_x, button1_frame_y, button1, TRUE);
@@ -113,6 +113,7 @@ public:
 			go_fish_count = 0;
 			material_count = 0;
 			go_material_count = 0;
+			reset = 1;
 
 			for (std::size_t i{}; i < item_count.size(); ++i)
 				item_count[i] = 200;
@@ -222,6 +223,7 @@ private:
 	bool is_select{};
 	int select_x{};
 	int select_y{};
+	int reset = 0;
 
 	const int bgm{ ::DxLib::LoadSoundMem("music/genkaivillage.ogg") };
 	const int map_image{ ::DxLib::LoadGraph("image/map.jpg", FALSE) };

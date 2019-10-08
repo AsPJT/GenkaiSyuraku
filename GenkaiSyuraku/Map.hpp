@@ -111,8 +111,9 @@ public:
 		LoadDivGraph("image/girl2.png", 4, 1, 4, mob[10].sizeX / frame_size, mob[10].sizeY / frame_size, mob[10].image);
 		::DxLib::ProcessMessage();
 
-		bgm = bgm_;
-		bgm2 = LoadSoundMem("music/goukavillage.ogg");
+		bgm[0] = bgm_;
+		bgm[1] = LoadSoundMem("music/goukavillege.ogg");
+		bgm[2] = LoadSoundMem("music/minigame_1.ogg");
 		::DxLib::ProcessMessage();
 
 		//Font
@@ -140,9 +141,9 @@ public:
 
 	void call(std::array<int, item_num>& item_count, bool up_key[], std::int_fast32_t key[256], std::uint_fast8_t& scene_id, std::uint_fast32_t fished_count, 
 		std::uint_fast32_t go_fish_count, std::uint_fast32_t material_count, std::uint_fast32_t go_material_count, std::uint_fast8_t& yorozuya_level, 
-		std::uint_fast8_t& sakanaya_level, std::uint_fast8_t& farm_level, std::uint_fast8_t& hiroba_level, std::uint_fast8_t& hatake_level, int& talk_id) {
+		std::uint_fast8_t& sakanaya_level, std::uint_fast8_t& farm_level, std::uint_fast8_t& hiroba_level, std::uint_fast8_t& hatake_level, int& talk_id, int& reset) {
 		returnflag = 0;
-	
+
 		//メニュー画面(よろず屋なども含む)
 		switch (menu)
 		{
@@ -172,8 +173,6 @@ public:
 				}
 				if (select == 1) menu = 0;
 				if (select == 2) {
-					StopSoundMem(bgm);
-					bgm_flag = 0;
 					scene_id = 1;
 					menu = 0;
 				}
@@ -308,7 +307,7 @@ public:
 				talk = 27;
 				menu = 0;
 			}
-			else if (farm_level == 4) {
+			else if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10 || farm_level == 4) {
 				talk = 20;
 				menu = 0;
 			}
@@ -327,27 +326,23 @@ public:
 						else if (select == 2 && item_count[item_stone] >= 10) item_count[item_stone] -= 10, kenchiku = 8;
 					}
 					else if (hiroba_level == 2 || hiroba_level == 5 || hiroba_level == 8) {
-						if (select == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && hiroba_level == 2) 
+						if (select == 0 && item_count[item_stone] >= 20 && item_count[item_wood] >= 10 && hiroba_level == 2)
 							item_count[item_wood] -= 10, item_count[item_stone] -= 20, kenchiku = 3;
-						else if (select == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && hiroba_level == 5) 
+						else if (select == 1 && item_count[item_stone] >= 20 && item_count[item_ore] >= 10 && hiroba_level == 5)
 							item_count[item_stone] -= 20, item_count[item_ore] -= 10, kenchiku = 6;
-						else if (select == 2 && item_count[item_stone] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8) 
+						else if (select == 2 && item_count[item_stone] >= 10 && item_count[item_ore] >= 10 && hiroba_level == 8)
 							item_count[item_stone] -= 10, item_count[item_ore] -= 10, kenchiku = 9;
 					}
 					else if (hiroba_level == 3 || hiroba_level == 6 || hiroba_level == 9) {
-					if (select == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && hiroba_level == 3) 
-						item_count[item_wood] -= 10, item_count[item_stone] -= 30, kenchiku = 4;
-						else if (select == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && hiroba_level == 6) 
-						item_count[item_stone] -= 30, item_count[item_ore] -= 30, kenchiku = 7;
-						else if (select == 2 && item_count[item_stone] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9) 
-						item_count[item_stone] -= 20, item_count[item_ore] -= 20, kenchiku = 10;
+						if (select == 0 && item_count[item_stone] >= 30 && item_count[item_wood] >= 10 && hiroba_level == 3)
+							item_count[item_wood] -= 10, item_count[item_stone] -= 30, kenchiku = 4;
+						else if (select == 1 && item_count[item_stone] >= 30 && item_count[item_ore] >= 30 && hiroba_level == 6)
+							item_count[item_stone] -= 30, item_count[item_ore] -= 30, kenchiku = 7;
+						else if (select == 2 && item_count[item_stone] >= 20 && item_count[item_ore] >= 20 && hiroba_level == 9)
+							item_count[item_stone] -= 20, item_count[item_ore] -= 20, kenchiku = 10;
 					}
 					menu = 0;
 				}
-			}
-			else {
-				talk = 20;
-				menu = 0;
 			}
 			break;
 		default:
@@ -437,8 +432,9 @@ public:
 				//釣り場移行
 				if (player.x > tsuri_area) {
 					if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
-						bgm_flag = 0;
-						StopSoundMem(bgm);
+						StopSoundMem(bgm[0]);
+						StopSoundMem(bgm[1]);
+						PlaySoundMem(bgm[2], DX_PLAYTYPE_LOOP);
 						scene_id = 3;
 					}
 				}
@@ -491,13 +487,15 @@ public:
 			case 10:
 				//ミニゲームmaterial
 				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
-					bgm_flag = 0;
-					StopSoundMem(bgm);
+					StopSoundMem(bgm[0]);
+					StopSoundMem(bgm[1]);
+					PlaySoundMem(bgm[2], DX_PLAYTYPE_LOOP);
 					talk = 0;
 					scene_id = 4;
 				}
 				break;
 			case 19:
+				//建築
 				if (up_key[KEY_INPUT_RETURN] && returnflag == 0) {
 					select = 0;
 					selector_y = 820;
@@ -554,7 +552,7 @@ public:
 		}
 
 		//移動処理
-		if (player.walking_flag == 1) {       //歩くフラグが立っていたら
+		if (player.walking_flag == 1 && menu == 0 && talk == 0) {       //歩くフラグが立っていたら
 			if (player.muki == 0)             //上向きならy座標を減らす
 				player.y-= player.speed, player.img_num = 19;
 			else if (player.muki == 1)
@@ -659,9 +657,16 @@ public:
 		else if (player.walking_ani % 4 == 3) player.img = player.image[player.img_num];
 		
 		//モード推移後のフラグ処理
-		if (go_fish_count != go_fish_before || go_material_count != go_material_before) {
+		if (go_fish_count != go_fish_before || go_material_count != go_material_before || reset == 1) {
 			if (go_fish_count != go_fish_before) sakana_total += fished_count;
 			if (go_material_count != go_material_before) material_total += material_count;
+			//はじめから選択時
+			if (reset == 1) {
+				player.money = 100;
+				sakana_total = 0;
+				material_total = 0;
+				reset = 0;
+			}
 
 			//畑の成長
 			for (j = 0; j < 10; j++) {
@@ -702,6 +707,17 @@ public:
 				yorozuya_level = 3;
 			else if (buy >= 1)
 				yorozuya_level = 2;
+
+			//BGM再生
+			StopSoundMem(bgm[0]);
+			StopSoundMem(bgm[1]);
+			StopSoundMem(bgm[2]);
+			if (hiroba_level == 4 || hiroba_level == 7 || hiroba_level == 10 || farm_level == 4) {
+				PlaySoundMem(bgm[1], DX_PLAYTYPE_LOOP);
+			}
+			else {
+				PlaySoundMem(bgm[0], DX_PLAYTYPE_LOOP);
+			}
 		}
 		
 		//集落レベルに応じた村人の配置
@@ -755,13 +771,6 @@ public:
 					}
 				}
 			}
-		}
-		
-        //BGM再生
-		if (bgm_flag == 0) {
-			if(hiroba_level >= 2) StopSoundMem(bgm), PlaySoundMem(bgm2, DX_PLAYTYPE_LOOP);
-			else PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
-			bgm_flag = 1;
 		}
 		
 		Draw(yorozuya_level, sakanaya_level, farm_level, hiroba_level, hatake_level, item_count);
@@ -955,7 +964,7 @@ public:
 			break;
 		}
 
-		//DrawFormatStringToHandle(0 / frame_size, 0 / frame_size, GetColor(0, 0, 0), FontHandle, "%d %d %d %d %d %d\n", player.x, mob[1].x, talk, menu, returnflag, player.muki);
+		//DrawFormatStringToHandle(0 / frame_size, 0 / frame_size, GetColor(0, 0, 0), FontHandle, "%d\n", bgm_flag);
 
 	}
 
@@ -1045,7 +1054,7 @@ private:
 	int hatake_select = 0;
 
 	//flag
-	int bgm = 0, bgm2 = 0, bgm_flag = 0;
+	int bgm[3] = {};
 	int talk = 0;
 	int person = 0;
 	int menu = 0;

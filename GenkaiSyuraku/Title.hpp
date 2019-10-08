@@ -47,6 +47,7 @@ public:
 	void call(bool up_key[], std::uint_fast8_t& scene_id, std::uint_fast8_t yorozuya_level, std::uint_fast8_t sakanaya_level,
 		std::uint_fast8_t farm_level, std::uint_fast8_t hiroba_level) {
 		if (sakanaya_level == 3 || (hiroba_level % 3 == 1 && hiroba_level >= 2) || farm_level == 4) title_level = 1;
+		else title_level = 0;
 
 		if (ret == 0) background_x--;
 		else background_x++;
@@ -61,7 +62,6 @@ public:
 
 		//メニュー決定
 		if (up_key[KEY_INPUT_RETURN]) {
-			StopSoundMem(bgm);
 			if (select == 0) scene_id = 6;
 			if (select == 1) scene_id = 2;
 			if (select == 2) scene_id = 5;
