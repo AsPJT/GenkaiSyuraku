@@ -1,4 +1,8 @@
-# ゲームのダウンロード
+[![GenkaiSyuraku](https://raw.githubusercontent.com/Kasugaccho/Kasugaccho/master/Picture/genkai_syuraku.png)](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
+
+---
+
+# Download the game
 
 [![icon](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/icon114.png)](https://play.google.com/store/apps/details?id=com.GenkaiSyuraku_Android)
 
@@ -11,7 +15,7 @@
 # 限界集落 (GenkaiSyuraku)
 ![Title](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/title.png)
 
-# 街並み
+# 街並み (Townscape)
 
 ![town1](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/town1.png)
 ![town2](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/town2.png)
@@ -19,7 +23,7 @@
 ![town4](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/town4.png)
 
 
-# スクリーンショット
+# Screenshot
 
 ![material](https://github.com/Kasugaccho/GenkaiSyuraku/blob/master/picture/material.png)
 
